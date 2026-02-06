@@ -1,0 +1,48 @@
+{% extends 'crud_base.html.twig' %}
+
+{% block title %}Examens{% endblock %}
+
+{% block body %}
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">Examens</h1>
+    <a class="btn btn-primary" href="{{ path('app_examen_new') }}">Créer un examen</a>
+  </div>
+
+  {% if examens is empty %}
+    <div class="alert alert-info">Aucun examen.</div>
+  {% else %}
+    <div class="table-responsive">
+      <table class="table table-striped table-hover">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Titre</th>
+            <th>Type</th>
+            <th>Date</th>
+            <th>Durée</th>
+            <th>Cours ID</th>
+            <th>Enseignant ID</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for examen in examens %}
+            <tr>
+              <td>{{ examen.id }}</td>
+              <td>{{ examen.titre }}</td>
+              <td>{{ examen.type }}</td>
+              <td>{{ examen.dateExamen ? examen.dateExamen|date('Y-m-d') : '' }}</td>
+              <td>{{ examen.duree }}</td>
+              <td>{{ examen.coursId }}</td>
+              <td>{{ examen.enseignantId }}</td>
+              <td class="text-end">
+                <a class="btn btn-sm btn-outline-secondary" href="{{ path('app_examen_show', {'id': examen.id}) }}">Voir</a>
+                <a class="btn btn-sm btn-outline-primary" href="{{ path('app_examen_edit', {'id': examen.id}) }}">Éditer</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
+{% endblock %}

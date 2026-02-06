@@ -1,0 +1,9 @@
+{% extends 'crud_base.html.twig' %}
+
+{% block title %}Nouveau résultat{% endblock %}
+
+{% block body %}
+  <h1 class="h3 mb-4">Créer un résultat</h1>
+  {% include 'resultat/_form.html.twig' with {'form': form, 'button_label': 'Créer'} %}
+  <a class="btn btn-link mt-3" href="{{ path('app_resultat_index') }}">Retour à la liste</a>
+{% endblock %}
