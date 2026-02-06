@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}EduFlex Back Office{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+  </head>
+  <body>
+    <div class="admin-shell">
+      <aside class="admin-sidebar">
+        <div class="brand">
+          <img class="brand-logo" src="{{ asset('images/eduflex-logo.png') }}" alt="EduFlex">
+          <div class="brand-text">
+            <div class="brand-name">EduFlex</div>
+          </div>
+        </div>
+
+        <nav class="nav">
+          <a class="nav-link" href="{{ path('app_admin') }}"><span class="nav-icon">🏠</span>Dashboard Admin</a>
+          <a class="nav-link is-active" href="{{ path('app_utilisateur_index') }}"><span class="nav-icon">👥</span>Utilisateurs</a>
+          <a class="nav-link" href="#"><span class="nav-icon">🏫</span>Classes</a>
+          <a class="nav-link" href="#"><span class="nav-icon">📚</span>Matières</a>
+          <a class="nav-link" href="#"><span class="nav-icon">🔐</span>Droits d’accès</a>
+          <a class="nav-link" href="#"><span class="nav-icon">📈</span>Statistiques</a>
+          <a class="nav-link" href="#"><span class="nav-icon">⚙️</span>Paramètres</a>
+        </nav>
+
+        <div class="sidebar-card">
+          <div class="sidebar-card-title">Actions rapides</div>
+          <button class="btn btn-primary" type="button">Créer un cours</button>
+          <button class="btn btn-outline" type="button">Ajouter un utilisateur</button>
+        </div>
+      </aside>
+
+      <main class="admin-main">
+        <header class="topbar">
+          <div>
+            <div class="topbar-title">Dashboard Admin</div>
+            <div class="topbar-sub">Bienvenue sur EduFlex, Admin</div>
+          </div>
+          <div class="topbar-actions">
+            <button class="chip" type="button">Nouveau rapport</button>
+            <div class="avatar">AM</div>
+          </div>
+        </header>
+
+        {% block body %}{% endblock %}
+      </main>
+    </div>
+  </body>
+</html>

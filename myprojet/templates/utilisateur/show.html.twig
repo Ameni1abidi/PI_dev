@@ -1,34 +1,40 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin_base.html.twig' %}
 
 {% block title %}Utilisateur{% endblock %}
 
 {% block body %}
-    <h1>Utilisateur</h1>
+  <section class="panel full">
+    <div class="admin-page-header">
+      <h1 class="admin-title">Détails utilisateur</h1>
+      <div class="admin-actions">
+        <a class="btn btn-outline" href="{{ path('app_utilisateur_index') }}">Retour</a>
+        <a class="btn btn-primary" href="{{ path('app_utilisateur_edit', {'id': utilisateur.id}) }}">Modifier</a>
+      </div>
+    </div>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ utilisateur.id }}</td>
-            </tr>
-            <tr>
-                <th>Nom</th>
-                <td>{{ utilisateur.nom }}</td>
-            </tr>
-            <tr>
-                <th>Email</th>
-                <td>{{ utilisateur.email }}</td>
-            </tr>
-            <tr>
-                <th>Role</th>
-                <td>{{ utilisateur.role }}</td>
-            </tr>
-        </tbody>
+    <table class="admin-table">
+      <tbody>
+        <tr>
+          <th>Id</th>
+          <td>{{ utilisateur.id }}</td>
+        </tr>
+        <tr>
+          <th>Nom</th>
+          <td>{{ utilisateur.nom }}</td>
+        </tr>
+        <tr>
+          <th>Email</th>
+          <td>{{ utilisateur.email }}</td>
+        </tr>
+        <tr>
+          <th>Role</th>
+          <td>{{ utilisateur.role }}</td>
+        </tr>
+      </tbody>
     </table>
 
-    <a href="{{ path('app_utilisateur_index') }}">back to list</a>
-
-    <a href="{{ path('app_utilisateur_edit', {'id': utilisateur.id}) }}">edit</a>
-
-    {{ include('utilisateur/_delete_form.html.twig') }}
+    <div class="admin-actions">
+      {{ include('utilisateur/_delete_form.html.twig') }}
+    </div>
+  </section>
 {% endblock %}
