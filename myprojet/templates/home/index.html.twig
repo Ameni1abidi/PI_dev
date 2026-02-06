@@ -1,35 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'scholar_base.html.twig' %}
 
-  <head>
+{% block title %}Scholar - Online School HTML5 Template{% endblock %}
 
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-
-    <title>Scholar - Online School HTML5 Template</title>
-
-    <!-- Bootstrap core CSS -->
-    <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
-
-
-    <!-- Additional CSS Files -->
-    <link rel="stylesheet" href="{{ asset('css/fontawesome.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/templatemo-scholar.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/owl.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/animate.css') }}">
-    <link rel="stylesheet"href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
-<!--
-
-TemplateMo 586 Scholar
-
-https://templatemo.com/tm-586-scholar
-
--->
-  </head>
-
-<body>
-
+{% block body %}
   <!-- ***** Preloader Start ***** -->
   <div id="js-preloader" class="js-preloader">
     <div class="preloader-inner">
@@ -50,14 +23,14 @@ https://templatemo.com/tm-586-scholar
             <div class="col-12">
                 <nav class="main-nav">
                     <!-- ***** Logo Start ***** -->
-                    <a href="{{ path('app_home') }}" class="logo">
+                    <a href="index.html" class="logo">
                         <h1>Scholar</h1>
                     </a>
                     <!-- ***** Logo End ***** -->
                     <!-- ***** Serach Start ***** -->
                     <div class="search-input">
                       <form id="search" action="#">
-                        <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle(event)" />
+                        <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
                         <i class="fa fa-search"></i>
                       </form>
                     </div>
@@ -469,7 +442,7 @@ https://templatemo.com/tm-586-scholar
         <div class="col-lg-7">
           <div class="owl-carousel owl-testimonials">
             <div class="item">
-              <p>“Please tell your friends or collegues about TemplateMo website. Anyone can access the website to download free templates. Thank you for visiting.”</p>
+              <p>â€œPlease tell your friends or collegues about TemplateMo website. Anyone can access the website to download free templates. Thank you for visiting.â€</p>
               <div class="author">
                 <img src="{{ asset('images/testimonial-author.jpg') }}" alt="">
                 <span class="category">Full Stack Master</span>
@@ -477,7 +450,7 @@ https://templatemo.com/tm-586-scholar
               </div>
             </div>
             <div class="item">
-              <p>“Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravid.”</p>
+              <p>â€œLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravid.â€</p>
               <div class="author">
                 <img src="{{ asset('images/testimonial-author.jpg') }}" alt="">
                 <span class="category">UI Expert</span>
@@ -485,7 +458,7 @@ https://templatemo.com/tm-586-scholar
               </div>
             </div>
             <div class="item">
-              <p>“Scholar is free website template provided by TemplateMo for educational related websites. This CSS layout is based on Bootstrap v5.3.0 framework.”</p>
+              <p>â€œScholar is free website template provided by TemplateMo for educational related websites. This CSS layout is based on Bootstrap v5.3.0 framework.â€</p>
               <div class="author">
                 <img src="{{ asset('images/testimonial-author.jpg') }}" alt="">
                 <span class="category">Digital Animator</span>
@@ -665,19 +638,14 @@ https://templatemo.com/tm-586-scholar
   <footer>
     <div class="container">
       <div class="col-lg-12">
-        <p>Copyright © 2036 Scholar Organization. All rights reserved. &nbsp;&nbsp;&nbsp; Design: <a href="https://templatemo.com" rel="nofollow" target="_blank">TemplateMo</a> Distribution: <a href="https://themewagon.com" rel="nofollow" target="_blank">ThemeWagon</a></p>
+        <p>Copyright Â© 2036 Scholar Organization. All rights reserved. &nbsp;&nbsp;&nbsp; Design: <a href="https://templatemo.com" rel="nofollow" target="_blank">TemplateMo</a> Distribution: <a href="https://themewagon.com" rel="nofollow" target="_blank">ThemeWagon</a></p>
       </div>
     </div>
   </footer>
+{% endblock %}
 
-  <!-- Scripts -->
-  <!-- Bootstrap core JavaScript -->
-  <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
-  <script src="{{ asset('vendor/bootstrap/js/bootstrap.min.js') }}"></script>
-  <script src="{{ asset('js/isotope.min.js') }}"></script>
-  <script src="{{ asset('js/owl-carousel.js') }}"></script>
-  <script src="{{ asset('js/counter.js') }}"></script>
-  <script src="{{ asset('js/custom.js') }}"></script>
+{% block javascripts %}
+  {{ parent() }}
   <script>
     function handle(event) {
       if (event.key === 'Enter') {
@@ -697,6 +665,4 @@ https://templatemo.com/tm-586-scholar
       setTimeout(hidePreloader, 1500);
     })();
   </script>
-
-  </body>
-</html>
+{% endblock %}
