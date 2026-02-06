@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ExamenRepository::class)]
 class Examen
@@ -17,21 +18,35 @@ class Examen
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Le titre est obligatoire.')]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: 'Le titre ne doit pas dépasser {{ limit }} caractères.'
+    )]
     private ?string $titre = null;
 
     #[ORM\Column(length: 20)]
+    #[Assert\NotBlank(message: 'Le type est obligatoire.')]
+    #[Assert\Choice(choices: ['quiz', 'devoir', 'examen'], message: 'Type invalide.')]
     private ?string $type = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Assert\NotNull(message: 'La date de l’examen est obligatoire.')]
     private ?\DateTimeInterface $dateExamen = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(message: 'La durée est obligatoire.')]
+    #[Assert\Positive(message: 'La durée doit être positive.')]
     private ?int $duree = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(message: 'Le cours est obligatoire.')]
+    #[Assert\Positive(message: 'Le cours doit être un identifiant positif.')]
     private ?int $coursId = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(message: 'L’enseignant est obligatoire.')]
+    #[Assert\Positive(message: 'L’enseignant doit être un identifiant positif.')]
     private ?int $enseignantId = null;
 
     /**
