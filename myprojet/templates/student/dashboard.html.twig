@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EduFlex - Espace Eleve</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{{ asset('student/css/student.css') }}" />
+  </head>
+  <body>
+    <div class="student-shell">
+      <aside class="student-sidebar">
+        <div class="student-brand">
+          <div class="student-brand-mark">EF</div>
+          <div>
+            <div class="student-brand-name">EduFlex</div>
+            <div class="student-brand-sub">Espace eleve</div>
+          </div>
+        </div>
+
+        <div class="student-profile">
+          <div class="student-avatar">AM</div>
+          <div>
+            <div class="student-brand-name">Alex Martin</div>
+            <div class="student-role">Eleve</div>
+          </div>
+        </div>
+
+        <nav class="student-nav">
+          <a class="is-active" href="#">
+            <span>🏠</span>
+            Tableau de bord
+          </a>
+          <a href="#">
+            <span>📘</span>
+            Mes cours
+          </a>
+          <a href="#">
+            <span>📝</span>
+            Mes examens
+          </a>
+          <a href="#">
+            <span>💬</span>
+            Messages
+          </a>
+          <a href="#">
+            <span>📅</span>
+            Planning
+          </a>
+        </nav>
+      </aside>
+
+      <main class="student-main">
+        <div class="student-topbar">
+          <label class="student-search">
+            <span>🔍</span>
+            <input type="search" placeholder="Rechercher" />
+          </label>
+          <div class="student-top-actions">
+            <div class="student-icon-btn">🔔</div>
+            <div class="student-pill">8</div>
+            <div class="student-pill">93</div>
+          </div>
+        </div>
+
+        <section class="student-hero">
+          <h1>Bienvenue sur EduFlex, Alex !</h1>
+          <p>Consulte tes cours, ton planning et les devoirs a rendre en un clin d'oeil.</p>
+        </section>
+
+        <section class="student-stats">
+          <div class="student-stat">
+            <div class="icon">📚</div>
+            <div class="value">2</div>
+            <div class="label">Mes cours</div>
+          </div>
+          <div class="student-stat">
+            <div class="icon">🧾</div>
+            <div class="value">3</div>
+            <div class="label">Mes examens</div>
+          </div>
+          <div class="student-stat">
+            <div class="icon">💬</div>
+            <div class="value">2</div>
+            <div class="label">Nouveaux messages</div>
+          </div>
+          <div class="student-stat">
+            <div class="icon">🏅</div>
+            <div class="value">15,8</div>
+            <div class="label">Niveau</div>
+          </div>
+        </section>
+
+        <section class="student-grid">
+          <div class="student-panel">
+            <h2>Planning</h2>
+            <div class="student-panel-sub">Aujourd'hui - Mardi 23 avril</div>
+            <div class="schedule-list">
+              <div class="schedule-item">
+                <div class="item-left">
+                  <div class="item-icon purple">Fr</div>
+                  <div>
+                    <div class="item-title">Francais</div>
+                    <div class="item-meta">09:00</div>
+                  </div>
+                </div>
+                <div class="item-pill">AM</div>
+              </div>
+              <div class="schedule-item">
+                <div class="item-left">
+                  <div class="item-icon orange">Ma</div>
+                  <div>
+                    <div class="item-title">Maths</div>
+                    <div class="item-meta">12:00</div>
+                  </div>
+                </div>
+                <div class="item-pill">AM</div>
+              </div>
+              <div class="schedule-item">
+                <div class="item-left">
+                  <div class="item-icon green">Hi</div>
+                  <div>
+                    <div class="item-title">Histoire</div>
+                    <div class="item-meta">15:00</div>
+                  </div>
+                </div>
+                <div class="item-pill">AM</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="student-panel">
+            <h2>Devoirs a rendre</h2>
+            <div class="student-panel-sub">Semaine du 23 avril</div>
+            <div class="task-list">
+              <div class="task-item">
+                <div class="item-left">
+                  <div class="item-icon green">Ex</div>
+                  <div>
+                    <div class="item-title">Exercice Algebre</div>
+                    <div class="item-meta">Mercredi 23 avril</div>
+                  </div>
+                </div>
+                <div class="item-pill">J-2</div>
+              </div>
+              <div class="task-item">
+                <div class="item-left">
+                  <div class="item-icon purple">Di</div>
+                  <div>
+                    <div class="item-title">Dissertation</div>
+                    <div class="item-meta">Vendredi 25 avril</div>
+                  </div>
+                </div>
+                <div class="item-pill">J-4</div>
+              </div>
+              <div class="task-item">
+                <div class="item-left">
+                  <div class="item-icon orange">Sc</div>
+                  <div>
+                    <div class="item-title">Rapport Sciences</div>
+                    <div class="item-meta">Lundi 28 avril</div>
+                  </div>
+                </div>
+                <div class="item-pill">J-7</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="student-panel">
+            <h2>Mes notes</h2>
+            <div class="notes-panel">
+              <div>
+                <div class="note-row">
+                  <span>Francais</span>
+                  <strong>17/20</strong>
+                </div>
+                <div class="note-bar"><span style="width: 85%"></span></div>
+              </div>
+              <div>
+                <div class="note-row">
+                  <span>Mathematiques</span>
+                  <strong>14/20</strong>
+                </div>
+                <div class="note-bar"><span style="width: 70%"></span></div>
+              </div>
+              <div>
+                <div class="note-row">
+                  <span>Histoire</span>
+                  <strong>16/20</strong>
+                </div>
+                <div class="note-bar"><span style="width: 80%"></span></div>
+              </div>
+              <div>
+                <div class="note-row">
+                  <span>Sciences</span>
+                  <strong>15/20</strong>
+                </div>
+                <div class="note-bar"><span style="width: 75%"></span></div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
