@@ -1,0 +1,9 @@
+{% extends 'crud_base.html.twig' %}
+
+{% block title %}Nouvel examen{% endblock %}
+
+{% block body %}
+  <h1 class="h3 mb-4">Créer un examen</h1>
+  {% include 'examen/_form.html.twig' with {'form': form, 'button_label': 'Créer'} %}
+  <a class="btn btn-link mt-3" href="{{ path('app_examen_index') }}">Retour à la liste</a>
+{% endblock %}
