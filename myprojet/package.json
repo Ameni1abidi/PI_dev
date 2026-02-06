@@ -1,0 +1,17 @@
+{
+  "private": true,
+  "scripts": {
+    "dev": "encore dev",
+    "watch": "encore dev --watch",
+    "build": "encore production"
+  },
+  "dependencies": {
+    "bootstrap": "^5.3.8",
+    "jquery": "^4.0.0"
+  },
+  "devDependencies": {
+    "@symfony/webpack-encore": "^2.0.0",
+    "sass": "^1.70.0",
+    "sass-loader": "^13.3.2"
+  }
+}
