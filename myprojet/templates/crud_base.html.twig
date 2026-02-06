@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Gestion{% endblock %}</title>
+    <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+  </head>
+  <body class="bg-light">
+    <div class="container-fluid">
+      <div class="row min-vh-100">
+        <aside class="col-12 col-md-3 col-xl-2 bg-white border-end py-4">
+          <div class="px-3 mb-4">
+            <div class="fw-semibold">Gestion</div>
+            <small class="text-muted">Évaluations</small>
+          </div>
+          <nav class="nav flex-column px-2">
+            <a class="nav-link" href="{{ path('app_examen_index') }}">Examens</a>
+            <a class="nav-link" href="{{ path('app_resultat_index') }}">Résultats</a>
+          </nav>
+        </aside>
+        <main class="col-12 col-md-9 col-xl-10 py-4">
+          <div class="container">
+            {% block body %}{% endblock %}
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

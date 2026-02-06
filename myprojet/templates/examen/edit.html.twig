@@ -1,0 +1,13 @@
+{% extends 'crud_base.html.twig' %}
+
+{% block title %}Modifier examen{% endblock %}
+
+{% block body %}
+  <h1 class="h3 mb-4">Modifier l'examen</h1>
+  {% include 'examen/_form.html.twig' with {'form': form, 'button_label': 'Mettre à jour'} %}
+
+  <div class="d-flex align-items-center gap-2 mt-3">
+    <a class="btn btn-link" href="{{ path('app_examen_index') }}">Retour à la liste</a>
+    {{ include('examen/_delete_form.html.twig', {examen: examen}) }}
+  </div>
+{% endblock %}
