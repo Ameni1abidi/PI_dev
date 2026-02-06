@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>EduFlex Back Office</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+  </head>
+  <body>
+    <div class="admin-shell">
+      <aside class="admin-sidebar">
+        <div class="brand">
+          <img class="brand-logo" src="{{ asset('images/eduflex-logo.png') }}" alt="EduFlex">
+          <div class="brand-text">
+            <div class="brand-name">EduFlex</div>
+            
+          </div>
+        </div>
+
+        <nav class="nav">
+          <a class="nav-link is-active" href="{{ path('app_admin') }}"><span class="nav-icon">🏠</span>Dashboard Admin</a>
+          <a class="nav-link" href="#"><span class="nav-icon">👥</span>Utilisateurs</a>
+          <a class="nav-link" href="#"><span class="nav-icon">🏫</span>Classes</a>
+          <a class="nav-link" href="#"><span class="nav-icon">📚</span>Matières</a>
+          <a class="nav-link" href="#"><span class="nav-icon">🔐</span>Droits d’accès</a>
+          <a class="nav-link" href="#"><span class="nav-icon">📈</span>Statistiques</a>
+          <a class="nav-link" href="#"><span class="nav-icon">⚙️</span>Paramètres</a>
+        </nav>
+
+        <div class="sidebar-card">
+          <div class="sidebar-card-title">Actions rapides</div>
+          <button class="btn btn-primary" type="button">Créer un cours</button>
+          <button class="btn btn-outline" type="button">Ajouter un utilisateur</button>
+        </div>
+      </aside>
+
+      <main class="admin-main">
+        <header class="topbar">
+          <div>
+            <div class="topbar-title">Dashboard Admin</div>
+            <div class="topbar-sub">Bienvenue sur EduFlex, Admin</div>
+          </div>
+          <div class="topbar-actions">
+            <button class="chip" type="button">Nouveau rapport</button>
+            <div class="avatar">AM</div>
+          </div>
+        </header>
+
+        <section class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">🎓</div>
+            <div class="stat-label">Total Usagers</div>
+            <div class="stat-value">1,250</div>
+            <div class="stat-meta up">+4.2% ce mois</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🏫</div>
+            <div class="stat-label">Classes</div>
+            <div class="stat-value">45</div>
+            <div class="stat-meta up">+2 nouvelles</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🌍</div>
+            <div class="stat-label">Activités</div>
+            <div class="stat-value">8</div>
+            <div class="stat-meta up">+1 cette semaine</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🧾</div>
+            <div class="stat-label">Messages</div>
+            <div class="stat-value">123</div>
+            <div class="stat-meta down">-6% vs. semaine</div>
+          </div>
+        </section>
+
+        <section class="content-grid">
+          <div class="panel">
+            <div class="panel-header">
+              <h2>Statistiques globales de la plateforme</h2>
+              <span class="panel-sub">7 derniers jours</span>
+            </div>
+            <div class="chart-placeholder">
+              <div class="chart-line chart-line-1"></div>
+              <div class="chart-line chart-line-2"></div>
+              <div class="chart-line chart-line-3"></div>
+            </div>
+            <div class="chart-legend">
+              <span class="legend-item"><span class="dot dot-green"></span>Engagement</span>
+              <span class="legend-item"><span class="dot dot-purple"></span>Présence</span>
+              <span class="legend-item"><span class="dot dot-sage"></span>Messages</span>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h2>Gestion des utilisateurs</h2>
+              <span class="panel-sub">Répartition</span>
+            </div>
+            <div class="list">
+              <div class="list-item">
+                <div class="list-title">Étudiants</div>
+                <div class="list-metric">450</div>
+              </div>
+              <div class="list-item">
+                <div class="list-title">Enseignants</div>
+                <div class="list-metric">90</div>
+              </div>
+              <div class="list-item">
+                <div class="list-title">Parents</div>
+                <div class="list-metric">150</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="content-grid">
+          <div class="panel">
+            <div class="panel-header">
+              <h2>Activité récente</h2>
+              <span class="panel-sub">Dernières 24 heures</span>
+            </div>
+            <div class="list">
+              <div class="list-item">
+                <div>
+                  <div class="list-title">Julita Marehand</div>
+                  <div class="list-meta">a créé 3 cours</div>
+                </div>
+                <span class="pill success">Aujourd’hui</span>
+              </div>
+              <div class="list-item">
+                <div>
+                  <div class="list-title">Pierre Durand</div>
+                  <div class="list-meta">a mis à jour les classes</div>
+                </div>
+                <span class="pill warning">Il y a 3h</span>
+              </div>
+              <div class="list-item">
+                <div>
+                  <div class="list-title">Chloé Dupont</div>
+                  <div class="list-meta">a envoyé un message</div>
+                </div>
+                <span class="pill success">Il y a 5h</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h2>État des serveurs</h2>
+              <span class="panel-sub">Monitoring</span>
+            </div>
+            <div class="list">
+              <div class="list-item">
+                <div class="list-title">Base de données 1</div>
+                <span class="pill success">Opérationnel</span>
+              </div>
+              <div class="list-item">
+                <div class="list-title">API Principale</div>
+                <span class="pill success">Opérationnel</span>
+              </div>
+              <div class="list-item">
+                <div class="list-title">Stockage</div>
+                <span class="pill warning">Maintenance</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel full">
+          <div class="panel-header">
+            <h2>Classes populaires</h2>
+            <span class="panel-sub">Top 4</span>
+          </div>
+          <div class="cards-row">
+            <div class="mini-card">
+              <div class="mini-avatar">CM2</div>
+              <div>
+                <div class="mini-title">CM2 A</div>
+                <div class="mini-meta">23 élèves</div>
+              </div>
+            </div>
+            <div class="mini-card">
+              <div class="mini-avatar">6E</div>
+              <div>
+                <div class="mini-title">6ème B</div>
+                <div class="mini-meta">20 élèves</div>
+              </div>
+            </div>
+            <div class="mini-card">
+              <div class="mini-avatar">5E</div>
+              <div>
+                <div class="mini-title">5ème C</div>
+                <div class="mini-meta">19 élèves</div>
+              </div>
+            </div>
+            <div class="mini-card">
+              <div class="mini-avatar">9E</div>
+              <div>
+                <div class="mini-title">9ème C</div>
+                <div class="mini-meta">23 élèves</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

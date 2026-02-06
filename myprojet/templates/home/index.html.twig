@@ -1,21 +1,4 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
-
-        {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-    </body>
-</html>
-<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -26,13 +9,13 @@
     <title>Scholar - Online School HTML5 Template</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
 
     <!-- Additional CSS Files -->
-    <link rel="stylesheet" href="assets/css/fontawesome.css">
-    <link rel="stylesheet" href="assets/css/templatemo-scholar.css">
-    <link rel="stylesheet" href="assets/css/owl.css">
-    <link rel="stylesheet" href="assets/css/animate.css">
+    <link rel="stylesheet" href="{{ asset('css/fontawesome.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/templatemo-scholar.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/owl.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/animate.css') }}">
     <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
 
     <!-- Template info -->
@@ -160,7 +143,7 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="service-item">
                         <div class="icon">
-                            <img src="assets/images/service-01.png" alt="online degrees">
+                            <img src="{{ asset('images/service-01.png') }}" alt="online degrees">
                         </div>
                         <div class="main-content">
                             <h4>Online Degrees</h4>
@@ -175,7 +158,7 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="service-item">
                         <div class="icon">
-                            <img src="assets/images/service-02.png" alt="short courses">
+                            <img src="{{ asset('images/service-02.png') }}" alt="short courses">
                         </div>
                         <div class="main-content">
                             <h4>Short Courses</h4>
@@ -190,7 +173,7 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="service-item">
                         <div class="icon">
-                            <img src="assets/images/service-03.png" alt="web experts">
+                            <img src="{{ asset('images/service-03.png') }}" alt="web experts">
                         </div>
                         <div class="main-content">
                             <h4>Web Experts</h4>
@@ -290,12 +273,12 @@
     </footer>
 
     <!-- Scripts -->
-    <script src="assets/vendor/jquery/jquery.min.js"></script>
-    <script src="assets/vendor/bootstrap/js/bootstrap.min.js"></script>
-    <script src="assets/js/isotope.min.js"></script>
-    <script src="assets/js/owl-carousel.js"></script>
-    <script src="assets/js/counter.js"></script>
-    <script src="assets/js/custom.js"></script>
+    <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('vendor/bootstrap/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('js/isotope.min.js') }}"></script>
+    <script src="{{ asset('js/owl-carousel.js') }}"></script>
+    <script src="{{ asset('js/counter.js') }}"></script>
+    <script src="{{ asset('js/custom.js') }}"></script>
 
     <script>
         // Example search handler
@@ -309,3 +292,4 @@
 
 </body>
 </html>
+
