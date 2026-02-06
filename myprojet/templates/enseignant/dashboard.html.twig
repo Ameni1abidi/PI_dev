@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>EduFlex - Espace Enseignant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('enseignant/css/enseignant.css') }}">
+  </head>
+  <body>
+    <div class="teacher-shell">
+      <aside class="teacher-sidebar">
+        <div class="teacher-brand">
+          <div class="teacher-brand-mark">EF</div>
+          <div>
+            <div class="teacher-brand-name">EduFlex</div>
+            <div class="teacher-brand-sub">Espace enseignant</div>
+          </div>
+        </div>
+
+        <div class="teacher-profile">
+          <div class="teacher-avatar">ML</div>
+          <div>
+            <div class="teacher-name">Mme Legrand</div>
+            <div class="teacher-role">Enseignante</div>
+          </div>
+        </div>
+
+        <nav class="teacher-nav">
+          <a class="is-active" href="{{ path('app_enseignant_dashboard') }}">
+            <span>DB</span>
+            Tableau de bord
+          </a>
+          <a href="#">
+            <span>CL</span>
+            Mes classes
+          </a>
+          <a href="{{ path('app_examen_index') }}">
+            <span>EX</span>
+            Examens
+          </a>
+          <a href="#">
+            <span>EV</span>
+            Evaluations
+          </a>
+          <a href="{{ path('app_resultat_index') }}">
+            <span>RS</span>
+            Resultats
+          </a>
+          <a href="#">
+            <span>MS</span>
+            Messages
+          </a>
+        </nav>
+      </aside>
+
+      <main class="teacher-main">
+        <header class="teacher-topbar">
+          <div>
+            <div class="teacher-title">Dashboard enseignant</div>
+            <div class="teacher-sub">Bienvenue sur EduFlex, Mme Legrand</div>
+          </div>
+          <div class="teacher-actions">
+            <a class="teacher-btn teacher-btn-primary" href="{{ path('app_examen_index') }}">Creer un examen</a>
+            <div class="teacher-avatar teacher-avatar-small">ML</div>
+          </div>
+        </header>
+
+        <section class="teacher-stats">
+          <div class="teacher-stat">
+            <div class="stat-icon">EL</div>
+            <div class="stat-label">Eleves</div>
+            <div class="stat-value">86</div>
+            <div class="stat-meta up">+4 nouveaux</div>
+          </div>
+          <div class="teacher-stat">
+            <div class="stat-icon">EX</div>
+            <div class="stat-label">Examens</div>
+            <div class="stat-value">6</div>
+            <div class="stat-meta up">Semaine en cours</div>
+          </div>
+          <div class="teacher-stat">
+            <div class="stat-icon">EV</div>
+            <div class="stat-label">Evaluations</div>
+            <div class="stat-value">12</div>
+            <div class="stat-meta down">A corriger</div>
+          </div>
+          <div class="teacher-stat">
+            <div class="stat-icon">MS</div>
+            <div class="stat-label">Messages</div>
+            <div class="stat-value">4</div>
+            <div class="stat-meta up">Nouveaux</div>
+          </div>
+        </section>
+
+        <section class="teacher-grid">
+          <div class="teacher-panel">
+            <div class="panel-header">
+              <h2>Prochaines evaluations</h2>
+              <span class="panel-sub">Cette semaine</span>
+            </div>
+            <div class="teacher-list">
+              <div class="teacher-item">
+                <div>
+                  <div class="item-title">Maths - Interrogation</div>
+                  <div class="item-meta">Lundi 08:00</div>
+                </div>
+                <span class="pill warning">J-2</span>
+              </div>
+              <div class="teacher-item">
+                <div>
+                  <div class="item-title">Francais - Controle</div>
+                  <div class="item-meta">Mercredi 10:00</div>
+                </div>
+                <span class="pill success">J-4</span>
+              </div>
+              <div class="teacher-item">
+                <div>
+                  <div class="item-title">Sciences - Quiz</div>
+                  <div class="item-meta">Vendredi 14:00</div>
+                </div>
+                <span class="pill success">J-6</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="teacher-panel">
+            <div class="panel-header">
+              <h2>Suivi classes</h2>
+              <span class="panel-sub">Activite recente</span>
+            </div>
+            <div class="teacher-list">
+              <div class="teacher-item">
+                <div>
+                  <div class="item-title">3A - Mathematiques</div>
+                  <div class="item-meta">Cours termine</div>
+                </div>
+                <span class="pill success">OK</span>
+              </div>
+              <div class="teacher-item">
+                <div>
+                  <div class="item-title">2B - Francais</div>
+                  <div class="item-meta">Evaluation publiee</div>
+                </div>
+                <span class="pill warning">Nouveau</span>
+              </div>
+              <div class="teacher-item">
+                <div>
+                  <div class="item-title">1C - Sciences</div>
+                  <div class="item-meta">Devoir a corriger</div>
+                </div>
+                <span class="pill danger">Urgent</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="teacher-grid">
+          <div class="teacher-panel full">
+            <div class="panel-header">
+              <h2>Messages recents</h2>
+              <span class="panel-sub">Dernieres 24h</span>
+            </div>
+            <div class="teacher-list">
+              <div class="teacher-item">
+                <div>
+                  <div class="item-title">Direction</div>
+                  <div class="item-meta">Rappel conseil de classe jeudi.</div>
+                </div>
+                <span class="pill success">Aujourd'hui</span>
+              </div>
+              <div class="teacher-item">
+                <div>
+                  <div class="item-title">Parent - Alex Martin</div>
+                  <div class="item-meta">Question sur l'evaluation de maths.</div>
+                </div>
+                <span class="pill warning">Il y a 3h</span>
+              </div>
+              <div class="teacher-item">
+                <div>
+                  <div class="item-title">Secreteriat</div>
+                  <div class="item-meta">Planning des surveillances disponible.</div>
+                </div>
+                <span class="pill danger">Il y a 6h</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
