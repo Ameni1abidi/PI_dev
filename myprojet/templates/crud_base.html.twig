@@ -4,27 +4,65 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Gestion{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('enseignant/css/enseignant.css') }}">
     <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
   </head>
-  <body class="bg-light">
-    <div class="container-fluid">
-      <div class="row min-vh-100">
-        <aside class="col-12 col-md-3 col-xl-2 bg-white border-end py-4">
-          <div class="px-3 mb-4">
-            <div class="fw-semibold">Gestion</div>
-            <small class="text-muted">Évaluations</small>
+  <body>
+    <div class="teacher-shell">
+      <aside class="teacher-sidebar">
+        <div class="teacher-brand">
+          <div class="teacher-brand-mark">EF</div>
+          <div>
+            <div class="teacher-brand-name">EduFlex</div>
+            <div class="teacher-brand-sub">Espace enseignant</div>
           </div>
-          <nav class="nav flex-column px-2">
-            <a class="nav-link" href="{{ path('app_examen_index') }}">Examens</a>
-            <a class="nav-link" href="{{ path('app_resultat_index') }}">Résultats</a>
-          </nav>
-        </aside>
-        <main class="col-12 col-md-9 col-xl-10 py-4">
-          <div class="container">
+        </div>
+
+        <div class="teacher-profile">
+          <div class="teacher-avatar">ML</div>
+          <div>
+            <div class="teacher-name">Mme Legrand</div>
+            <div class="teacher-role">Enseignante</div>
+          </div>
+        </div>
+
+        <nav class="teacher-nav">
+          <a href="{{ path('app_enseignant_dashboard') }}">
+            <span>DB</span>
+            Tableau de bord
+          </a>
+          <a href="#">
+            <span>CL</span>
+            Mes classes
+          </a>
+          <a href="{{ path('app_examen_index') }}">
+            <span>EX</span>
+            Examens
+          </a>
+          <a href="{{ path('app_enseignant_evaluations') }}">
+            <span>EV</span>
+            Evaluations
+          </a>
+          <a href="{{ path('app_resultat_index') }}">
+            <span>RS</span>
+            Resultats
+          </a>
+          <a href="#">
+            <span>MS</span>
+            Messages
+          </a>
+        </nav>
+      </aside>
+
+      <main class="teacher-main">
+        <div class="container mt-5 pt-5">
+          <div class="card shadow p-4">
+            {% block crud_content %}{% endblock %}
             {% block body %}{% endblock %}
           </div>
-        </main>
-      </div>
+        </div>
+      </main>
     </div>
   </body>
 </html>

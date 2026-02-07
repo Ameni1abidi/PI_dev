@@ -10,6 +10,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class EnseignantController extends AbstractController
 {
     #[Route('/enseignant/dashboard', name: 'app_enseignant_dashboard', methods: ['GET'])]
+<<<<<<< HEAD
     public function dashboard(CoursRepository $coursRepo): Response
 {
     $cours = $coursRepo->findAll(); // ou filter par enseignant connecté
@@ -17,4 +18,16 @@ final class EnseignantController extends AbstractController
         'cours' => $cours,
     ]);
 }
+=======
+    public function dashboard(): Response
+    {
+        return $this->render('enseignant/dashboard.html.twig');
+    }
+
+    #[Route('/enseignant/evaluations', name: 'app_enseignant_evaluations', methods: ['GET'])]
+    public function evaluations(): Response
+    {
+        return $this->render('enseignant/evaluations.html.twig');
+    }
+>>>>>>> 4f71f37c8025d4e6d8caf600463874d1796f6efe
 }

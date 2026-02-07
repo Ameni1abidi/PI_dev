@@ -1,0 +1,34 @@
+{% extends 'crud_base.html.twig' %}
+
+{% block title %}Ressource{% endblock %}
+
+{% block body %}
+    <h1>Ressource</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ ressource.id }}</td>
+            </tr>
+            <tr>
+                <th>Titre</th>
+                <td>{{ ressource.titre }}</td>
+            </tr>
+            <tr>
+                <th>Type</th>
+                <td>{{ ressource.type }}</td>
+            </tr>
+            <tr>
+                <th>Contenu</th>
+                <td>{{ ressource.contenu }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_ressource_index') }}">back to list</a>
+
+    <a href="{{ path('app_ressource_edit', {'id': ressource.id}) }}">edit</a>
+
+    {{ include('ressource/_delete_form.html.twig') }}
+{% endblock %}

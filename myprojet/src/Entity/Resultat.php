@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ResultatRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ResultatRepository::class)]
 class Resultat
@@ -15,16 +16,29 @@ class Resultat
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2)]
+    #[Assert\NotNull(message: 'La note est obligatoire.')]
+    #[Assert\Range(
+        min: 0,
+        max: 20,
+        notInRangeMessage: 'La note doit être comprise entre {{ min }} et {{ max }}.'
+    )]
     private ?string $note = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Assert\Length(
+        max: 1000,
+        maxMessage: 'L’appréciation ne doit pas dépasser {{ limit }} caractères.'
+    )]
     private ?string $appreciation = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(message: 'L’élève est obligatoire.')]
+    #[Assert\Positive(message: 'L’élève doit être un identifiant positif.')]
     private ?int $eleveId = null;
 
     #[ORM\ManyToOne(inversedBy: 'resultats')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(message: 'L’examen est obligatoire.')]
     private ?Examen $examen = null;
 
     public function getId(): ?int

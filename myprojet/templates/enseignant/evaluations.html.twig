@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>EduFlex - Evaluations</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('enseignant/css/enseignant.css') }}">
+  </head>
+  <body>
+    <div class="teacher-shell">
+      <aside class="teacher-sidebar">
+        <div class="teacher-brand">
+          <div class="teacher-brand-mark">EF</div>
+          <div>
+            <div class="teacher-brand-name">EduFlex</div>
+            <div class="teacher-brand-sub">Espace enseignant</div>
+          </div>
+        </div>
+
+        <div class="teacher-profile">
+          <div class="teacher-avatar">ML</div>
+          <div>
+            <div class="teacher-name">Mme Legrand</div>
+            <div class="teacher-role">Enseignante</div>
+          </div>
+        </div>
+
+        <nav class="teacher-nav">
+          <a href="{{ path('app_enseignant_dashboard') }}">
+            <span>DB</span>
+            Tableau de bord
+          </a>
+          <a href="#">
+            <span>CL</span>
+            Mes classes
+          </a>
+          <a href="{{ path('app_examen_index') }}">
+            <span>EX</span>
+            Examens
+          </a>
+          <a class="is-active" href="{{ path('app_enseignant_evaluations') }}">
+            <span>EV</span>
+            Evaluations
+          </a>
+          <a href="{{ path('app_resultat_index') }}">
+            <span>RS</span>
+            Resultats
+          </a>
+          <a href="#">
+            <span>MS</span>
+            Messages
+          </a>
+        </nav>
+      </aside>
+
+      <main class="teacher-main">
+        <header class="teacher-topbar">
+          <div>
+            <div class="teacher-title">Evaluations</div>
+            <div class="teacher-sub">Suivi des evaluations et des notes</div>
+          </div>
+          <div class="teacher-actions">
+            <a class="teacher-btn teacher-btn-primary" href="{{ path('app_enseignant_dashboard') }}">Retour dashboard</a>
+            <div class="teacher-avatar teacher-avatar-small">ML</div>
+          </div>
+        </header>
+
+        <section class="teacher-grid">
+          <div class="teacher-panel full">
+            <div class="panel-header">
+              <h2>Liste des evaluations</h2>
+              <span class="panel-sub">Bientot disponible</span>
+            </div>
+            <div class="teacher-list">
+              <div class="teacher-item">
+                <div>
+                  <div class="item-title">Page en construction</div>
+                  <div class="item-meta">Ajoutez votre contenu ici.</div>
+                </div>
+                <span class="pill warning">Info</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

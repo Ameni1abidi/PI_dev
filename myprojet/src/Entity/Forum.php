@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ForumRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -26,9 +28,13 @@ class Forum
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateCreation = null;
 
+    #[ORM\OneToMany(mappedBy: 'forum', targetEntity: Commentaire::class, orphanRemoval: true)]
+    private Collection $commentaires;
+
     public function __construct()
     {
         $this->dateCreation = new \DateTime();
+        $this->commentaires = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -77,6 +83,35 @@ class Forum
     public function setDateCreation(\DateTimeInterface $dateCreation): static
     {
         $this->dateCreation = $dateCreation;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Commentaire>
+     */
+    public function getCommentaires(): Collection
+    {
+        return $this->commentaires;
+    }
+
+    public function addCommentaire(Commentaire $commentaire): static
+    {
+        if (!$this->commentaires->contains($commentaire)) {
+            $this->commentaires->add($commentaire);
+            $commentaire->setForum($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommentaire(Commentaire $commentaire): static
+    {
+        if ($this->commentaires->removeElement($commentaire)) {
+            if ($commentaire->getForum() === $this) {
+                $commentaire->setForum(null);
+            }
+        }
+
         return $this;
     }
 }
