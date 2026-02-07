@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}EduFlex - Espace Parent{% endblock %}</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{{ asset('parent/css/parent.css') }}" />
+    {% block stylesheets %}{% endblock %}
+  </head>
+  <body>
+    <div class="parent-shell">
+      <aside class="parent-sidebar">
+        <div class="parent-brand">
+          <div class="parent-brand-mark">EF</div>
+          <div>
+            <div class="parent-brand-name">EduFlex</div>
+            <div class="parent-brand-sub">Espace parent</div>
+          </div>
+        </div>
+
+        <div class="parent-profile">
+          <div class="parent-avatar">SM</div>
+          <div>
+            <div class="parent-brand-name">Sonia Martin</div>
+            <div class="parent-role">Parent</div>
+          </div>
+        </div>
+
+        <nav class="parent-nav">
+          <a href="#">
+            <span>🏠</span>
+            Tableau de bord
+          </a>
+          <a href="{{ path('app_forum_index_context', {'context': 'parent'}) }}">
+            <span>💬</span>
+            Forum
+          </a>
+          <a href="#">
+            <span>👧</span>
+            Mes enfants
+          </a>
+          <a href="#">
+            <span>📘</span>
+            Notes
+          </a>
+          <a href="#">
+            <span>📝</span>
+            Evaluations
+          </a>
+          <a href="#">
+            <span>💬</span>
+            Communication
+          </a>
+        </nav>
+      </aside>
+
+      <main class="parent-main">
+        <div class="parent-topbar">
+          <label class="parent-search">
+            <span>🔍</span>
+            <input type="search" placeholder="Rechercher" />
+          </label>
+          <div class="parent-top-actions">
+            <div class="parent-icon-btn">🔔</div>
+            <div class="parent-pill">3</div>
+            <div class="parent-pill">12</div>
+          </div>
+        </div>
+
+        {% block body %}{% endblock %}
+      </main>
+    </div>
+  </body>
+</html>

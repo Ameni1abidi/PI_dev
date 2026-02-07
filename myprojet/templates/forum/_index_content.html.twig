@@ -1,0 +1,101 @@
+<div class="forum-container">
+
+    <div class="forum-header">
+        <div>
+            <h1>Forum</h1>
+            <div class="forum-meta">Discussions de la communauté</div>
+        </div>
+        <a href="{{ path(forum_routes.new, forum_route_params) }}" class="btn btn-primary">
+            Créer un sujet
+        </a>
+    </div>
+
+    {% if forums is empty %}
+        <div class="forum-card">
+            Aucun sujet disponible.
+        </div>
+    {% else %}
+
+        <div class="forum-grid">
+        {% for forum in forums %}
+            <div class="forum-card">
+
+                <div class="forum-title">
+                    {{ forum.titre }}
+                </div>
+
+                <div class="forum-meta">
+                    Type : {{ forum.type }} |
+                    Créé le {{ forum.dateCreation|date('d/m/Y H:i') }}
+                </div>
+
+                <div class="forum-content">
+                    {{ forum.contenu }}
+                </div>
+
+                <div class="forum-actions">
+                    <a href="{{ path(forum_routes.edit, forum_route_params|merge({'id': forum.id})) }}" class="btn btn-outline small">
+                        Modifier
+                    </a>
+
+                    <form method="post"
+                          action="{{ path(forum_routes.delete, forum_route_params|merge({'id': forum.id})) }}"
+                          style="display:inline;"
+                          onsubmit="return confirm('Supprimer ce sujet ?');">
+                        <button type="submit" class="btn btn-danger small">
+                            Supprimer
+                        </button>
+                    </form>
+                </div>
+
+                <div class="comment-section">
+                    <h4>Commentaires</h4>
+
+                    {% if forum.commentaires|length == 0 %}
+                        <p class="comment-empty">Aucun commentaire.</p>
+                    {% else %}
+                        {% for commentaire in forum.commentaires %}
+                            <div class="comment-box">
+
+                                <div class="comment-date">
+                                    {{ commentaire.dateEnvoi|date('d/m/Y H:i') }}
+                                </div>
+
+                                <div>
+                                    {{ commentaire.contenu }}
+                                </div>
+
+                                <a href="{{ path(forum_routes.comment_edit, forum_route_params|merge({'id': commentaire.id})) }}"
+                                   class="comment-edit">
+                                   Modifier
+                                </a>
+
+                                <form method="post"
+                                      action="{{ path(forum_routes.comment_delete, forum_route_params|merge({'id': commentaire.id})) }}"
+                                      onsubmit="return confirm('Supprimer ce commentaire ?');">
+
+                                    <button type="submit" class="comment-delete">
+                                        Supprimer
+                                    </button>
+
+                                </form>
+
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="post" class="comment-form">
+                        <input type="hidden" name="forum_id" value="{{ forum.id }}">
+                        <textarea name="contenu" rows="3" placeholder="Écrire un commentaire..." required></textarea>
+                        <button type="submit">Commenter</button>
+                    </form>
+
+                </div>
+
+            </div>
+        {% endfor %}
+        </div>
+
+    {% endif %}
+
+</div>
