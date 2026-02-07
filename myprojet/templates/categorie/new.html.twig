@@ -2,10 +2,18 @@
 
 {% block title %}New Categorie{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+{% endblock %}
+
 {% block body %}
-    <h1>Create new Categorie</h1>
+    <div class="admin-page-header">
+        <h1 class="admin-title">Nouvelle catégorie</h1>
+        <div class="admin-actions">
+            <a class="btn btn-outline" href="{{ path('app_categorie_index') }}">Retour</a>
+        </div>
+    </div>
 
     {{ include('categorie/_form.html.twig') }}
-
-    <a href="{{ path('app_categorie_index') }}">back to list</a>
 {% endblock %}

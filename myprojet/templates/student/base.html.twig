@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}EduFlex - Espace Eleve{% endblock %}</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{{ asset('student/css/student.css') }}" />
+    {% block stylesheets %}{% endblock %}
+  </head>
+  <body>
+    <div class="student-shell">
+      <aside class="student-sidebar">
+        <div class="student-brand">
+          <div class="student-brand-mark">EF</div>
+          <div>
+            <div class="student-brand-name">EduFlex</div>
+            <div class="student-brand-sub">Espace eleve</div>
+          </div>
+        </div>
+
+        <div class="student-profile">
+          <div class="student-avatar">AM</div>
+          <div>
+            <div class="student-brand-name">Alex Martin</div>
+            <div class="student-role">Eleve</div>
+          </div>
+        </div>
+
+        <nav class="student-nav">
+          <a href="#">
+            <span>🏠</span>
+            Tableau de bord
+          </a>
+          <a href="{{ path('app_forum_index_context', {'context': 'student'}) }}">
+            <span>💬</span>
+            Forum
+          </a>
+          <a href="#">
+            <span>📘</span>
+            Mes cours
+          </a>
+          <a href="#">
+            <span>📝</span>
+            Mes examens
+          </a>
+          <a href="#">
+            <span>💬</span>
+            Messages
+          </a>
+          <a href="#">
+            <span>📅</span>
+            Planning
+          </a>
+        </nav>
+      </aside>
+
+      <main class="student-main">
+        <div class="student-topbar">
+          <label class="student-search">
+            <span>🔍</span>
+            <input type="search" placeholder="Rechercher" />
+          </label>
+          <div class="student-top-actions">
+            <div class="student-icon-btn">🔔</div>
+            <div class="student-pill">8</div>
+            <div class="student-pill">93</div>
+          </div>
+        </div>
+
+        {% block body %}{% endblock %}
+      </main>
+    </div>
+  </body>
+</html>

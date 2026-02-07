@@ -1,0 +1,16 @@
+<div class="forum-form-container">
+    <div class="forum-form-card">
+        <div class="forum-form-title">Modifier le commentaire</div>
+
+        <form method="post">
+            <div class="form-group">
+                <textarea name="contenu" rows="4">{{ commentaire.contenu }}</textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Enregistrer</button>
+                <a href="{{ path(forum_routes.index, forum_route_params) }}" class="btn btn-outline">Retour</a>
+            </div>
+        </form>
+    </div>
+</div>

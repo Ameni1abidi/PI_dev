@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('enseignant/css/enseignant.css') }}">
     <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    {% block stylesheets %}{% endblock %}
   </head>
   <body>
     <div class="teacher-shell">
@@ -31,6 +32,10 @@
           <a href="{{ path('app_enseignant_dashboard') }}">
             <span>DB</span>
             Tableau de bord
+          </a>
+          <a href="{{ path('app_forum_index_context', {'context': 'enseignant'}) }}">
+            <span>FO</span>
+            Forum
           </a>
           <a href="#">
             <span>CL</span>

@@ -1,0 +1,27 @@
+<div class="forum-new-container">
+    <h1 class="forum-new-title">Créer un nouveau sujet</h1>
+
+    {{ form_start(form) }}
+
+        <div class="form-group">
+            {{ form_label(form.titre) }}
+            {{ form_widget(form.titre) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.type) }}
+            {{ form_widget(form.type) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.contenu) }}
+            {{ form_widget(form.contenu) }}
+        </div>
+
+        <div class="forum-new-actions">
+            <button class="btn btn-primary">Créer</button>
+            <a href="{{ path(forum_routes.index, forum_route_params) }}" class="btn btn-outline">Retour</a>
+        </div>
+
+    {{ form_end(form) }}
+</div>

@@ -3,112 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Modifier le sujet</title>
-    <link rel="stylesheet" href="{{ asset('parent/css/parent.css') }}">
-
-    <style>
-        .forum-container {
-            padding: 40px;
-            max-width: 800px;
-            margin: auto;
-        }
-
-        .forum-card {
-            background: white;
-            padding: 30px;
-            border-radius: 14px;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-        }
-
-        .forum-title {
-            font-size: 22px;
-            font-weight: 600;
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-        }
-
-        .form-actions {
-            margin-top: 20px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .btn-primary-custom {
-            background: #4f46e5;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 8px;
-            text-decoration: none;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-danger {
-            background: #dc3545;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 8px;
-            text-decoration: none;
-            border: none;
-            cursor: pointer;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/forum.css') }}">
 </head>
 
-<body>
+<body class="forum-page forum-edit">
 
-<div class="forum-container">
-
-    <div class="forum-card">
-
-        <div class="forum-title">
-            Modifier le sujet
-        </div>
-
-        {{ form_start(form) }}
-
-            <div class="form-group">
-                {{ form_label(form.titre) }}
-                {{ form_widget(form.titre) }}
-            </div>
-
-            <div class="form-group">
-                {{ form_label(form.type) }}
-                {{ form_widget(form.type) }}
-            </div>
-
-            <div class="form-group">
-                {{ form_label(form.contenu) }}
-                {{ form_widget(form.contenu) }}
-            </div>
-
-            <div class="form-actions">
-
-                <button type="submit" class="btn-primary-custom">
-                    Enregistrer
-                </button>
-
-                <a href="{{ path('app_forum_index') }}" class="btn-danger">
-                    Annuler
-                </a>
-
-            </div>
-
-        {{ form_end(form) }}
-
-    </div>
-
-</div>
+{% include 'forum/_edit_content.html.twig' %}
 
 </body>
 </html>

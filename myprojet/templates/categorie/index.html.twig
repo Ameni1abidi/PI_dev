@@ -2,15 +2,25 @@
 
 {% block title %}Categorie index{% endblock %}
 
-{% block body %}
-    <h1>Categorie index</h1>
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+{% endblock %}
 
-    <table class="table">
+{% block body %}
+    <div class="admin-page-header">
+        <h1 class="admin-title">Catégories</h1>
+        <div class="admin-actions">
+            <a class="btn btn-primary" href="{{ path('app_categorie_new') }}">Créer</a>
+        </div>
+    </div>
+
+    <table class="admin-table">
         <thead>
             <tr>
                 <th>Id</th>
                 <th>Nom</th>
-                <th>actions</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -19,17 +29,15 @@
                 <td>{{ categorie.id }}</td>
                 <td>{{ categorie.nom }}</td>
                 <td>
-                    <a href="{{ path('app_categorie_show', {'id': categorie.id}) }}">show</a>
-                    <a href="{{ path('app_categorie_edit', {'id': categorie.id}) }}">edit</a>
+                    <a class="btn btn-outline small" href="{{ path('app_categorie_show', {'id': categorie.id}) }}">Voir</a>
+                    <a class="btn btn-primary small" href="{{ path('app_categorie_edit', {'id': categorie.id}) }}">Modifier</a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="3">no records found</td>
+                <td colspan="3">Aucune catégorie trouvée.</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_categorie_new') }}">Create new</a>
 {% endblock %}
