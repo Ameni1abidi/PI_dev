@@ -35,6 +35,10 @@
             <span>CL</span>
             Mes classes
           </a>
+           <a href="{{ path('app_cours_index') }}">
+            <span>C</span>
+            Cours
+          </a>
           <a href="{{ path('app_examen_index') }}">
             <span>EX</span>
             Examens
@@ -93,6 +97,7 @@
           </div>
         </section>
 
+        <!-- Section Prochaines evaluations -->
         <section class="teacher-grid">
           <div class="teacher-panel">
             <div class="panel-header">
@@ -124,6 +129,7 @@
             </div>
           </div>
 
+          <!-- Section Suivi classes -->
           <div class="teacher-panel">
             <div class="panel-header">
               <h2>Suivi classes</h2>
@@ -155,6 +161,52 @@
           </div>
         </section>
 
+        <!-- Section Mes Cours -->
+        <section class="teacher-grid">
+          <div class="teacher-panel full">
+            <div class="panel-header">
+              <h2>Mes Cours</h2>
+              <span class="panel-sub">Cliquez sur un cours pour gérer les chapitres</span>
+            </div>
+            <div class="teacher-list">
+ {% for cour in cours %}
+<div class="teacher-item" style="background:#f9f9f9; padding:12px 15px; border-radius:8px; margin-bottom:12px; box-shadow:0 1px 4px rgba(0,0,0,0.1);">
+
+    <div style="margin-bottom:10px;">
+        <div style="font-weight:700; font-size:1rem;">
+            {{ cour.titre }}
+            {% if cour.nouveau ?? false %}
+                <span style="background-color:#ffc107; color:#212529; font-size:0.7rem; padding:2px 6px; border-radius:12px; font-weight:600; margin-left:5px;">Nouveau</span>
+            {% endif %}
+        </div>
+        <div style="font-size:0.85rem; color:#555;">
+            {{ cour.niveau }} - Créé le {{ cour.dateCreation ? cour.dateCreation|date('d/m/Y') : 'N/A' }}
+        </div>
+    </div>
+
+   <!-- Pills pour gérer le cours et ajouter chapitre -->
+<div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:6px;">
+    <a href="{{ path('app_cours_show', {'id': cour.id}) }}" 
+       style="background-color:rgba(0,123,255,0.1); color:#007bff; font-size:0.75rem; padding:3px 8px; border-radius:12px; text-decoration:none; font-weight:600;">
+       Gérer Cours
+    </a>
+    <a href="{{ path('app_chapitre_new', {'coursId': cour.id}) }}" 
+       style="background-color:rgba(40,167,69,0.1); color:#28a745; font-size:0.75rem; padding:3px 8px; border-radius:12px; text-decoration:none; font-weight:600;">
+       Ajouter Chapitre
+    </a>
+</div>
+
+</div>
+{% else %}
+<div style="text-align:center; padding:10px; background:#e9ecef; border-radius:5px; color:;">
+    Aucun cours disponible pour le moment.
+</div>
+{% endfor %}
+            </div>
+          </div>
+        </section>
+
+        <!-- Section Messages récents -->
         <section class="teacher-grid">
           <div class="teacher-panel full">
             <div class="panel-header">
@@ -186,6 +238,7 @@
             </div>
           </div>
         </section>
+
       </main>
     </div>
   </body>

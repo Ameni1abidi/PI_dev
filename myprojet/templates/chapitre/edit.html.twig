@@ -1,0 +1,100 @@
+{% extends 'enseignant/dashboard_base.html.twig' %}
+
+{% block title %}Chapitre{% endblock %}
+
+{% block body %}
+<div style="padding:20px; font-family:'Manrope', sans-serif; max-width:700px; margin:auto;">
+
+    <div style="background-color:#fff; border-radius:10px; padding:15px 20px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+        <h2 style="margin-bottom:15px; font-weight:700; font-size:1.3rem; color:#333;">
+            {{ title|default('Chapitre') }}
+        </h2>
+
+        {{ form_start(form) }}
+
+        <div style="margin-bottom:12px;">
+            {{ form_label(form.titre, null, {
+                'label_attr': {
+                    'style': 'display:block; font-weight:600; color:#555; font-size:0.85rem; margin-bottom:4px;'
+                }
+            }) }}
+            {{ form_widget(form.titre, {
+                'attr': {
+                    'class':'form-control',
+                    'style':'width:100%; padding:6px 8px; font-size:0.85rem;'
+                }
+            }) }}
+            {{ form_errors(form.titre) }}
+        </div>
+
+        <div style="margin-bottom:12px;">
+            {{ form_label(form.contenu, null, {
+                'label_attr': {
+                    'style':'display:block; font-weight:600; color:#555; font-size:0.85rem; margin-bottom:4px;'
+                }
+            }) }}
+            {{ form_widget(form.contenu, {
+                'attr': {
+                    'class':'form-control',
+                    'rows':4,
+                    'style':'width:100%; padding:6px 8px; font-size:0.85rem;'
+                }
+            }) }}
+            {{ form_errors(form.contenu) }}
+        </div>
+
+        <div style="margin-bottom:12px;">
+            {{ form_label(form.ordre, null, {
+                'label_attr': {
+                    'style':'display:block; font-weight:600; color:#555; font-size:0.85rem; margin-bottom:4px;'
+                }
+            }) }}
+            {{ form_widget(form.ordre, {
+                'attr': {
+                    'class':'form-control',
+                    'style':'width:100%; padding:6px 8px; font-size:0.85rem;'
+                }
+            }) }}
+            {{ form_errors(form.ordre) }}
+        </div>
+
+        <div style="margin-bottom:12px;">
+            {{ form_label(form.dureeEstimee, null, {
+                'label_attr': {
+                    'style':'display:block; font-weight:600; color:#555; font-size:0.85rem; margin-bottom:4px;'
+                }
+            }) }}
+            {{ form_widget(form.dureeEstimee, {
+                'attr': {
+                    'class':'form-control',
+                    'style':'width:100%; padding:6px 8px; font-size:0.85rem;'
+                }
+            }) }}
+            {{ form_errors(form.dureeEstimee) }}
+        </div>
+
+        <div style="margin-bottom:15px;">
+            {{ form_label(form.cours, null, {
+                'label_attr': {
+                    'style':'display:block; font-weight:600; color:#555; font-size:0.85rem; margin-bottom:4px;'
+                }
+            }) }}
+            {{ form_widget(form.cours, {
+                'attr': {
+                    'class':'form-control',
+                    'style':'width:100%; padding:6px 8px; font-size:0.85rem;'
+                }
+            }) }}
+            {{ form_errors(form.cours) }}
+        </div>
+
+        <button type="submit"
+                style="padding:7px 15px; background-color:#28a745; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:600; font-size:0.9rem;">
+            {{ button_label|default('Mise a jour') }}
+        </button>
+
+        {{ form_end(form) }}
+    </div>
+
+</div>
+{% endblock %}
