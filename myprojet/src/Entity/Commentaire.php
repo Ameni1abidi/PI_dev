@@ -17,12 +17,16 @@ class Commentaire
     #[ORM\Column(type: Types::TEXT)]
     private ?string $contenu = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $dateEnvoi = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private ?\DateTimeImmutable $dateEnvoi = null;
+
+    #[ORM\ManyToOne(targetEntity: Forum::class, inversedBy: 'commentaires')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Forum $forum = null;
 
     public function __construct()
     {
-        $this->dateEnvoi = new \DateTime();
+        $this->dateEnvoi = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -41,14 +45,19 @@ class Commentaire
         return $this;
     }
 
-    public function getDateEnvoi(): ?\DateTimeInterface
+    public function getDateEnvoi(): ?\DateTimeImmutable
     {
         return $this->dateEnvoi;
     }
 
-    public function setDateEnvoi(\DateTimeInterface $dateEnvoi): static
+    public function getForum(): ?Forum
     {
-        $this->dateEnvoi = $dateEnvoi;
+        return $this->forum;
+    }
+
+    public function setForum(?Forum $forum): static
+    {
+        $this->forum = $forum;
         return $this;
     }
 }
