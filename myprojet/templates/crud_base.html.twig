@@ -56,8 +56,11 @@
       </aside>
 
       <main class="teacher-main">
-        <div class="container">
-          {% block body %}{% endblock %}
+        <div class="container mt-5 pt-5">
+          <div class="card shadow p-4">
+            {% block crud_content %}{% endblock %}
+            {% block body %}{% endblock %}
+          </div>
         </div>
       </main>
     </div>
