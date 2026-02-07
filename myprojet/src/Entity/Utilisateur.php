@@ -105,14 +105,9 @@ public function setIsVerified(bool $isVerified): self
         return $this->role;
     }
 
-    public function getRoles(): array
+  public function getRoles(): array
 {
-    // Retourne le rôle stocké, ou ROLE_USER par défaut
-    if ($this->role) {
-        return [$this->role];
-    }
-
-    return ['ROLE_USER'];
+    return [$this->role ?? 'ROLE_USER'];
 }
 public function setRole(string $role): self
 {
