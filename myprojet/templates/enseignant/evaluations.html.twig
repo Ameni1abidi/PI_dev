@@ -3,10 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}Gestion{% endblock %}</title>
+    <title>EduFlex - Evaluations</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('enseignant/css/enseignant.css') }}">
-    <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
   </head>
   <body>
     <div class="teacher-shell">
@@ -40,7 +39,7 @@
             <span>EX</span>
             Examens
           </a>
-          <a href="{{ path('app_enseignant_evaluations') }}">
+          <a class="is-active" href="{{ path('app_enseignant_evaluations') }}">
             <span>EV</span>
             Evaluations
           </a>
@@ -56,9 +55,34 @@
       </aside>
 
       <main class="teacher-main">
-        <div class="container">
-          {% block body %}{% endblock %}
-        </div>
+        <header class="teacher-topbar">
+          <div>
+            <div class="teacher-title">Evaluations</div>
+            <div class="teacher-sub">Suivi des evaluations et des notes</div>
+          </div>
+          <div class="teacher-actions">
+            <a class="teacher-btn teacher-btn-primary" href="{{ path('app_enseignant_dashboard') }}">Retour dashboard</a>
+            <div class="teacher-avatar teacher-avatar-small">ML</div>
+          </div>
+        </header>
+
+        <section class="teacher-grid">
+          <div class="teacher-panel full">
+            <div class="panel-header">
+              <h2>Liste des evaluations</h2>
+              <span class="panel-sub">Bientot disponible</span>
+            </div>
+            <div class="teacher-list">
+              <div class="teacher-item">
+                <div>
+                  <div class="item-title">Page en construction</div>
+                  <div class="item-meta">Ajoutez votre contenu ici.</div>
+                </div>
+                <span class="pill warning">Info</span>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
   </body>
