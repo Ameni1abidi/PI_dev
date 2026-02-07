@@ -1,0 +1,11 @@
+{% extends 'enseignant/dashboard_base.html.twig' %}
+
+{% block title %}Détails du Cours{% endblock %}
+
+{% block body %}
+<h2>{{ cours.titre }}</h2>
+<p>{{ cours.description }}</p>
+<p>Niveau : {{ cours.niveau }}</p>
+<p>Créé le : {{ cours.dateCreation ? cours.dateCreation|date('d/m/Y') : 'N/A' }}</p>
+{% endblock %}
+

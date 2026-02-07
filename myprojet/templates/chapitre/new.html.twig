@@ -1,0 +1,54 @@
+{% extends 'enseignant/dashboard_base.html.twig' %}
+
+{% block title %}Ajouter un Chapitre{% endblock %}
+
+{% block body %}
+<div style="padding:20px; font-family:'Manrope', sans-serif; max-width:700px; margin:auto;">
+
+    <div style="background-color:#fff; border-radius:10px; padding:15px 20px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+        <h2 style="margin-bottom:15px; font-weight:700; font-size:1.5rem; color:#333;">Ajouter un Chapitre</h2>
+
+        {{ form_start(form) }}
+
+        <div style="margin-bottom:12px;">
+            {{ form_label(form.titre) }}
+            {{ form_widget(form.titre, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.titre) }}
+        </div>
+
+        <div style="margin-bottom:12px;">
+            {{ form_label(form.contenu) }}
+            {{ form_widget(form.contenu, {'attr': {'class': 'form-control', 'rows':4}}) }}
+            {{ form_errors(form.contenu) }}
+        </div>
+
+        <div style="margin-bottom:12px;">
+            {{ form_label(form.ordre) }}
+            {{ form_widget(form.ordre, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.ordre) }}
+        </div>
+
+        <div style="margin-bottom:12px;">
+            {{ form_label(form.dureeEstimee) }}
+            {{ form_widget(form.dureeEstimee, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.dureeEstimee) }}
+        </div>
+
+        <div style="margin-bottom:15px;">
+            {{ form_label(form.cours) }}
+            {{ form_widget(form.cours, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.cours) }}
+        </div>
+
+        <button type="submit" 
+                style="padding:7px 15px; background-color:#28a745; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:600; font-size:0.95rem;">
+            Enregistrer
+        </button>
+
+        {{ form_end(form) }}
+    </div>
+
+</div>
+{% endblock %}
+
+
