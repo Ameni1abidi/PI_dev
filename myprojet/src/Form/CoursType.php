@@ -13,14 +13,20 @@ class CoursType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder
-            ->add('titre', TextType::class)
-            ->add('description')
-            ->add('niveau', TextType::class)
-            ->add('dateCreation', DateType::class, [
-                'widget' => 'single_text',
-            ])
-        ;
+       $builder
+    ->add('titre', TextType::class, [
+        'required' => false,
+    ])
+    ->add('description', TextType::class, [
+        'required' => false,
+    ])
+    ->add('niveau', TextType::class, [
+        'required' => false,
+    ])
+    ->add('dateCreation', DateType::class, [
+        'widget' => 'single_text',
+        'required' => false,
+    ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

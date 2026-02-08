@@ -44,11 +44,11 @@
           <div style="margin-top:auto; display:flex; flex-wrap:wrap; gap:5px;">
             <a href="{{ path('app_cours_show', {'id': cour.id}) }}" 
                style="background-color:rgba(108,117,125,0.2); color:#6c757d; font-size:0.75rem; padding:4px 10px; border-radius:12px; text-decoration:none; font-weight:600;">
-               Gérer Cours
+               Détails Cours
             </a>
             <a href="{{ path('app_cours_edit', {'id': cour.id}) }}" 
                style="background-color:rgba(0,123,255,0.2); color:#007bff; font-size:0.75rem; padding:4px 10px; border-radius:12px; text-decoration:none; font-weight:600;">
-               Éditer
+               Modifier
             </a>
             <form method="post" action="{{ path('app_cours_delete', {'id': cour.id}) }}" 
                   onsubmit="return confirm('Voulez-vous vraiment supprimer ce cours ?');" style="display:inline-block;">
@@ -60,7 +60,7 @@
             </form>
             <a href="{{ path('app_chapitre_index', {'coursId': cour.id}) }}" 
                style="background-color:rgba(40,167,69,0.2); color:#28a745; font-size:0.75rem; padding:4px 10px; border-radius:12px; text-decoration:none; font-weight:600;">
-               Ajouter Chapitre
+               Liste des chapitres
             </a>
           </div>
 

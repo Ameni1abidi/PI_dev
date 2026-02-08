@@ -5,43 +5,86 @@
 {% block body %}
 <div style="padding:20px; font-family:'Manrope', sans-serif; max-width:700px; margin:auto;">
 
-    <div style="background-color:#fff; border-radius:10px; padding:15px 20px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
-        <h2 style="margin-bottom:15px; font-weight:700; font-size:1.5rem; color:#333;">Ajouter un Chapitre</h2>
+    {# Lien pill vers la liste des chapitres #}
+    <div style="margin-bottom:20px; display:flex; justify-content:flex-end;">
+        <a href="{{ path('app_chapitre_index') }}" 
+           style="
+               display:inline-block;
+               padding:10px 20px;
+               background-color:#ff4081;
+               color:white;
+               text-decoration:none;
+               border-radius:50px;
+               font-weight:700;
+               font-size:1rem;
+               box-shadow:0 3px 8px rgba(0,0,0,0.2);
+               transition:0.3s;
+           ">
+           Liste des Chapitres
+        </a>
+    </div>
+
+    <div style="background-color:#ffffff; border-radius:10px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+        <h2 style="margin-bottom:20px; font-weight:700; font-size:1.5rem; color:#333;">Ajouter un Chapitre</h2>
 
         {{ form_start(form) }}
 
-        <div style="margin-bottom:12px;">
-            {{ form_label(form.titre) }}
-            {{ form_widget(form.titre, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.titre) }}
+        {# Titre #}
+        <div style="margin-bottom:15px;">
+            {{ form_label(form.titre, null, {'label_attr': {'style': 'font-weight:600; color:#555; font-size:0.9rem; margin-bottom:4px; display:block;'}}) }}
+            {{ form_widget(form.titre, {'attr': {'class': 'form-control', 'style':'width:100%; padding:8px 10px; border-radius:5px; border:1px solid #ccc; font-size:0.95rem;'}}) }}
         </div>
 
-        <div style="margin-bottom:12px;">
-            {{ form_label(form.contenu) }}
-            {{ form_widget(form.contenu, {'attr': {'class': 'form-control', 'rows':4}}) }}
-            {{ form_errors(form.contenu) }}
+        {# Type de contenu (liste déroulante) #}
+        <div style="margin-bottom:15px;">
+            {{ form_label(form.typeContenu, null, {'label_attr': {'style': 'font-weight:600; color:#555; font-size:0.9rem; margin-bottom:4px; display:block;'}}) }}
+            {{ form_widget(form.typeContenu, {'attr': {'class': 'form-control', 'style':'width:100%; padding:8px 10px; border-radius:5px; border:1px solid #ccc; font-size:0.95rem;'}}) }}
         </div>
 
-        <div style="margin-bottom:12px;">
-            {{ form_label(form.ordre) }}
-            {{ form_widget(form.ordre, {'attr': {'class': 'form-control'}}) }}
+        {# Contenu texte #}
+        <div style="margin-bottom:15px;">
+            {{ form_label(form.contenuTexte, null, {'label_attr': {'style': 'font-weight:600; color:#555; font-size:0.9rem; margin-bottom:4px; display:block;'}}) }}
+            {{ form_widget(form.contenuTexte, {'attr': {'class': 'form-control', 'rows':4, 'style':'width:100%; padding:8px 10px; border-radius:5px; border:1px solid #ccc; font-size:0.95rem;'}}) }}
+            {{ form_errors(form.contenuTexte) }}
+        </div>
+
+        {# Contenu fichier #}
+        <div style="margin-bottom:15px;">
+            {{ form_label(form.contenuFichier, null, {'label_attr': {'style': 'font-weight:600; color:#555; font-size:0.9rem; margin-bottom:4px; display:block;'}}) }}
+            {{ form_widget(form.contenuFichier, {'attr': {'class': 'form-control', 'style':'width:100%; padding:8px 10px; border-radius:5px; border:1px solid #ccc; font-size:0.95rem;'}}) }}
+            {{ form_errors(form.contenuFichier) }}
+        </div>
+
+        {# Video URL #}
+        <div style="margin-bottom:15px;">
+            {{ form_label(form.videoUrl, null, {'label_attr': {'style': 'font-weight:600; color:#555; font-size:0.9rem; margin-bottom:4px; display:block;'}}) }}
+            {{ form_widget(form.videoUrl, {'attr': {'class': 'form-control', 'style':'width:100%; padding:8px 10px; border-radius:5px; border:1px solid #ccc; font-size:0.95rem;'}}) }}
+            {{ form_errors(form.videoUrl) }}
+        </div>
+
+        {# Ordre #}
+        <div style="margin-bottom:15px;">
+            {{ form_label(form.ordre, null, {'label_attr': {'style': 'font-weight:600; color:#555; font-size:0.9rem; margin-bottom:4px; display:block;'}}) }}
+            {{ form_widget(form.ordre, {'attr': {'class': 'form-control', 'style':'width:100%; padding:8px 10px; border-radius:5px; border:1px solid #ccc; font-size:0.95rem;'}}) }}
             {{ form_errors(form.ordre) }}
         </div>
 
-        <div style="margin-bottom:12px;">
-            {{ form_label(form.dureeEstimee) }}
-            {{ form_widget(form.dureeEstimee, {'attr': {'class': 'form-control'}}) }}
+        {# Durée estimée #}
+        <div style="margin-bottom:15px;">
+            {{ form_label(form.dureeEstimee, null, {'label_attr': {'style': 'font-weight:600; color:#555; font-size:0.9rem; margin-bottom:4px; display:block;'}}) }}
+            {{ form_widget(form.dureeEstimee, {'attr': {'class': 'form-control', 'style':'width:100%; padding:8px 10px; border-radius:5px; border:1px solid #ccc; font-size:0.95rem;'}}) }}
             {{ form_errors(form.dureeEstimee) }}
         </div>
 
-        <div style="margin-bottom:15px;">
-            {{ form_label(form.cours) }}
-            {{ form_widget(form.cours, {'attr': {'class': 'form-control'}}) }}
+        {# Cours associé #}
+        <div style="margin-bottom:20px;">
+            {{ form_label(form.cours, null, {'label_attr': {'style': 'font-weight:600; color:#555; font-size:0.9rem; margin-bottom:4px; display:block;'}}) }}
+            {{ form_widget(form.cours, {'attr': {'class': 'form-control', 'style':'width:100%; padding:8px 10px; border-radius:5px; border:1px solid #ccc; font-size:0.95rem;'}}) }}
             {{ form_errors(form.cours) }}
         </div>
 
         <button type="submit" 
-                style="padding:7px 15px; background-color:#28a745; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:600; font-size:0.95rem;">
+                style="padding:8px 20px; background-color:#28a745; color:white; border:none; border-radius:5px; font-weight:600; font-size:0.95rem; cursor:pointer;">
             Enregistrer
         </button>
 
@@ -50,5 +93,6 @@
 
 </div>
 {% endblock %}
+
 
 

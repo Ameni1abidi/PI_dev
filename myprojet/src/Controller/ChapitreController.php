@@ -32,25 +32,26 @@ public function index(?int $coursId = null, ChapitreRepository $chapitreRepo, Co
     ]);
 }
 
-    #[Route('/new', name: 'app_chapitre_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $chapitre = new Chapitre();
-        $form = $this->createForm(ChapitreType::class, $chapitre);
-        $form->handleRequest($request);
+   #[Route('/new', name: 'app_chapitre_new', methods: ['GET', 'POST'])]
+public function new(Request $request, EntityManagerInterface $em): Response
+{
+    $chapitre = new Chapitre();
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($chapitre);
-            $entityManager->flush();
+    $form = $this->createForm(ChapitreType::class, $chapitre);
+    $form->handleRequest($request);
 
-            return $this->redirectToRoute('app_chapitre_index', [], Response::HTTP_SEE_OTHER);
-        }
+    if ($form->isSubmitted() && $form->isValid()) {
+        $em->persist($chapitre);
+        $em->flush();
 
-        return $this->render('chapitre/new.html.twig', [
-            'chapitre' => $chapitre,
-            'form' => $form,
-        ]);
+        return $this->redirectToRoute('app_chapitre_index');
     }
+
+    return $this->render('chapitre/new.html.twig', [
+        'form' => $form,
+        'chapitre' => $chapitre, // 🔹 ici tu passes la variable à Twig
+    ]);
+}
 
     #[Route('/{id}', name: 'app_chapitre_show', methods: ['GET'])]
     public function show(Chapitre $chapitre): Response
