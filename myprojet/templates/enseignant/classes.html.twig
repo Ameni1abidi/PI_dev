@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>EduFlex - Evaluations</title>
+    <title>EduFlex - Mes classes</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('enseignant/css/enseignant.css') }}">
   </head>
@@ -31,7 +31,11 @@
             <span>DB</span>
             Tableau de bord
           </a>
-          <a href="#">
+          <a href="{{ path('app_forum_index_context', {'context': 'enseignant'}) }}">
+            <span>FO</span>
+            Forum
+          </a>
+          <a class="is-active" href="{{ path('app_enseignant_classes') }}">
             <span>CL</span>
             Mes classes
           </a>
@@ -39,11 +43,11 @@
             <span>EX</span>
             Examens
           </a>
-          <a class="is-active" href="{{ path('app_enseignant_evaluations') }}">
+          <a href="{{ path('app_enseignant_evaluations') }}">
             <span>EV</span>
             Evaluations
           </a>
-          <a href="{{ path('app_resultat_index') }}">
+          <a href="{{ path('app_resultat_index_readonly') }}">
             <span>RS</span>
             Resultats
           </a>
@@ -57,8 +61,8 @@
       <main class="teacher-main">
         <header class="teacher-topbar">
           <div>
-            <div class="teacher-title">Evaluations</div>
-            <div class="teacher-sub">Suivi des evaluations et des notes</div>
+            <div class="teacher-title">Mes classes</div>
+            <div class="teacher-sub">Liste des classes attribuées</div>
           </div>
           <div class="teacher-actions">
             <a class="teacher-btn teacher-btn-primary" href="{{ path('app_enseignant_dashboard') }}">Retour dashboard</a>
@@ -69,17 +73,27 @@
         <section class="teacher-grid">
           <div class="teacher-panel full">
             <div class="panel-header">
-              <h2>Liste des evaluations</h2>
-              <span class="panel-sub">Bientot disponible</span>
+              <h2>Classes</h2>
+              <span class="panel-sub">{{ classes|length }} classes</span>
             </div>
             <div class="teacher-list">
-              <div class="teacher-item">
-                <div>
-                  <div class="item-title">Page en construction</div>
-                  <div class="item-meta">Ajoutez votre contenu ici.</div>
+              {% for classe in classes %}
+                <div class="teacher-item">
+                  <div>
+                    <div class="item-title">Classe {{ classe.nom }}</div>
+                    <div class="item-meta">Niveau {{ classe.niveau }} • {{ classe.eleves }} élèves</div>
+                  </div>
+                  <span class="pill success">{{ classe.prof }}</span>
                 </div>
-                <span class="pill warning">Info</span>
-              </div>
+              {% else %}
+                <div class="teacher-item">
+                  <div>
+                    <div class="item-title">Aucune classe</div>
+                    <div class="item-meta">Aucune classe assignée pour le moment.</div>
+                  </div>
+                  <span class="pill warning">Info</span>
+                </div>
+              {% endfor %}
             </div>
           </div>
         </section>
