@@ -1,0 +1,48 @@
+<div class="teacher-panel full">
+    <div class="panel-header d-flex justify-content-between align-items-center mb-3">
+        <h2>Ajouter un Chapitre</h2>
+        <a href="{{ path('app_chapitre_index') }}" class="btn btn-outline-primary">
+            &#8592; Retour à la liste des chapitres
+        </a>
+    </div>
+
+    <div class="p-3">
+        {{ form_start(form) }}
+
+        <div class="mb-3">
+            {{ form_label(form.titre) }}
+            {{ form_widget(form.titre, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.titre) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.contenu) }}
+            {{ form_widget(form.contenu, {'attr': {'class': 'form-control', 'rows': 5}}) }}
+            {{ form_errors(form.contenu) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.ordre) }}
+            {{ form_widget(form.ordre, {'attr': {'class': 'form-control', 'type': 'number', 'min': 1}}) }}
+            {{ form_errors(form.ordre) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.duree_estimee) }}
+            {{ form_widget(form.duree_estimee, {'attr': {'class': 'form-control', 'placeholder': 'Durée en minutes'}}) }}
+            {{ form_errors(form.duree_estimee) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.cours) }}
+            {{ form_widget(form.cours, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.cours) }}
+        </div>
+
+        <button type="submit" class="btn btn-success">{{ button_label|default('Enregistrer') }}</button>
+
+        {{ form_end(form) }}
+    </div>
+</div>
+
+

@@ -2,24 +2,23 @@
 
 namespace App\Form;
 
-use App\Entity\Categorie;
-use App\Entity\Ressource;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Entity\Cours;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class RessourceType extends AbstractType
+class CoursType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('titre')
-            ->add('type')
-            ->add('contenu')
-            ->add('categorie', EntityType::class, [
-                'class' => categorie::class,
-                'choice_label' => 'id',
+            ->add('titre', TextType::class)
+            ->add('description')
+            ->add('niveau', TextType::class)
+            ->add('dateCreation', DateType::class, [
+                'widget' => 'single_text',
             ])
         ;
     }
@@ -27,7 +26,7 @@ class RessourceType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Ressource::class,
+            'data_class' => Cours::class,
         ]);
     }
 }
