@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CoursRepository::class)]
 class Cours
@@ -17,9 +18,21 @@ class Cours
     private ?int $id = null;
 
     #[ORM\Column(length: 30)]
+    #[Assert\NotBlank(message: 'Le titre du cours est obligatoire.')]
+    #[Assert\Length(
+        min: 5,
+        max: 30,
+        minMessage: 'Le titre doit contenir au moins {{ limit }} caractères.',
+        maxMessage: 'Le titre ne doit pas dépasser {{ limit }} caractères.'
+    )]
     private ?string $titre = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: 'text')]
+    #[Assert\NotBlank(message: 'La description du cours est obligatoire.')]
+    #[Assert\Length(
+        min: 10,
+        minMessage: 'La description doit contenir au moins {{ limit }} caractères.'
+    )]
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
@@ -85,12 +98,11 @@ class Cours
         return $this->dateCreation;
     }
 
-    public function setDateCreation(\DateTime $dateCreation): static
-    {
-        $this->dateCreation = $dateCreation;
-
-        return $this;
-    }
+    public function setDateCreation(?\DateTime $dateCreation): static
+{
+    $this->dateCreation = $dateCreation;
+    return $this;
+}
 
     /**
      * @return Collection<int, Chapitre>
@@ -121,5 +133,6 @@ class Cours
 
         return $this;
     }
+    
 
 }

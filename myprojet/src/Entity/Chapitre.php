@@ -3,8 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ChapitreRepository;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ChapitreRepository::class)]
 class Chapitre
@@ -15,19 +15,56 @@ class Chapitre
     private ?int $id = null;
 
     #[ORM\Column(length: 30)]
+    #[Assert\NotBlank(message: 'Le titre du chapitre est obligatoire.')]
+    #[Assert\Length(
+        max: 30,
+        maxMessage: 'Le titre ne doit pas dépasser {{ limit }} caractères.'
+    )]
     private ?string $titre = null;
 
-    #[ORM\Column(type: Types::TEXT)]
-    private ?string $contenu = null;
-
-    #[ORM\Column]
+   #[ORM\Column]
+    #[Assert\NotNull(message: 'L’ordre du chapitre est obligatoire.')]
+    #[Assert\Positive(message: 'L’ordre doit être un nombre positif.')]
     private ?int $ordre = null;
 
+     #[ORM\Column(length: 50)]
+    #[Assert\NotBlank(message: 'Le type de contenu est obligatoire.')]
+    #[Assert\Choice(
+        choices: ['texte', 'fichier', 'video', 'devoir', 'exercice_corrige'],
+        message: 'Type de contenu invalide.'
+    )]
+    private ?string $typeContenu = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    #[Assert\When(
+        expression: 'this.getTypeContenu() == "texte"',
+        constraints: [
+            new Assert\NotBlank(message: 'Le contenu texte est obligatoire.')
+        ]
+    )]
+    private ?string $contenuTexte = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $contenuFichier = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\When(
+        expression: 'this.getTypeContenu() == "video"',
+        constraints: [
+            new Assert\NotBlank(message: 'Le lien vidéo est obligatoire.'),
+            new Assert\Url(message: 'Le lien vidéo doit être une URL valide.')
+        ]
+    )]
+    private ?string $videoUrl = null;
+
     #[ORM\Column]
+    #[Assert\NotNull(message: 'La durée estimée est obligatoire.')]
+    #[Assert\Positive(message: 'La durée doit être positive.')]
     private ?int $dureeEstimee = null;
 
-    #[ORM\ManyToOne(inversedBy: 'chapitres')]
+   #[ORM\ManyToOne(inversedBy: 'chapitres')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(message: 'Le cours est obligatoire.')]
     private ?Cours $cours = null;
 
     
@@ -45,18 +82,6 @@ class Chapitre
     public function setTitre(string $titre): static
     {
         $this->titre = $titre;
-
-        return $this;
-    }
-
-    public function getContenu(): ?string
-    {
-        return $this->contenu;
-    }
-
-    public function setContenu(string $contenu): static
-    {
-        $this->contenu = $contenu;
 
         return $this;
     }
@@ -96,4 +121,46 @@ class Chapitre
 
         return $this;
     }
+    public function getTypeContenu(): ?string
+{
+    return $this->typeContenu;
+}
+
+public function setTypeContenu(string $typeContenu): static
+{
+    $this->typeContenu = $typeContenu;
+    return $this;
+}
+
+public function getContenuTexte(): ?string
+{
+    return $this->contenuTexte;
+}
+
+public function setContenuTexte(?string $contenuTexte): static
+{
+    $this->contenuTexte = $contenuTexte;
+    return $this;
+}
+public function getContenuFichier(): ?string
+{
+    return $this->contenuFichier;
+}
+
+public function setContenuFichier(?string $contenuFichier): static
+{
+    $this->contenuFichier = $contenuFichier;
+    return $this;
+}
+
+public function getVideoUrl(): ?string
+{
+    return $this->videoUrl;
+}
+
+public function setVideoUrl(?string $videoUrl): static
+{
+    $this->videoUrl = $videoUrl;
+    return $this;
+}
 }
