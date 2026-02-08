@@ -3,11 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}Gestion{% endblock %}</title>
+    <title>EduFlex - Suivi classes</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('enseignant/css/enseignant.css') }}">
-    <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
-    {% block stylesheets %}{% endblock %}
   </head>
   <body>
     <div class="teacher-shell">
@@ -37,7 +35,7 @@
             <span>FO</span>
             Forum
           </a>
-          <a href="#">
+          <a href="{{ path('app_enseignant_classes') }}">
             <span>CL</span>
             Mes classes
           </a>
@@ -61,12 +59,44 @@
       </aside>
 
       <main class="teacher-main">
-        <div class="container mt-5 pt-5">
-          <div class="card shadow p-4">
-            {% block crud_content %}{% endblock %}
-            {% block body %}{% endblock %}
+        <header class="teacher-topbar">
+          <div>
+            <div class="teacher-title">Suivi classes</div>
+            <div class="teacher-sub">Absences, notes et progression</div>
           </div>
-        </div>
+          <div class="teacher-actions">
+            <a class="teacher-btn teacher-btn-primary" href="{{ path('app_enseignant_dashboard') }}">Retour dashboard</a>
+            <div class="teacher-avatar teacher-avatar-small">ML</div>
+          </div>
+        </header>
+
+        <section class="teacher-grid">
+          <div class="teacher-panel full">
+            <div class="panel-header">
+              <h2>Suivi par classe</h2>
+              <span class="panel-sub">{{ suivi|length }} classes</span>
+            </div>
+            <div class="teacher-list">
+              {% for row in suivi %}
+                <div class="teacher-item">
+                  <div>
+                    <div class="item-title">Classe {{ row.classe }}</div>
+                    <div class="item-meta">Absences: {{ row.absences }} • Notes: {{ row.notes }} • Progression: {{ row.progression }}</div>
+                  </div>
+                  <span class="pill success">OK</span>
+                </div>
+              {% else %}
+                <div class="teacher-item">
+                  <div>
+                    <div class="item-title">Aucune donnee</div>
+                    <div class="item-meta">Aucun suivi disponible pour le moment.</div>
+                  </div>
+                  <span class="pill warning">Info</span>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </section>
       </main>
     </div>
   </body>
