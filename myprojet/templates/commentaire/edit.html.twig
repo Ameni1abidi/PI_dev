@@ -1,27 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <title>Modifier Commentaire</title>
-    <link rel="stylesheet" href="{{ asset('parent/css/parent.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/forum.css') }}">
 </head>
 
-<body style="padding:40px;">
+<body class="forum-page">
 
-<h2>Modifier le commentaire</h2>
-
-<form method="post">
-    <textarea name="contenu" rows="4" style="width:100%; padding:10px;">
-        {{ commentaire.contenu }}
-    </textarea>
-
-    <br><br>
-
-    <button type="submit"
-            style="background:#4f46e5; color:white; border:none; padding:8px 15px; border-radius:6px;">
-        Enregistrer
-    </button>
-</form>
+{% include 'commentaire/_edit_content.html.twig' %}
 
 </body>
 </html>

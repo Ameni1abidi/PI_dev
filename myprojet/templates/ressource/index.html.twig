@@ -2,17 +2,27 @@
 
 {% block title %}Ressource index{% endblock %}
 
-{% block body %}
-    <h1>Ressource index</h1>
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+{% endblock %}
 
-    <table class="table">
+{% block body %}
+    <div class="admin-page-header">
+        <h1 class="admin-title">Ressources</h1>
+        <div class="admin-actions">
+            <a class="btn btn-primary" href="{{ path('app_ressource_new') }}">Créer</a>
+        </div>
+    </div>
+
+    <table class="admin-table">
         <thead>
             <tr>
                 <th>Id</th>
                 <th>Titre</th>
                 <th>Type</th>
                 <th>Contenu</th>
-                <th>actions</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -23,17 +33,15 @@
                 <td>{{ ressource.type }}</td>
                 <td>{{ ressource.contenu }}</td>
                 <td>
-                    <a href="{{ path('app_ressource_show', {'id': ressource.id}) }}">show</a>
-                    <a href="{{ path('app_ressource_edit', {'id': ressource.id}) }}">edit</a>
+                    <a class="btn btn-outline small" href="{{ path('app_ressource_show', {'id': ressource.id}) }}">Voir</a>
+                    <a class="btn btn-primary small" href="{{ path('app_ressource_edit', {'id': ressource.id}) }}">Modifier</a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="5">no records found</td>
+                <td colspan="5">Aucune ressource trouvée.</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_ressource_new') }}">Create new</a>
 {% endblock %}

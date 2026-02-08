@@ -31,7 +31,11 @@
             <span>DB</span>
             Tableau de bord
           </a>
-          <a href="#">
+          <a href="{{ path('app_forum_index_context', {'context': 'enseignant'}) }}">
+            <span>FO</span>
+            Forum
+          </a>
+          <a href="{{ path('app_enseignant_classes') }}">
             <span>CL</span>
             Mes classes
           </a>
@@ -47,7 +51,7 @@
             <span>EV</span>
             Evaluations
           </a>
-          <a href="{{ path('app_resultat_index') }}">
+          <a href="{{ path('app_resultat_index_readonly') }}">
             <span>RS</span>
             Resultats
           </a>
@@ -105,27 +109,27 @@
               <span class="panel-sub">Cette semaine</span>
             </div>
             <div class="teacher-list">
-              <div class="teacher-item">
+              <a class="teacher-item" href="{{ path('app_enseignant_evaluations_planifiees') }}" style="text-decoration:none; color:inherit;">
                 <div>
                   <div class="item-title">Maths - Interrogation</div>
                   <div class="item-meta">Lundi 08:00</div>
                 </div>
                 <span class="pill warning">J-2</span>
-              </div>
-              <div class="teacher-item">
+              </a>
+              <a class="teacher-item" href="{{ path('app_enseignant_evaluations_planifiees') }}" style="text-decoration:none; color:inherit;">
                 <div>
                   <div class="item-title">Francais - Controle</div>
                   <div class="item-meta">Mercredi 10:00</div>
                 </div>
                 <span class="pill success">J-4</span>
-              </div>
-              <div class="teacher-item">
+              </a>
+              <a class="teacher-item" href="{{ path('app_enseignant_evaluations_planifiees') }}" style="text-decoration:none; color:inherit;">
                 <div>
                   <div class="item-title">Sciences - Quiz</div>
                   <div class="item-meta">Vendredi 14:00</div>
                 </div>
                 <span class="pill success">J-6</span>
-              </div>
+              </a>
             </div>
           </div>
 
@@ -136,27 +140,27 @@
               <span class="panel-sub">Activite recente</span>
             </div>
             <div class="teacher-list">
-              <div class="teacher-item">
+              <a class="teacher-item" href="{{ path('app_enseignant_suivi') }}" style="text-decoration:none; color:inherit;">
                 <div>
                   <div class="item-title">3A - Mathematiques</div>
                   <div class="item-meta">Cours termine</div>
                 </div>
                 <span class="pill success">OK</span>
-              </div>
-              <div class="teacher-item">
+              </a>
+              <a class="teacher-item" href="{{ path('app_enseignant_suivi') }}" style="text-decoration:none; color:inherit;">
                 <div>
                   <div class="item-title">2B - Francais</div>
                   <div class="item-meta">Evaluation publiee</div>
                 </div>
                 <span class="pill warning">Nouveau</span>
-              </div>
-              <div class="teacher-item">
+              </a>
+              <a class="teacher-item" href="{{ path('app_enseignant_suivi') }}" style="text-decoration:none; color:inherit;">
                 <div>
                   <div class="item-title">1C - Sciences</div>
                   <div class="item-meta">Devoir a corriger</div>
                 </div>
                 <span class="pill danger">Urgent</span>
-              </div>
+              </a>
             </div>
           </div>
         </section>

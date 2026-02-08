@@ -6,6 +6,7 @@
     <title>{% block title %}EduFlex Back Office{% endblock %}</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+    {% block stylesheets %}{% endblock %}
   </head>
   <body>
     <div class="admin-shell">
@@ -19,6 +20,7 @@
 
         <nav class="nav">
           <a class="nav-link" href="{{ path('app_admin') }}"><span class="nav-icon">🏠</span>Dashboard Admin</a>
+          <a class="nav-link" href="{{ path('app_forum_index_context', {'context': 'admin'}) }}"><span class="nav-icon">F</span>Forum</a>
           <a class="nav-link is-active" href="{{ path('app_utilisateur_index') }}"><span class="nav-icon">👥</span>Utilisateurs</a>
           <a class="nav-link" href="#"><span class="nav-icon">🏫</span>Classes</a>
           <a class="nav-link" href="#"><span class="nav-icon">📚</span>Matières</a>
@@ -30,7 +32,7 @@
         <div class="sidebar-card">
           <div class="sidebar-card-title">Actions rapides</div>
           <button class="btn btn-primary" type="button">Créer un cours</button>
-          <button class="btn btn-outline" type="button">Ajouter un utilisateur</button>
+          <a class="btn btn-outline" href="{{ path('app_utilisateur_new') }}">Ajouter un utilisateur</a>
         </div>
       </aside>
 

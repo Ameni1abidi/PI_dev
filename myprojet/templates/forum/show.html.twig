@@ -1,47 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <title>{{ forum.titre }}</title>
-    <link rel="stylesheet" href="{{ asset('parent/css/parent.css') }}">
-    <style>
-        .card { background: white; padding: 25px; border-radius: 12px; margin-bottom: 20px; }
-        .comment { padding: 15px; background: #f3f4f6; border-radius: 8px; margin-bottom: 10px; }
-        .like-btn { background:#ef4444; color:white; padding:6px 12px; border-radius:6px; text-decoration:none;}
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/forum.css') }}">
 </head>
-<body>
+<body class="forum-page forum-show">
 
-<div style="max-width:900px;margin:auto;padding:40px;">
-
-    <div class="card">
-        <h2>{{ forum.titre }}</h2>
-        <p>{{ forum.contenu }}</p>
-
-        <form method="post" action="{{ path('app_forum_like', {'id': forum.id}) }}">
-            <button class="like-btn">❤️ {{ forum.likes }}</button>
-        </form>
-    </div>
-
-    <h3>Commentaires</h3>
-
-    {% for commentaire in forum.commentaires %}
-        <div class="comment">
-            {{ commentaire.contenu }}
-        </div>
-    {% else %}
-        <p>Aucun commentaire.</p>
-    {% endfor %}
-
-    <div class="card">
-        <h4>Ajouter un commentaire</h4>
-        {{ form_start(form) }}
-            {{ form_row(form.contenu) }}
-            <button class="like-btn">Publier</button>
-        {{ form_end(form) }}
-    </div>
-
-</div>
+{% include 'forum/_show_content.html.twig' %}
 
 </body>
 </html>

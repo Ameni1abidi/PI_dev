@@ -1,0 +1,13 @@
+{% extends base_template %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/forum.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="forum-page">
+        {% include 'commentaire/_edit_content.html.twig' %}
+    </div>
+{% endblock %}
