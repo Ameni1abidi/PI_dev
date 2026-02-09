@@ -12,6 +12,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 
 class RegistrationFormType extends AbstractType
@@ -32,11 +33,10 @@ class RegistrationFormType extends AbstractType
                 ],
             ])
             ->add('plainPassword', PasswordType::class, [
-                'mapped' => false, // ne lie pas directement à l'entité
-                'attr' => ['autocomplete' => 'new-password'],
+                'mapped' => false,
                 'constraints' => [
-                    new NotBlank(message: 'Veuillez entrer un mot de passe'),
-                    new Length(min: 6, minMessage: 'Votre mot de passe doit contenir au moins {{ limit }} caractères', max: 4096),
+                new NotBlank(message: 'Veuillez entrer un mot de passe'),
+                new Length(min: 6, minMessage: 'Votre mot de passe doit contenir au moins {{ limit }} caractères'),
                 ],
             ])
             ->add('agreeTerms', CheckboxType::class, [
@@ -44,7 +44,17 @@ class RegistrationFormType extends AbstractType
                 'constraints' => [
                     new IsTrue(message: 'Vous devez accepter les conditions'),
                 ],
-            ]);
+            ])
+            ->add('role', ChoiceType::class, [
+        'choices'  => [
+            'Étudiant' => 'ROLE_ETUDIANT',
+            'Professeur' => 'ROLE_PROF',
+            'Administrateur' => 'ROLE_ADMIN',
+        ],
+        'expanded' => false, // dropdown
+        'multiple' => false,
+        'label' => 'Rôle',
+    ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

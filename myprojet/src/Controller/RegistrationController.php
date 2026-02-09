@@ -37,11 +37,12 @@ class RegistrationController extends AbstractController
             // récupérer le mot de passe plain
             $plainPassword = $form->get('plainPassword')->getData();
 
-            // hash du mot de passe et assignation
+            // Hasher et assigner le mot de passe dans l'entité
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
 
-            // rôle par défaut
-            $user->setRole('ROLE_USER');
+            // Définir le rôle par défaut
+            //$user->setRole('ROLE_USER');
+
 
             // enregistrer l'utilisateur
             $entityManager->persist($user);

@@ -72,7 +72,7 @@ class SecurityControllerAuthenticator extends AbstractLoginFormAuthenticator
 
         if (in_array('ROLE_PROF', $roles)) {
             return new RedirectResponse(
-                $this->urlGenerator->generate('prof_dashboard')
+                $this->urlGenerator->generate('app_enseignant_dashboard')
             );
         }
 
