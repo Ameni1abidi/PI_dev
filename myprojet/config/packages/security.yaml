@@ -42,11 +42,11 @@ security:
 
     # Note: Only the *first* matching rule is applied
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
-        - { path: ^/eleve/dashborad, roles: ROLE_STUDENT }
-        - { path: ^/enseignant/dashboard, roles: ROLE_PROF }
-        - { path: ^/parent/dashboard, roles: ROLE_PARENT }
+         - { path: ^/admin, roles: ROLE_ADMIN }
+         - { path: ^/profile, roles: ROLE_USER }
+         - { path: ^/eleve/dashborad, roles: ROLE_STUDENT }
+         - { path: ^/enseignant/dashboard, roles: ROLE_PROF }
+         - { path: ^/parent/dashboard, roles: ROLE_PARENT }
 
 when@test:
     security:
