@@ -33,12 +33,14 @@
         <div style="margin-bottom:15px;">
             {{ form_label(form.titre, null, {'label_attr': {'style': 'font-weight:600; color:#555; font-size:0.9rem; margin-bottom:4px; display:block;'}}) }}
             {{ form_widget(form.titre, {'attr': {'class': 'form-control', 'style':'width:100%; padding:8px 10px; border-radius:5px; border:1px solid #ccc; font-size:0.95rem;'}}) }}
+            {{ form_errors(form.titre) }}
         </div>
 
         {# Type de contenu (liste déroulante) #}
         <div style="margin-bottom:15px;">
             {{ form_label(form.typeContenu, null, {'label_attr': {'style': 'font-weight:600; color:#555; font-size:0.9rem; margin-bottom:4px; display:block;'}}) }}
             {{ form_widget(form.typeContenu, {'attr': {'class': 'form-control', 'style':'width:100%; padding:8px 10px; border-radius:5px; border:1px solid #ccc; font-size:0.95rem;'}}) }}
+            {{ form_errors(form.typeContenu) }}
         </div>
 
         {# Contenu texte #}
