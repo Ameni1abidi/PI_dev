@@ -22,34 +22,65 @@ class SecurityControllerAuthenticator extends AbstractLoginFormAuthenticator
 
     public const LOGIN_ROUTE = 'app_login';
 
-    public function __construct(private UrlGeneratorInterface $urlGenerator)
-    {
-    }
+    public function __construct(
+        private UrlGeneratorInterface $urlGenerator
+    ) {}
 
+    // 🔐 AUTHENTIFICATION (EMAIL + PASSWORD)
     public function authenticate(Request $request): Passport
     {
-        $id = $request->getPayload()->getString('id');
+        $email = $request->request->get('email');
 
-        $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $id);
+        $request->getSession()->set(
+            SecurityRequestAttributes::LAST_USERNAME,
+            $email
+        );
 
         return new Passport(
-            new UserBadge($id),
-            new PasswordCredentials($request->getPayload()->getString('password')),
+            new UserBadge($email),
+            new PasswordCredentials($request->request->get('password')),
             [
-                new CsrfTokenBadge('authenticate', $request->getPayload()->getString('_csrf_token')),
+                new CsrfTokenBadge(
+                    'authenticate',
+                    $request->request->get('_csrf_token')
+                ),
                 new RememberMeBadge(),
             ]
         );
     }
 
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
-{
-    // redirection après login / register
-    return new RedirectResponse(
-        $this->urlGenerator->generate('app_home')
-    );
-}
+    // REDIRECTION SELON LE RÔLE
+    public function onAuthenticationSuccess(
+        Request $request,
+        TokenInterface $token,
+        string $firewallName
+    ): ?Response {
+        $user = $token->getUser();
+        $roles = $user->getRoles();
 
+        if (in_array('ROLE_PARENT', $roles)) {
+            return new RedirectResponse(
+                $this->urlGenerator->generate('parent_dashboard')
+            );
+        }
+
+        if (in_array('ROLE_ETUDIANT', $roles)) {
+            return new RedirectResponse(
+                $this->urlGenerator->generate('student_dashboard')
+            );
+        }
+
+        if (in_array('ROLE_PROF', $roles)) {
+            return new RedirectResponse(
+                $this->urlGenerator->generate('prof_dashboard')
+            );
+        }
+
+        // fallback
+        return new RedirectResponse(
+            $this->urlGenerator->generate('app_home')
+        );
+    }
 
     protected function getLoginUrl(Request $request): string
     {

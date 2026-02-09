@@ -6,6 +6,9 @@ use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use App\Entity\Resultat;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
@@ -43,6 +46,15 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'boolean')]
     private bool $isVerified = false;
+    
+    #[ORM\OneToMany(mappedBy: 'etudiant', targetEntity: Resultat::class)]
+    private Collection $resultats;
+
+    public function __construct()
+    {
+    $this->resultats = new ArrayCollection();
+    }
+
 
     /* =========================
        Getters & Setters
@@ -101,6 +113,30 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return [$this->role ?? 'ROLE_USER'];
     }
+    public function getResultats(): Collection
+{
+    return $this->resultats;
+}
+
+public function addResultat(Resultat $resultat): self
+{
+    if (!$this->resultats->contains($resultat)) {
+        $this->resultats->add($resultat);
+        $resultat->setEtudiant($this);
+    }
+    return $this;
+}
+
+public function removeResultat(Resultat $resultat): self
+{
+    if ($this->resultats->removeElement($resultat)) {
+        if ($resultat->getEtudiant() === $this) {
+            $resultat->setEtudiant(null);
+        }
+    }
+    return $this;
+}
+
 
     public function getUserIdentifier(): string
     {
