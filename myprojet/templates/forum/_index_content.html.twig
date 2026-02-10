@@ -10,6 +10,18 @@
         </a>
     </div>
 
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger" role="alert">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success" role="alert">
+            {{ message }}
+        </div>
+    {% endfor %}
+
     {% if forums is empty %}
         <div class="forum-card">
             Aucun sujet disponible.
