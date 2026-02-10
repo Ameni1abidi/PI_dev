@@ -6,7 +6,6 @@ use App\Repository\RessourceRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Entity\Categorie;
 
 #[ORM\Entity(repositoryClass: RessourceRepository::class)]
 class Ressource
@@ -16,42 +15,24 @@ class Ressource
     #[ORM\Column]
     private ?int $id = null;
 
-    // Titre obligatoire, longueur min 3 max 150
     #[ORM\Column(length: 150)]
-    #[Assert\NotBlank(message: "Le titre est obligatoire")]
-    #[Assert\Length(
-        min: 3,
-        max: 150,
-        minMessage: "Le titre doit contenir au moins {{ limit }} caractères",
-        maxMessage: "Le titre ne doit pas dépasser {{ limit }} caractères"
-    )]
+    #[Assert\NotBlank(message: "Le titre est obligatoire.")]
+    #[Assert\Length(max: 150, maxMessage: "Le titre ne peut pas dépasser {{ limit }} caractères.")]
     private ?string $titre = null;
 
-    // Type obligatoire, choix limité
     #[ORM\Column(length: 50)]
-    #[Assert\NotBlank(message: "Le type est obligatoire")]
-    #[Assert\Choice(
-        choices: ["PDF", "VIDEO", "ARTICLE"],
-        message: "Le type doit être PDF, VIDEO ou ARTICLE"
-    )]
+    #[Assert\NotBlank(message: "Le type est obligatoire.")]
+    #[Assert\Length(max: 50)]
     private ?string $type = null;
 
-    // Contenu obligatoire, longueur min 10
     #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank(message: "Le contenu est obligatoire")]
-    #[Assert\Length(
-        min: 10,
-        minMessage: "Le contenu doit contenir au moins {{ limit }} caractères"
-    )]
+    #[Assert\NotBlank(message: "Le contenu est obligatoire.")]
     private ?string $contenu = null;
 
-    // Catégorie obligatoire
     #[ORM\ManyToOne(inversedBy: 'ressources')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotNull(message: "La catégorie est obligatoire")]
+    #[Assert\NotNull(message: "La catégorie est obligatoire.")]
     private ?Categorie $categorie = null;
-
-    // -------------------- GETTERS & SETTERS --------------------
 
     public function getId(): ?int
     {

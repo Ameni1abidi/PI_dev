@@ -6,6 +6,7 @@ use App\Repository\CategorieRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CategorieRepository::class)]
 class Categorie
@@ -16,11 +17,15 @@ class Categorie
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank(message: "Le nom de la catégorie est obligatoire.")]
+    #[Assert\Length(
+        min: 2,
+        max: 100,
+        minMessage: "Le nom doit avoir au moins {{ limit }} caractères.",
+        maxMessage: "Le nom ne peut pas dépasser {{ limit }} caractères."
+    )]
     private ?string $nom = null;
 
-    /**
-     * @var Collection<int, Ressource>
-     */
     #[ORM\OneToMany(targetEntity: Ressource::class, mappedBy: 'categorie')]
     private Collection $ressources;
 
@@ -42,13 +47,9 @@ class Categorie
     public function setNom(string $nom): static
     {
         $this->nom = $nom;
-
         return $this;
     }
 
-    /**
-     * @return Collection<int, Ressource>
-     */
     public function getRessources(): Collection
     {
         return $this->ressources;
@@ -60,19 +61,16 @@ class Categorie
             $this->ressources->add($ressource);
             $ressource->setCategorie($this);
         }
-
         return $this;
     }
 
     public function removeRessource(Ressource $ressource): static
     {
         if ($this->ressources->removeElement($ressource)) {
-            // set the owning side to null (unless already changed)
             if ($ressource->getCategorie() === $this) {
                 $ressource->setCategorie(null);
             }
         }
-
         return $this;
     }
 }
