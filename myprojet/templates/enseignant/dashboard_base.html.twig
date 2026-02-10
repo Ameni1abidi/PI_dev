@@ -32,10 +32,36 @@
     <a href="{{ path('app_enseignant_dashboard') }}">
         <span>DB</span> Tableau de bord
     </a>
-    <a href="{{ path('app_cours_index') }}">
-        <span>CL</span> Cours
-    </a>
-    {# On ne met pas de lien vers les chapitres ici, car on n'a pas de cours sélectionné #}
+    <a href="#">
+            <span>CL</span>
+            Mes classes
+          </a>
+           <a href="{{ path('app_cours_index') }}">
+            <span>C</span>
+            Cours
+          </a>
+          <a href="{{ path('app_ressource_index') }}">
+            <span>R</span>
+            Ressource
+          </a>
+          <a href="{{ path('app_examen_index') }}">
+            <span>EX</span>
+            Examens
+          </a>
+          <a href="#">
+            <span>EV</span>
+            Evaluations
+          </a>
+          <a href="{{ path('app_resultat_index') }}">
+            <span>RS</span>
+            Resultats
+          </a>
+          <a href="#">
+            <span>MS</span>
+            Messages
+          </a>
+        </nav>
+      </aside>
 </nav>
     </aside>
 

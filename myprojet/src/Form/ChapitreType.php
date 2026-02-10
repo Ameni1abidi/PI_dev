@@ -39,8 +39,13 @@ class ChapitreType extends AbstractType
     ->add('contenuTexte', null, [
         'required' => false,
     ])
-    ->add('contenuFichier', null, [
+    ->add('contenuFichier', FileType::class, [
+        'label' => 'Fichier (PDF, DOC, etc.)',
+        'mapped' => false,           // IMPORTANT : pas lié directement à l'entité
         'required' => false,
+        'attr' => [
+            'accept' => '.pdf,.doc,.docx,.txt', // types autorisés
+        ],
     ])
     ->add('videoUrl', null, [
         'required' => false,

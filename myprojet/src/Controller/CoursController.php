@@ -14,11 +14,21 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/cours')]
 final class CoursController extends AbstractController
 {
-    #[Route(name: 'app_cours_index', methods: ['GET'])]
-    public function index(CoursRepository $coursRepository): Response
+    #[Route('/cours', name: 'app_cours_index')]
+    public function index(Request $request, CoursRepository $coursRepo): Response
     {
+        // récupération du mot-clé pour la recherche
+        $keyword = $request->query->get('search'); // ?search=mot
+
+        if ($keyword) {
+            // Méthode findByTitre à créer dans ton CoursRepository
+            $cours = $coursRepo->findByTitre($keyword);
+        } else {
+            $cours = $coursRepo->findAll();
+        }
+
         return $this->render('cours/index.html.twig', [
-            'cours' => $coursRepository->findAll(),
+            'cours' => $cours,
         ]);
     }
 
