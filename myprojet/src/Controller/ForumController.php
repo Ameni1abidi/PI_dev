@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 final class ForumController extends AbstractController
 {
@@ -20,16 +21,17 @@ final class ForumController extends AbstractController
         ForumRepository $forumRepository,
         Request $request,
         EntityManagerInterface $entityManager,
+        ValidatorInterface $validator,
         ?string $context = null
     ): Response {
 
         // === AJOUT COMMENTAIRE ===
         if ($request->isMethod('POST')) {
 
-            $contenu = $request->request->get('contenu');
+            $contenu = trim((string) $request->request->get('contenu', ''));
             $forumId = $request->request->get('forum_id');
 
-            if ($contenu && $forumId) {
+            if ($forumId) {
 
                 $forum = $forumRepository->find($forumId);
 
@@ -38,12 +40,26 @@ final class ForumController extends AbstractController
                     $commentaire->setContenu($contenu);
                     $commentaire->setForum($forum);
 
-                    $entityManager->persist($commentaire);
-                    $entityManager->flush();
+                    $violations = $validator->validate($commentaire);
+                    if (count($violations) > 0) {
+                        foreach ($violations as $violation) {
+                            $this->addFlash('error', $violation->getMessage());
+                        }
+                    } else {
+                        $entityManager->persist($commentaire);
+                        $entityManager->flush();
+                        $this->addFlash('success', 'Commentaire ajouté avec succès.');
+                    }
+                } else {
+                    $this->addFlash('error', 'Forum introuvable.');
                 }
 
                 $routes = $this->getForumRoutes($context);
                 return $this->redirectToRoute($routes['index'], $this->getForumRouteParams($context));
+            }
+
+            if ($request->request->has('contenu')) {
+                $this->addFlash('error', 'Le commentaire ne peut pas être vide.');
             }
         }
 
@@ -136,17 +152,37 @@ public function editCommentaire(
     Request $request,
     Commentaire $commentaire,
     EntityManagerInterface $entityManager,
+    ValidatorInterface $validator,
     ?string $context = null
 ): Response {
 
     if ($request->isMethod('POST')) {
 
-        $contenu = $request->request->get('contenu');
+        $contenu = trim((string) $request->request->get('contenu', ''));
 
-        if ($contenu) {
-            $commentaire->setContenu($contenu);
-            $entityManager->flush();
+        $commentaire->setContenu($contenu);
+
+        $violations = $validator->validate($commentaire);
+        if (count($violations) > 0) {
+            $errorMessages = [];
+            foreach ($violations as $violation) {
+                $errorMessages[] = $violation->getMessage();
+            }
+
+            $routes = $this->getForumRoutes($context);
+            $baseTemplate = $this->getForumBaseTemplate($context);
+
+            return $this->render($baseTemplate ? 'commentaire/edit_shell.html.twig' : 'commentaire/edit.html.twig', [
+                'commentaire' => $commentaire,
+                'errors' => $errorMessages,
+                'forum_routes' => $routes,
+                'forum_route_params' => $this->getForumRouteParams($context),
+                'base_template' => $baseTemplate,
+            ]);
         }
+
+        $entityManager->flush();
+        $this->addFlash('success', 'Commentaire modifié avec succès.');
 
         $routes = $this->getForumRoutes($context);
         return $this->redirectToRoute($routes['index'], $this->getForumRouteParams($context));

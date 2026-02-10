@@ -1,20 +1,64 @@
-{% extends 'base.html.twig' %}
+﻿{% extends 'base.html.twig' %}
 
 {% block title %}Register{% endblock %}
 
+{% block stylesheets %}
+<style>
+  .btn-register {
+    background-color: #45a55d;
+    border-color: #45a55d;
+    color: #ffffff;
+  }
+
+  .btn-register:hover,
+  .btn-register:focus {
+    background-color: #3c9252;
+    border-color: #3c9252;
+    color: #ffffff;
+  }
+</style>
+{% endblock %}
+
 {% block body %}
-<h1>Register</h1>
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <h1 class="h3 mb-3 font-weight-normal">Create account</h1>
 
-{# Affiche les erreurs de formulaire globales, si elles existent #}
-{{ form_errors(registrationForm) }}
+        {{ form_start(registrationForm) }}
+            {{ form_errors(registrationForm) }}
 
-{{ form_start(registrationForm) }}
-    {{ form_row(registrationForm.nom) }}
-    {{ form_row(registrationForm.email) }}
-    {{ form_row(registrationForm.plainPassword, { label: 'Password' }) }}
-     {{ form_row(registrationForm.role, { label: 'Rôle' }) }} 
-    {{ form_row(registrationForm.agreeTerms) }}
-    
-    <button type="submit" class="btn btn-primary">Register</button>
-{{ form_end(registrationForm) }}
+            <div class="mb-3">
+                {{ form_label(registrationForm.nom) }}
+                {{ form_widget(registrationForm.nom, { attr: { class: 'form-control' } }) }}
+                {{ form_errors(registrationForm.nom) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(registrationForm.email) }}
+                {{ form_widget(registrationForm.email, { attr: { class: 'form-control' } }) }}
+                {{ form_errors(registrationForm.email) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(registrationForm.plainPassword, 'Password') }}
+                {{ form_widget(registrationForm.plainPassword, { attr: { class: 'form-control' } }) }}
+                {{ form_errors(registrationForm.plainPassword) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(registrationForm.role, 'Role') }}
+                {{ form_widget(registrationForm.role, { attr: { class: 'form-control' } }) }}
+                {{ form_errors(registrationForm.role) }}
+            </div>
+
+            <div class="form-check mb-3">
+                {{ form_widget(registrationForm.agreeTerms, { attr: { class: 'form-check-input' } }) }}
+                {{ form_label(registrationForm.agreeTerms, null, { label_attr: { class: 'form-check-label' } }) }}
+                {{ form_errors(registrationForm.agreeTerms) }}
+            </div>
+
+            <button type="submit" class="btn btn-lg w-100 btn-register">Register</button>
+        {{ form_end(registrationForm) }}
+    </div>
+</div>
 {% endblock %}
