@@ -29,24 +29,30 @@
 
         {{ form_start(form) }}
 
+        {{ form_errors(form) }}
+
         <div style="margin-bottom:12px;">
             {{ form_label(form.titre, null, {'label_attr': {'style': 'font-weight:600; color:#555; font-size:0.9rem;'}}) }}
             {{ form_widget(form.titre, {'attr': {'class': 'form-control', 'style':'width:100%; padding:6px 8px; border-radius:5px; border:1px solid #ccc; font-size:0.9rem;'}}) }}
+            {{ form_errors(form.titre) }}
         </div>
 
         <div style="margin-bottom:12px;">
             {{ form_label(form.description, null, {'label_attr': {'style': 'font-weight:600; color:#555; font-size:0.9rem;'}}) }}
             {{ form_widget(form.description, {'attr': {'class': 'form-control', 'style':'width:100%; padding:6px 8px; border-radius:5px; border:1px solid #ccc; font-size:0.9rem;'}}) }}
+            {{ form_errors(form.description) }}
         </div>
 
         <div style="margin-bottom:12px;">
             {{ form_label(form.niveau, null, {'label_attr': {'style': 'font-weight:600; color:#555; font-size:0.9rem;'}}) }}
             {{ form_widget(form.niveau, {'attr': {'class': 'form-control', 'style':'width:100%; padding:6px 8px; border-radius:5px; border:1px solid #ccc; font-size:0.9rem;'}}) }}
+            {{ form_errors(form.niveau) }}
         </div>
 
         <div style="margin-bottom:15px;">
             {{ form_label(form.dateCreation, null, {'label_attr': {'style': 'font-weight:600; color:#555; font-size:0.9rem;'}}) }}
             {{ form_widget(form.dateCreation, {'attr': {'class': 'form-control', 'style':'width:100%; padding:6px 8px; border-radius:5px; border:1px solid #ccc; font-size:0.9rem;'}}) }}
+            {{ form_errors(form.dateCreation) }}
         </div>
 
         <button type="submit" 

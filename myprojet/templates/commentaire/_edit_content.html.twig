@@ -2,6 +2,16 @@
     <div class="forum-form-card">
         <div class="forum-form-title">Modifier le commentaire</div>
 
+        {% if errors is defined and errors %}
+            <div class="alert alert-danger" role="alert">
+                <ul>
+                    {% for message in errors %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
         <form method="post">
             <div class="form-group">
                 <textarea name="contenu" rows="4">{{ commentaire.contenu }}</textarea>
