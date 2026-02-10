@@ -17,11 +17,10 @@ final class CoursController extends AbstractController
     #[Route('/cours', name: 'app_cours_index')]
     public function index(Request $request, CoursRepository $coursRepo): Response
     {
-        // récupération du mot-clé pour la recherche
-        $keyword = $request->query->get('search'); // ?search=mot
+    
+        $keyword = $request->query->get('search'); 
 
         if ($keyword) {
-            // Méthode findByTitre à créer dans ton CoursRepository
             $cours = $coursRepo->findByTitre($keyword);
         } else {
             $cours = $coursRepo->findAll();
@@ -88,5 +87,30 @@ public function delete(Request $request, Cours $cour, EntityManagerInterface $en
     }
 
     return $this->redirectToRoute('app_cours_index', [], Response::HTTP_SEE_OTHER);
+}
+#[Route('/eleve/cours', name: 'eleve_cours_index')]
+public function indexEleve(Request $request, CoursRepository $coursRepo): Response
+{
+    $keyword = $request->query->get('search');
+
+    if ($keyword) {
+        $cours = $coursRepo->findByTitre($keyword); // méthode custom dans ton repo
+    } else {
+        $cours = $coursRepo->findAll();
+    }
+
+   return $this->render('student/courstudent.html.twig', [ // <-- ici student
+        'cours' => $cours,
+        
+    ]);
+}
+#[Route('/eleve/cours/{id}', name: 'eleve_cours_show')]
+public function showChapitres(Cours $cours): Response
+{
+    $chapitres = $cours->getChapitres(); // Relation OneToMany
+    return $this->render('student/courstudent.html.twig', [
+        'cours' => $cours,
+        'chapitres' => $chapitres,
+    ]);
 }
 }
