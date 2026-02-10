@@ -28,7 +28,9 @@
             </div>
         </div>
 
+        <!-- MENU -->
         <nav class="teacher-nav">
+<<<<<<< HEAD
     <a href="{{ path('app_enseignant_dashboard') }}">
         <span>DB</span> Tableau de bord
     </a>
@@ -63,51 +65,62 @@
         </nav>
       </aside>
 </nav>
+=======
+            <a href="{{ path('app_enseignant_dashboard') }}">
+                <span>DB</span> Tableau de bord
+            </a>
+
+            <a href="{{ path('app_cours_index') }}">
+                <span>CL</span> Cours
+            </a>
+
+            <a href="{{ path('app_ressource_index') }}">
+                <span>RS</span> Ressources
+            </a>
+
+            {# pas de chapitres ici sans cours sélectionné #}
+        </nav>
+>>>>>>> aae16a13ab715c08c4a52c532a6e23fc4d686ca4
     </aside>
 
-   <main class="teacher-main">
- <header class="teacher-topbar" style="
-    position:relative;
-    width:100%;
-    height:auto;
-    overflow:hidden;
-    display:flex;
-    align-items:flex-start;  /* alignement en haut */
-    padding:10px 20px;
-">
+    <main class="teacher-main">
 
-    {# Conteneur image + texte #}
-    <div style="display:flex; flex-direction:column; align-items:flex-start;">
-        <img src="{{ asset('images/cours.jpg') }}" 
-             alt="Cours" 
-             style="
-                 height:80px;      /* taille réduite */
-                 width:auto;
-                 object-fit:cover;
-                 display:block;
-                 border-radius:5px;
-                 margin-bottom:5px; /* espace entre image et texte */
-             ">
-
-        <div class="teacher-sub" style="
-            font-weight:400;
-            font-size:1.1rem;
+        <header class="teacher-topbar" style="
+            position:relative;
+            width:100%;
+            height:auto;
+            overflow:hidden;
+            display:flex;
+            align-items:flex-start;
+            padding:10px 20px;
         ">
-            Bienvenue dans votre espace
+            <div style="display:flex; flex-direction:column; align-items:flex-start;">
+                <img src="{{ asset('images/cours.jpg') }}"
+                     alt="Cours"
+                     style="
+                        height:80px;
+                        width:auto;
+                        object-fit:cover;
+                        display:block;
+                        border-radius:5px;
+                        margin-bottom:5px;
+                     ">
+
+                <div class="teacher-sub" style="
+                    font-weight:400;
+                    font-size:1.1rem;
+                ">
+                    Bienvenue dans votre espace
+                </div>
+            </div>
+        </header>
+
+        <div class="teacher-content">
+            {% block body %}{% endblock %}
         </div>
-    </div>
 
-</header>
-
-
-
-
-    <div class="teacher-content">
-        {% block body %}{% endblock %}
-    </div>
-</main>
+    </main>
 
 </div>
 </body>
 </html>
-

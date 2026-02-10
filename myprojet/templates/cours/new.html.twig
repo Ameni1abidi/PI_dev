@@ -5,7 +5,6 @@
 {% block body %}
 <div style="padding:20px; font-family:'Manrope', sans-serif; max-width:700px; margin:auto;">
 
-    {# Lien vers la liste des cours #}
     <div style="margin-bottom:20px; display:flex; justify-content:flex-end;">
         <a href="{{ path('app_cours_index') }}"
            style="
@@ -30,17 +29,12 @@
         </h2>
 
         {{ form_start(form) }}
-
-        {# 🔴 Erreurs globales #}
         {{ form_errors(form) }}
 
         {# -------- TITRE -------- #}
         <div style="margin-bottom:12px;">
             {{ form_label(form.titre, null, {'label_attr': {'style': 'font-weight:600; color:#555; font-size:0.9rem;'}}) }}
-            {{ form_widget(form.titre, {'attr': {
-                'class': 'form-control',
-                'style':'width:100%; padding:6px 8px; border-radius:5px; border:1px solid #ccc; font-size:0.9rem;'
-            }}) }}
+            {{ form_widget(form.titre, {'attr': {'class': 'form-control', 'style':'width:100%; padding:6px 8px; border-radius:5px; border:1px solid #ccc; font-size:0.9rem;'}}) }}
             <div style="color:red; font-size:0.8rem;">
                 {{ form_errors(form.titre) }}
             </div>
@@ -49,10 +43,7 @@
         {# -------- DESCRIPTION -------- #}
         <div style="margin-bottom:12px;">
             {{ form_label(form.description, null, {'label_attr': {'style': 'font-weight:600; color:#555; font-size:0.9rem;'}}) }}
-            {{ form_widget(form.description, {'attr': {
-                'class': 'form-control',
-                'style':'width:100%; padding:6px 8px; border-radius:5px; border:1px solid #ccc; font-size:0.9rem;'
-            }}) }}
+            {{ form_widget(form.description, {'attr': {'class': 'form-control', 'style':'width:100%; padding:6px 8px; border-radius:5px; border:1px solid #ccc; font-size:0.9rem;'}}) }}
             <div style="color:red; font-size:0.8rem;">
                 {{ form_errors(form.description) }}
             </div>
@@ -61,10 +52,7 @@
         {# -------- NIVEAU -------- #}
         <div style="margin-bottom:12px;">
             {{ form_label(form.niveau, null, {'label_attr': {'style': 'font-weight:600; color:#555; font-size:0.9rem;'}}) }}
-            {{ form_widget(form.niveau, {'attr': {
-                'class': 'form-control',
-                'style':'width:100%; padding:6px 8px; border-radius:5px; border:1px solid #ccc; font-size:0.9rem;'
-            }}) }}
+            {{ form_widget(form.niveau, {'attr': {'class': 'form-control', 'style':'width:100%; padding:6px 8px; border-radius:5px; border:1px solid #ccc; font-size:0.9rem;'}}) }}
             <div style="color:red; font-size:0.8rem;">
                 {{ form_errors(form.niveau) }}
             </div>
@@ -73,10 +61,7 @@
         {# -------- DATE CREATION -------- #}
         <div style="margin-bottom:15px;">
             {{ form_label(form.dateCreation, null, {'label_attr': {'style': 'font-weight:600; color:#555; font-size:0.9rem;'}}) }}
-            {{ form_widget(form.dateCreation, {'attr': {
-                'class': 'form-control',
-                'style':'width:100%; padding:6px 8px; border-radius:5px; border:1px solid #ccc; font-size:0.9rem;'
-            }}) }}
+            {{ form_widget(form.dateCreation, {'attr': {'class': 'form-control', 'style':'width:100%; padding:6px 8px; border-radius:5px; border:1px solid #ccc; font-size:0.9rem;'}}) }}
             <div style="color:red; font-size:0.8rem;">
                 {{ form_errors(form.dateCreation) }}
             </div>
@@ -92,6 +77,7 @@
 
 </div>
 {% endblock %}
+
 
 
 
