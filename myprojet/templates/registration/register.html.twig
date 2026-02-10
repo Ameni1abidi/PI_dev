@@ -3,27 +3,18 @@
 {% block title %}Register{% endblock %}
 
 {% block body %}
-    {% for flash_error in app.flashes('verify_email_error') %}
-        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
-    {% endfor %}
+<h1>Register</h1>
 
-    <h1>Register</h1>
+{# Affiche les erreurs de formulaire globales, si elles existent #}
+{{ form_errors(registrationForm) }}
 
-    {{ form_start(registrationForm) }}
-
-    {{ form_row(registrationForm.email) }}
-
-    {{ form_row(registrationForm.plainPassword, {
-        label: 'Password'
-    }) }}
-
+{{ form_start(registrationForm) }}
     {{ form_row(registrationForm.nom) }}
-
+    {{ form_row(registrationForm.email) }}
+    {{ form_row(registrationForm.plainPassword, { label: 'Password' }) }}
+     {{ form_row(registrationForm.role, { label: 'Rôle' }) }} 
     {{ form_row(registrationForm.agreeTerms) }}
-
+    
     <button type="submit" class="btn btn-primary">Register</button>
-
 {{ form_end(registrationForm) }}
-
-
 {% endblock %}

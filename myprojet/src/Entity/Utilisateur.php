@@ -6,6 +6,9 @@ use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use App\Entity\Resultat;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
@@ -25,11 +28,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $nom = null;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Assert\NotBlank(message: "Le mot de passe est obligatoire")]
-    #[Assert\Length(
-        min: 6,
-        minMessage: "Le mot de passe doit contenir au moins {{ limit }} caractères"
-    )]
     private ?string $password = null;
 
     #[ORM\Column(length: 200)]
@@ -38,11 +36,19 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email = null;
 
     #[ORM\Column(length: 200)]
-    #[Assert\NotBlank(message: "Le rôle est obligatoire")]
     private ?string $role = null;
 
     #[ORM\Column(type: 'boolean')]
     private bool $isVerified = false;
+    
+    #[ORM\OneToMany(mappedBy: 'etudiant', targetEntity: Resultat::class)]
+    private Collection $resultats;
+
+    public function __construct()
+    {
+    $this->resultats = new ArrayCollection();
+    }
+
 
     /* =========================
        Getters & Setters
@@ -101,6 +107,30 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return [$this->role ?? 'ROLE_USER'];
     }
+    public function getResultats(): Collection
+{
+    return $this->resultats;
+}
+
+public function addResultat(Resultat $resultat): self
+{
+    if (!$this->resultats->contains($resultat)) {
+        $this->resultats->add($resultat);
+        $resultat->setEtudiant($this);
+    }
+    return $this;
+}
+
+public function removeResultat(Resultat $resultat): self
+{
+    if ($this->resultats->removeElement($resultat)) {
+        if ($resultat->getEtudiant() === $this) {
+            $resultat->setEtudiant(null);
+        }
+    }
+    return $this;
+}
+
 
     public function getUserIdentifier(): string
     {

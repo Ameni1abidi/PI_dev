@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class UtilisateurType extends AbstractType
 {
@@ -25,7 +26,15 @@ class UtilisateurType extends AbstractType
         ],
     ])
             ->add('email')
-            ->add('role')
+           ->add('role', ChoiceType::class, [
+        'choices' => [
+            'Élève' => 'ROLE_STUDENT',
+            'Professeur' => 'ROLE_PROF',
+            'Parent' => 'ROLE_PARENT',
+        ],
+        'label' => 'Rôle',
+    
+])
             ->add('password', PasswordType::class, [
         'label' => 'Mot de passe',
         

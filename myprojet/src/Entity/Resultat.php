@@ -6,6 +6,8 @@ use App\Repository\ResultatRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Entity\Utilisateur;
+
 
 #[ORM\Entity(repositoryClass: ResultatRepository::class)]
 class Resultat
@@ -40,6 +42,11 @@ class Resultat
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotNull(message: 'L’examen est obligatoire.')]
     private ?Examen $examen = null;
+
+    #[ORM\ManyToOne(inversedBy: 'resultats')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Utilisateur $etudiant = null;
+
 
     public function getId(): ?int
     {
@@ -93,4 +100,16 @@ class Resultat
 
         return $this;
     }
+    public function getEtudiant(): ?Utilisateur
+    {
+    return $this->etudiant;
+    }
+
+    public function setEtudiant(?Utilisateur $etudiant): self
+{
+    $this->etudiant = $etudiant;
+    $this->eleveId = $etudiant ? $etudiant->getId() : null;
+    return $this;
+}
+
 }
