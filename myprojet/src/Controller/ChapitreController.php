@@ -49,7 +49,7 @@ public function new(Request $request, EntityManagerInterface $em): Response
 
     return $this->render('chapitre/new.html.twig', [
         'form' => $form,
-        'chapitre' => $chapitre, // 🔹 ici tu passes la variable à Twig
+        'chapitre' => $chapitre, 
     ]);
 }
 

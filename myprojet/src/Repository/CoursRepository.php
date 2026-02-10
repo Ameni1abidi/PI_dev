@@ -15,6 +15,16 @@ class CoursRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Cours::class);
     }
+    
+    public function findByTitre(string $keyword)
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.titre LIKE :kw')
+            ->setParameter('kw', '%'.$keyword.'%')
+            ->orderBy('c.titre', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 
     //    /**
     //     * @return Cours[] Returns an array of Cours objects
@@ -30,6 +40,7 @@ class CoursRepository extends ServiceEntityRepository
     //            ->getResult()
     //        ;
     //    }
+    
 
     //    public function findOneBySomeField($value): ?Cours
     //    {

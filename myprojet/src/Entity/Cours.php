@@ -20,7 +20,7 @@ class Cours
     #[ORM\Column(length: 30)]
     #[Assert\NotBlank(message: 'Le titre du cours est obligatoire.')]
     #[Assert\Length(
-        min: 5,
+        min: 3,
         max: 30,
         minMessage: 'Le titre doit contenir au moins {{ limit }} caractères.',
         maxMessage: 'Le titre ne doit pas dépasser {{ limit }} caractères.'
@@ -44,8 +44,8 @@ class Cours
     /**
      * @var Collection<int, Chapitre>
      */
-    #[ORM\OneToMany(targetEntity: Chapitre::class, mappedBy: 'cours')]
-    private Collection $chapitres;
+    #[ORM\OneToMany(targetEntity: Chapitre::class, mappedBy: 'cours', orphanRemoval: true, cascade: ['persist'])]
+private Collection $chapitres;
 
     public function __construct()
     {
@@ -111,6 +111,7 @@ class Cours
     {
         return $this->chapitres;
     }
+    
 
     public function addChapitre(Chapitre $chapitre): static
     {
@@ -133,6 +134,7 @@ class Cours
 
         return $this;
     }
+
     
 
 }

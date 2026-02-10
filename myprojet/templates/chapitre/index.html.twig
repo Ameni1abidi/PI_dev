@@ -6,30 +6,28 @@
 <div style="padding:20px; font-family: 'Manrope', sans-serif;">
 
   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-
     {% if cours is not null %}
         <h2>Chapitres du cours : {{ cours.titre }}</h2>
 
         <a href="{{ path('app_chapitre_new', {'coursId': cours.id}) }}" 
             style="
-           display:inline-block;
-           padding:10px 20px;
-           background-color:#ff4081;   /* couleur flashy, change si tu veux */
-           color:white;
-           text-decoration:none;
-           border-radius:50px;        /* pill */
-           font-weight:700;
-           font-size:1rem;            /* taille un peu plus grande */
-           box-shadow:0 3px 8px rgba(0,0,0,0.2);
-           transition:0.3s;
-       ">
-       Ajouter Chapitre
-    </a>
+               display:inline-block;
+               padding:10px 20px;
+               background-color:#ff4081;
+               color:white;
+               text-decoration:none;
+               border-radius:50px;
+               font-weight:700;
+               font-size:1rem;
+               box-shadow:0 3px 8px rgba(0,0,0,0.2);
+               transition:0.3s;
+           ">
+           Ajouter Chapitre
+        </a>
     {% else %}
         <h2>Chapitres</h2>
     {% endif %}
-
-</div>
+  </div>
 
   {% if chapitres is not empty %}
     <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(250px, 1fr)); gap:20px;">
@@ -39,12 +37,11 @@
           <div>
             <div style="font-weight:700; font-size:1.1rem; margin-bottom:5px;">{{ chapitre.titre }}</div>
             
-            {# Affichage du type de contenu #}
             <div style="font-size:0.8rem; color:#555; margin-bottom:8px;">
                 Type : <span style="font-weight:600;">{{ chapitre.typeContenu|capitalize }}</span>
             </div>
 
-            {# Aperçu du contenu selon le type #}
+            {# Affichage du contenu selon le type #}
             {% if chapitre.typeContenu == 'texte' and chapitre.contenuTexte %}
               <div style="font-size:0.85rem; color:#555; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">
                 {{ chapitre.contenuTexte }}
@@ -89,7 +86,6 @@
           </div>
 
         </div>
-        
       {% endfor %}
     </div>
   {% else %}
@@ -100,5 +96,6 @@
 
 </div>
 {% endblock %}
+
 
 
