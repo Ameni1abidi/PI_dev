@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="utf-8">
@@ -30,57 +30,28 @@
 
         <!-- MENU -->
         <nav class="teacher-nav">
-<<<<<<< HEAD
-    <a href="{{ path('app_enseignant_dashboard') }}">
-        <span>DB</span> Tableau de bord
-    </a>
-    <a href="#">
-            <span>CL</span>
-            Mes classes
-          </a>
-           <a href="{{ path('app_cours_index') }}">
-            <span>C</span>
-            Cours
-          </a>
-          <a href="{{ path('app_ressource_index') }}">
-            <span>R</span>
-            Ressource
-          </a>
-          <a href="{{ path('app_examen_index') }}">
-            <span>EX</span>
-            Examens
-          </a>
-          <a href="#">
-            <span>EV</span>
-            Evaluations
-          </a>
-          <a href="{{ path('app_resultat_index') }}">
-            <span>RS</span>
-            Resultats
-          </a>
-          <a href="#">
-            <span>MS</span>
-            Messages
-          </a>
-        </nav>
-      </aside>
-</nav>
-=======
             <a href="{{ path('app_enseignant_dashboard') }}">
                 <span>DB</span> Tableau de bord
             </a>
-
+            <a href="{{ path('app_enseignant_classes') }}">
+                <span>CL</span> Mes classes
+            </a>
             <a href="{{ path('app_cours_index') }}">
-                <span>CL</span> Cours
+                <span>C</span> Cours
             </a>
-
             <a href="{{ path('app_ressource_index') }}">
-                <span>RS</span> Ressources
+                <span>R</span> Ressource
             </a>
-
-            {# pas de chapitres ici sans cours sélectionné #}
+            <a href="{{ path('app_examen_index') }}">
+                <span>EX</span> Examens
+            </a>
+            <a href="{{ path('app_enseignant_evaluations') }}">
+                <span>EV</span> Evaluations
+            </a>
+            <a href="{{ path('app_resultat_index_readonly') }}">
+                <span>RS</span> Resultats
+            </a>
         </nav>
->>>>>>> aae16a13ab715c08c4a52c532a6e23fc4d686ca4
     </aside>
 
     <main class="teacher-main">
