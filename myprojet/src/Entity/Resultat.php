@@ -108,6 +108,7 @@ class Resultat
     public function setEtudiant(?Utilisateur $etudiant): self
 {
     $this->etudiant = $etudiant;
+    $this->eleveId = $etudiant ? $etudiant->getId() : null;
     return $this;
 }
 
