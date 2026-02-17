@@ -15,17 +15,17 @@ class CoursType extends AbstractType
     {
        $builder
     ->add('titre', TextType::class, [
-        'required' => true,
+        'required' => false,
     ])
     ->add('description', TextType::class, [
-        'required' => true,
+        'required' => false,
     ])
     ->add('niveau', TextType::class, [
-        'required' => true,
+        'required' => false,
     ])
     ->add('dateCreation', DateType::class, [
         'widget' => 'single_text',
-        'required' => true,
+        'required' => false,
     ]);
     }
 

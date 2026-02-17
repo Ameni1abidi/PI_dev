@@ -1,103 +1,66 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EduFlex - Espace Eleve</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="{{ asset('student/css/student.css') }}" />
-  </head>
-  <body>
-    <div class="student-shell">
-      <aside class="student-sidebar">
+    <link rel="stylesheet" href="{{ asset('student/css/student.css') }}">
+</head>
+<body>
+<div class="student-shell">
+
+    <aside class="student-sidebar">
         <div class="student-brand">
-          <div class="student-brand-mark">EF</div>
-          <div>
-            <div class="student-brand-name">EduFlex</div>
-            <div class="student-brand-sub">Espace eleve</div>
-          </div>
+            <div class="student-brand-mark">EF</div>
+            <div>
+                <div class="student-brand-name">EduFlex</div>
+                <div class="student-brand-sub">Espace eleve</div>
+            </div>
         </div>
 
         <div class="student-profile">
-          <div class="student-avatar">AM</div>
-          <div>
-            <div class="student-brand-name">Alex Martin</div>
-            <div class="student-role">Eleve</div>
-          </div>
+            <div class="student-avatar">AM</div>
+            <div>
+                <div class="student-brand-name">Alex Martin</div>
+                <div class="student-role">Eleve</div>
+            </div>
         </div>
 
         <nav class="student-nav">
-          <a class="is-active" href="#">
-            <span>🏠</span>
-            Tableau de bord
-          </a>
-          <a href="{{ path('app_forum_index_context', {'context': 'student'}) }}">
-            <span>F</span>
-            Forum
-          </a>
-          <a href="{{ path('eleve_cours_index') }}">
+            <a href="{{ path('app_student_dashboard') }}">
+                <span>🏠</span> Tableau de bord
+            </a>
+            <a href="{{ path('app_forum_index_context', {'context': 'student'}) }}">
+                <span>F</span> Forum
+            </a>
+            <a class="is-active" href="{{ path('eleve_cours_index') }}">
     <span>📘</span>
     Mes cours
 </a>
-          <a href="#">
-            <span>📝</span>
-            Mes examens
-          </a>
-          <a href="#">
-            <span>💬</span>
-            Messages
-          </a>
-          <a href="#">
-            <span>📅</span>
-            Planning
-          </a>
+            <a href="#">
+                <span>📝</span> Mes examens
+            </a>
+            <a href="#">
+                <span>💬</span> Messages
+            </a>
+            <a href="#">
+                <span>📅</span> Planning
+            </a>
         </nav>
-      </aside>
+    </aside>
 
-   <main class="teacher-main">
- <header class="teacher-topbar" style="
-    position:relative;
-    width:100%;
-    height:auto;
-    overflow:hidden;
-    display:flex;
-    align-items:flex-start;  /* alignement en haut */
-    padding:10px 20px;
-">
+    <main class="teacher-main">
+        <header class="teacher-topbar">
+            <div style="display:flex; flex-direction:column;">
+                <img src="{{ asset('images/cours.jpg') }}" alt="Cours" style="height:80px; width:auto; border-radius:5px; margin-bottom:5px;">
+                <div class="teacher-sub">Bienvenue dans votre espace</div>
+            </div>
+        </header>
 
-    {# Conteneur image + texte #}
-    <div style="display:flex; flex-direction:column; align-items:flex-start;">
-        <img src="{{ asset('images/cours.jpg') }}" 
-             alt="Cours" 
-             style="
-                 height:80px;      /* taille réduite */
-                 width:auto;
-                 object-fit:cover;
-                 display:block;
-                 border-radius:5px;
-                 margin-bottom:5px; /* espace entre image et texte */
-             ">
-
-        <div class="teacher-sub" style="
-            font-weight:400;
-            font-size:1.1rem;
-        ">
-            Bienvenue dans votre espace
+        <div class="teacher-content">
+            {% block body %}{% endblock %}
         </div>
-    </div>
-
-</header>
-
-
-
-
-    <div class="teacher-content">
-        {% block body %}{% endblock %}
-    </div>
-</main>
+    </main>
 
 </div>
 </body>
