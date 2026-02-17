@@ -2,6 +2,84 @@
 
 {% block title %}Scholar - Online School HTML5 Template{% endblock %}
 
+{% block stylesheets %}
+  {{ parent() }}
+  <style>
+    #contact-form select {
+      width: 100%;
+      height: 50px;
+      border-radius: 25px;
+      background-color: rgba(249, 235, 255, 0.15);
+      border: none;
+      outline: none;
+      font-weight: 300;
+      padding: 0px 20px;
+      font-size: 14px;
+      color: #fff;
+      margin-bottom: 30px;
+      position: relative;
+      z-index: 3;
+      appearance: none;
+    }
+
+    #contact-form select option {
+      color: #1e1e1e;
+    }
+
+    #contact-form input[type="checkbox"] {
+      width: auto;
+      height: auto;
+      margin: 0 10px 0 0;
+      accent-color: #ffffff;
+      position: relative;
+      z-index: 3;
+    }
+
+    #contact-form .auth-check-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      color: #ffffff;
+      text-align: left;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 3;
+    }
+
+    #contact-form .auth-check-wrap label {
+      color: #ffffff;
+      font-size: 14px;
+      margin: 0;
+    }
+
+    #contact-form .auth-switch {
+      color: #ffffff;
+      margin-top: 12px;
+      position: relative;
+      z-index: 3;
+    }
+
+    #contact-form .auth-switch a {
+      color: #ffd45f;
+      font-weight: 600;
+    }
+
+    #contact-form ul {
+      list-style: none;
+      margin: -10px 0 14px;
+      padding: 0;
+      position: relative;
+      z-index: 3;
+    }
+
+    #contact-form ul li {
+      color: #ffe3e3;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+  </style>
+{% endblock %}
+
 {% block body %}
   <!-- ***** Preloader Start ***** -->
   <div id="js-preloader" class="js-preloader">
@@ -23,7 +101,7 @@
             <div class="col-12">
                 <nav class="main-nav">
                     <!-- ***** Logo Start ***** -->
-                    <a href="index.html" class="logo">
+                    <a href="{{ path('app_home') }}" class="logo">
                         <h1>Scholar</h1>
                     </a>
                     <!-- ***** Logo End ***** -->
@@ -593,43 +671,116 @@
       <div class="row">
         <div class="col-lg-6  align-self-center">
           <div class="section-heading">
-            <h6>Contact Us</h6>
-            <h2>Feel free to contact us anytime</h2>
-            <p>Thank you for choosing our templates. We provide you best CSS templates at absolutely 100% free of charge. You may support us by sharing our website to your friends.</p>
+            <h6>Authentication</h6>
+            {% if auth_mode is defined and auth_mode == 'register' %}
+              <h2>Creez votre compte</h2>
+              <p>Inscrivez-vous rapidement pour acceder a votre espace.</p>
+            {% else %}
+              <h2>Connectez-vous a votre compte</h2>
+              <p>Utilisez votre compte existant pour acceder a votre espace.</p>
+            {% endif %}
             <div class="special-offer">
-              <span class="offer">off<br><em>50%</em></span>
-              <h6>Valide: <em>24 April 2036</em></h6>
-              <h4>Special Offer <em>50%</em> OFF!</h4>
-              <a href="#"><i class="fa fa-angle-right"></i></a>
+              <span class="offer">NEW<br><em>NOW</em></span>
+              <h6>Acces: <em>Instantane</em></h6>
+              <h4>Connexion securisee</h4>
+              {% if auth_mode is defined and auth_mode == 'register' %}
+                <a href="{{ path('app_login') }}"><i class="fa fa-angle-right"></i></a>
+              {% else %}
+                <a href="{{ path('app_register') }}"><i class="fa fa-angle-right"></i></a>
+              {% endif %}
             </div>
           </div>
         </div>
         <div class="col-lg-6">
           <div class="contact-us-content">
-            <form id="contact-form" action="" method="post">
-              <div class="row">
+            {% if registrationForm is defined %}
+              {{ form_start(registrationForm, { attr: { id: 'contact-form' } }) }}
+                <div class="row">
+                  <div class="col-lg-12" style="color:#ffffff;">
+                    {{ form_errors(registrationForm) }}
+                  </div>
+                  <div class="col-lg-12">
+                    <fieldset>
+                      {{ form_widget(registrationForm.nom, { attr: { placeholder: 'Your Name...', class: 'auth-input' } }) }}
+                      {{ form_errors(registrationForm.nom) }}
+                    </fieldset>
+                  </div>
+                  <div class="col-lg-12">
+                    <fieldset>
+                      {{ form_widget(registrationForm.email, { attr: { placeholder: 'Your E-mail...', class: 'auth-input' } }) }}
+                      {{ form_errors(registrationForm.email) }}
+                    </fieldset>
+                  </div>
+                  <div class="col-lg-12">
+                    <fieldset>
+                      {{ form_widget(registrationForm.plainPassword, { attr: { placeholder: 'Password...', class: 'auth-input' } }) }}
+                      {{ form_errors(registrationForm.plainPassword) }}
+                    </fieldset>
+                  </div>
+                  <div class="col-lg-12">
+                    <fieldset>
+                      {{ form_widget(registrationForm.role, { attr: { class: 'auth-select' } }) }}
+                      {{ form_errors(registrationForm.role) }}
+                    </fieldset>
+                  </div>
+                  <div class="col-lg-12">
+                    <fieldset class="auth-check-wrap">
+                      {{ form_widget(registrationForm.agreeTerms, { attr: { class: 'auth-check' } }) }}
+                      {{ form_label(registrationForm.agreeTerms, null, { label_attr: { class: 'auth-check-label' } }) }}
+                    </fieldset>
+                    {{ form_errors(registrationForm.agreeTerms) }}
+                  </div>
+                  <div class="col-lg-12">
+                    <fieldset>
+                      <button type="submit" id="form-submit" class="orange-button">Register</button>
+                    </fieldset>
+                  </div>
                 <div class="col-lg-12">
-                  <fieldset>
-                    <input type="name" name="name" id="name" placeholder="Your Name..." autocomplete="on" required>
-                  </fieldset>
+                  <p class="auth-switch">
+                    Deja un compte ? <a href="{{ path('app_login') }}">Se connecter</a>
+                  </p>
                 </div>
-                <div class="col-lg-12">
-                  <fieldset>
-                    <input type="text" name="email" id="email" pattern="[^ @]*@[^ @]*" placeholder="Your E-mail..." required="">
-                  </fieldset>
                 </div>
-                <div class="col-lg-12">
-                  <fieldset>
-                    <textarea name="message" id="message" placeholder="Your Message"></textarea>
-                  </fieldset>
+              {{ form_end(registrationForm) }}
+            {% else %}
+              <form id="contact-form" action="{{ path('app_login') }}" method="post">
+                <div class="row">
+                  {% if error is defined and error %}
+                    <div class="col-lg-12">
+                      <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                    </div>
+                  {% endif %}
+                  <div class="col-lg-12">
+                    <fieldset>
+                      <input type="text" name="email" id="inputemail" value="{{ last_username|default('') }}" placeholder="Your E-mail..." autocomplete="username" required>
+                    </fieldset>
+                  </div>
+                  <div class="col-lg-12">
+                    <fieldset>
+                      <input type="password" name="password" id="inputPassword" placeholder="Password..." autocomplete="current-password" required>
+                    </fieldset>
+                  </div>
+                  <div class="col-lg-12">
+                    <fieldset>
+                      <label class="auth-check-wrap">
+                        <input class="auth-check" type="checkbox" name="_remember_me"> Remember me
+                      </label>
+                      <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                    </fieldset>
+                  </div>
+                  <div class="col-lg-12">
+                    <fieldset>
+                      <button type="submit" id="form-submit" class="orange-button">Sign in</button>
+                    </fieldset>
+                  </div>
+                  <div class="col-lg-12">
+                    <p class="auth-switch">
+                      Pas de compte ? <a href="{{ path('app_register') }}">Creer un compte</a>
+                    </p>
+                  </div>
                 </div>
-                <div class="col-lg-12">
-                  <fieldset>
-                    <button type="submit" id="form-submit" class="orange-button">Send Message Now</button>
-                  </fieldset>
-                </div>
-              </div>
-            </form>
+              </form>
+            {% endif %}
           </div>
         </div>
       </div>
@@ -666,4 +817,17 @@
       setTimeout(hidePreloader, 1500);
     })();
   </script>
+  {% if focus_login is defined and focus_login %}
+  <script>
+    (function () {
+      window.addEventListener('load', function () {
+        var target = document.getElementById('contact');
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    })();
+  </script>
+  {% endif %}
 {% endblock %}
+
