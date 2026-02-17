@@ -88,29 +88,28 @@ public function delete(Request $request, Cours $cour, EntityManagerInterface $en
 
     return $this->redirectToRoute('app_cours_index', [], Response::HTTP_SEE_OTHER);
 }
-#[Route('/eleve/cours', name: 'eleve_cours_index')]
-public function indexEleve(Request $request, CoursRepository $coursRepo): Response
-{
-    $keyword = $request->query->get('search');
+ #[Route('/eleve/cours', name: 'eleve_cours_index')]
+    public function indexEleve(Request $request, CoursRepository $coursRepo): Response
+    {
+        $keyword = $request->query->get('search');
 
-    if ($keyword) {
-        $cours = $coursRepo->findByTitre($keyword); // méthode custom dans ton repo
-    } else {
-        $cours = $coursRepo->findAll();
+        if ($keyword) {
+            $cours = $coursRepo->findByTitre($keyword); // méthode custom dans ton repo
+        } else {
+            $cours = $coursRepo->findAll();
+        }
+
+        return $this->render('student/courstudent.html.twig', [
+            'cours' => $cours,
+        ]);
     }
 
-   return $this->render('student/courstudent.html.twig', [ // <-- ici student
-        'cours' => $cours,
-        
-    ]);
-}
-#[Route('/eleve/cours/{id}', name: 'eleve_cours_show')]
-public function showChapitres(Cours $cours): Response
-{
-    $chapitres = $cours->getChapitres(); // Relation OneToMany
-    return $this->render('student/courstudent.html.twig', [
-        'cours' => $cours,
-        'chapitres' => $chapitres,
-    ]);
-}
+    #[Route('/eleve/cours/{id}', name: 'eleve_cours_show')]
+    public function showChapitres(Cours $cours): Response
+    {
+        return $this->render('student/cours_show.html.twig', [
+            'cours' => $cours,
+            'chapitres' => $cours->getChapitres(),
+        ]);
+    }
 }

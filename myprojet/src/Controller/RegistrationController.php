@@ -59,6 +59,9 @@ class RegistrationController extends AbstractController
             // rediriger vers la page de connexion apres inscription
             return $this->redirectToRoute('app_login');
         }
+        if ($form->isSubmitted() && !$form->isValid()) {
+            $this->addFlash('error', 'Le formulaire contient des erreurs. Merci de verifier les champs.');
+        }
 
         return $this->render('home/index.html.twig', [
             'registrationForm' => $form->createView(),

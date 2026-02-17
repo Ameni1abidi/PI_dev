@@ -1,75 +1,81 @@
-{# templates/student/courstudent.html.twig #}
 {% extends 'student/dashCours.html.twig' %}
 
 {% block title %}Mes Cours{% endblock %}
 
 {% block body %}
-<div style="padding:20px; font-family: 'Manrope', sans-serif;">
+<div style="padding:25px; font-family:'Manrope', sans-serif; background:linear-gradient(135deg,#fdfbfb,#ebedee); min-height:100vh;">
 
-  <h2 style="margin-bottom:20px;">Mes Cours</h2>
+  <h2 style="margin-bottom:25px; font-weight:800; font-size:1.8rem; color:#333;">📚 Mes Cours</h2>
 
   {# 🔹 Formulaire de recherche #}
-  <form method="get" style="margin-bottom:25px; display:flex; gap:10px; align-items:center;">
-    <input type="text" name="search" placeholder="Rechercher un cours"
-           value="{{ app.request.query.get('search') }}"
-           style="flex:1; padding:8px 12px; border-radius:8px; border:1px solid #ccc;">
-    <button type="submit"
-            style="padding:8px 16px; background-color:#007bff; color:white; border:none; border-radius:8px; cursor:pointer;">
-      🔍 Rechercher
-    </button>
-  </form>
+  <div style="margin-bottom:30px;">
+    <form method="get" style="display:flex; gap:10px;">
+      <input type="text" name="search"
+             placeholder="🔎 Rechercher un cours..."
+             value="{{ app.request.query.get('search') }}"
+             style="flex:1; padding:12px 15px; border-radius:30px; border:none; outline:none; box-shadow:0 4px 10px rgba(0,0,0,0.05); font-size:0.9rem;">
+      <button type="submit"
+              style="padding:12px 20px; border-radius:30px; border:none; font-weight:600; background:linear-gradient(135deg,#667eea,#764ba2); color:white; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
+        Rechercher
+      </button>
+    </form>
+  </div>
 
-  {# Liste des cours #}
   {% if cours is not empty %}
-    {% for cour in cours %}
-      <div style="
-          margin-bottom:25px;
-          padding:20px;
-          border-radius:12px;
-          background-color:#f8f9fa;
-          box-shadow:0 2px 6px rgba(0,0,0,0.05);
-      ">
-        <div style="font-weight:700; font-size:1.4rem; margin-bottom:8px;">{{ cour.titre }}</div>
-        {% if cour.description %}
-          <div style="font-size:0.95rem; color:#555; margin-bottom:10px;">{{ cour.description }}</div>
-        {% endif %}
-        <div style="font-size:0.8rem; color:#888; margin-bottom:15px;">
-          Créé le {{ cour.dateCreation ? cour.dateCreation|date('d/m/Y') : 'N/A' }}
-        </div>
+    <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:25px;">
 
-        {# Chapitres du cours #}
-        {% set chapitres = cour.chapitres %}
-        {% if chapitres is not empty %}
-          <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:15px;">
-            {% for chap in chapitres %}
-              <div style="
-                  background-color:#fff;
-                  border-radius:8px;
-                  padding:12px;
-                  box-shadow:0 1px 4px rgba(0,0,0,0.1);
-              ">
-                <div style="font-weight:600; margin-bottom:5px;">{{ chap.titre }}</div>
-                {% if chap.description %}
-                  <div style="font-size:0.85rem; color:#555;">{{ chap.description }}</div>
-                {% endif %}
-              </div>
-            {% endfor %}
+      {% for cour in cours %}
+        <div style="background:white; border-radius:20px; padding:20px; box-shadow:0 8px 20px rgba(0,0,0,0.06); display:flex; flex-direction:column; justify-content:space-between; transition:0.3s;">
+
+          {# 🔹 Infos cours #}
+          <div>
+            <div style="font-weight:800; font-size:1.2rem; margin-bottom:8px; color:#444;">🎓 {{ cour.titre }}</div>
+            {% if cour.description %}
+              <div style="font-size:0.85rem; color:#777; margin-bottom:10px;">{{ cour.description|slice(0,100) }}...</div>
+            {% endif %}
+            <div style="font-size:0.75rem; color:#aaa; margin-bottom:15px;">📅 {{ cour.dateCreation ? cour.dateCreation|date('d/m/Y') : 'N/A' }}</div>
+
+            {# 🔹 Chapitres cute mini-cards #}
+            {% if cour.chapitres is not empty %}
+              <div style="margin-top:10px; display:flex; flex-direction:column; gap:10px;">
+                {% for chap in cour.chapitres %}
+                  <div style="background:#f6f8ff; border-radius:15px; padding:12px; box-shadow:0 2px 6px rgba(0,0,0,0.05); font-size:0.85rem; display:flex; flex-direction:column; gap:4px;">
+
+                    <div style="font-weight:700; color:#555;">{{ chap.ordre }}. {{ chap.titre }}</div>
+                    <div style="color:#666;">⏱ Durée : {{ chap.dureeEstimee }} min</div>
+                    <div style="color:#666;">📌 Type : {{ chap.typeContenu }}</div>
+
+                    {% if chap.typeContenu == 'texte' and chap.contenuTexte %}
+                      <div style="margin-top:5px;">
+                        📝 {{ chap.contenuTexte|slice(0,120) }}...
+                        <a href="{{ path('app_chapitre_show', {'id': chap.id}) }}" 
+                           style="margin-left:8px; color:#007bff; font-weight:600;">Lire +</a>
+                      </div>
+                    {% elseif chap.typeContenu == 'video' and chap.videoUrl %}
+                      <div style="margin-top:5px;">
+                        🎥 <a href="{{ chap.videoUrl }}" target="_blank" style="color:#007bff; text-decoration:none;">Voir la vidéo</a>
+                      </div>
+                     {% elseif chap.typeContenu == 'fichier' and chap.contenuFichier %}
+          <div style="margin-top:5px;">📄 
+            <a href="{{ asset('uploads/' ~ chap.contenuFichier) }}" target="_blank" style="color:#007bff; text-decoration:none;">{{ chap.contenuFichier }}</a>
           </div>
-        {% else %}
-          <div style="margin-top:10px; font-size:0.85rem; color:#999;">Aucun chapitre pour ce cours.</div>
         {% endif %}
-      </div>
-    {% endfor %}
+
+                  </div>
+                {% endfor %}
+              </div>
+            {% else %}
+              <div style="margin-top:10px; font-size:0.8rem; color:#aaa;">Aucun chapitre pour ce cours.</div>
+            {% endif %}
+          </div>
+
+        </div>
+      {% endfor %}
+
+    </div>
   {% else %}
-    <div style="
-        text-align:center;
-        margin-top:30px;
-        padding:15px;
-        background-color:#e9ecef;
-        border-radius:8px;
-        color:#555;
-    ">
-      Aucun cours disponible pour le moment.
+    <div style="text-align:center; padding:20px; background:white; border-radius:15px; box-shadow:0 4px 12px rgba(0,0,0,0.05); color:#777;">
+      😢 Aucun cours disponible pour le moment.
     </div>
   {% endif %}
 

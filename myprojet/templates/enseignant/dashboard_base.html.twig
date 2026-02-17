@@ -11,6 +11,7 @@
 <body>
 <div class="teacher-shell">
 
+    <!-- SIDEBAR -->
     <aside class="teacher-sidebar">
         <div class="teacher-brand">
             <div class="teacher-brand-mark">EF</div>
@@ -32,54 +33,44 @@
             <a href="{{ path('app_enseignant_dashboard') }}">
                 <span>DB</span> Tableau de bord
             </a>
-            <a href="{{ path('app_enseignant_classes') }}">
+             <a href="{{ path('app_forum_index_context', {'context': 'enseignant'}) }}">
+            <span>FO</span>
+            Forum
+          </a>
+            <a href="#">
                 <span>CL</span> Mes classes
             </a>
             <a href="{{ path('app_cours_index') }}">
                 <span>C</span> Cours
             </a>
+           
             <a href="{{ path('app_ressource_index') }}">
                 <span>R</span> Ressource
             </a>
             <a href="{{ path('app_examen_index') }}">
                 <span>EX</span> Examens
             </a>
-            <a href="{{ path('app_enseignant_evaluations') }}">
+            <a href="#">
                 <span>EV</span> Evaluations
             </a>
-            <a href="{{ path('app_resultat_index_readonly') }}">
+            <a href="{{ path('app_resultat_index') }}">
                 <span>RS</span> Resultats
+            </a>
+            <a href="#">
+                <span>MS</span> Messages
             </a>
         </nav>
     </aside>
 
+    <!-- MAIN CONTENT -->
     <main class="teacher-main">
 
-        <header class="teacher-topbar" style="
-            position:relative;
-            width:100%;
-            height:auto;
-            overflow:hidden;
-            display:flex;
-            align-items:flex-start;
-            padding:10px 20px;
-        ">
-            <div style="display:flex; flex-direction:column; align-items:flex-start;">
+        <header class="teacher-topbar">
+            <div style="display:flex; flex-direction:column;">
                 <img src="{{ asset('images/cours.jpg') }}"
                      alt="Cours"
-                     style="
-                        height:80px;
-                        width:auto;
-                        object-fit:cover;
-                        display:block;
-                        border-radius:5px;
-                        margin-bottom:5px;
-                     ">
-
-                <div class="teacher-sub" style="
-                    font-weight:400;
-                    font-size:1.1rem;
-                ">
+                     style="height:80px; border-radius:5px; margin-bottom:5px;">
+                <div class="teacher-sub">
                     Bienvenue dans votre espace
                 </div>
             </div>

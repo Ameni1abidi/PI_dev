@@ -8,6 +8,10 @@
 {% endblock %}
 
 {% block body %}
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger" role="alert">{{ message }}</div>
+    {% endfor %}
+
     <div class="admin-page-header">
         <h1 class="admin-title">Nouvelle catégorie</h1>
         <div class="admin-actions">

@@ -1,4 +1,21 @@
-{{ form_start(form, {'attr': {'class': 'admin-form'}}) }}
-    {{ form_widget(form) }}
+{{ form_start(form, {'attr': {'class': 'admin-form', 'novalidate': 'novalidate'}}) }}
+    {{ form_errors(form) }}
+
+    {{ form_label(form.titre) }}
+    {{ form_widget(form.titre) }}
+    {{ form_errors(form.titre) }}
+
+    {{ form_label(form.type) }}
+    {{ form_widget(form.type) }}
+    {{ form_errors(form.type) }}
+
+    {{ form_label(form.contenu) }}
+    {{ form_widget(form.contenu) }}
+    {{ form_errors(form.contenu) }}
+
+    {{ form_label(form.categorie) }}
+    {{ form_widget(form.categorie) }}
+    {{ form_errors(form.categorie) }}
+
     <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
 {{ form_end(form) }}
