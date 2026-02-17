@@ -5,7 +5,7 @@
 {% block body %}
 <div style="padding:20px; font-family:'Manrope', sans-serif; max-width:700px; margin:auto;">
 
-    {# Lien vers la liste des cours #}
+    <!-- Lien vers la liste -->
     <div style="margin-bottom:20px; display:flex; justify-content:flex-end;">
         <a href="{{ path('app_cours_index') }}"
            style="
@@ -24,87 +24,74 @@
         </a>
     </div>
 
-    <div style="background-color:#ffffff; border-radius:10px; padding:15px 20px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
-        <h2 style="margin-bottom:15px; font-weight:700; font-size:1.5rem; color:#333;">
+    <div style="background-color:#ffffff; border-radius:10px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+        <h2 style="margin-bottom:20px; font-weight:700; font-size:1.5rem; color:#333;">
             Ajouter un Cours
         </h2>
 
         {{ form_start(form) }}
 
-        {# 🔴 Erreurs globales #}
         {{ form_errors(form) }}
 
-        {# -------- TITRE -------- #}
-        <div style="margin-bottom:12px;">
-            {{ form_label(form.titre, null, {'label_attr': {'style': 'font-weight:600; color:#555; font-size:0.9rem;'}}) }}
+        <!-- TITRE -->
+        <div style="margin-bottom:15px;">
+            {{ form_label(form.titre, null, {'label_attr': {'style': 'font-weight:600;'}}) }}
             {{ form_widget(form.titre, {'attr': {
                 'class': 'form-control',
-                'style':'width:100%; padding:6px 8px; border-radius:5px; border:1px solid #ccc; font-size:0.9rem;'
+                'style':'width:100%; padding:8px; border-radius:6px; border:1px solid #ccc;'
             }}) }}
-            <div style="color:red; font-size:0.8rem;">
+            <div style="color:red; font-size:0.85rem;">
                 {{ form_errors(form.titre) }}
             </div>
-        {{ form_errors(form) }}
-
-        <div style="margin-bottom:12px;">
-            {{ form_label(form.titre, null, {'label_attr': {'style': 'font-weight:600; color:#555; font-size:0.9rem;'}}) }}
-            {{ form_widget(form.titre, {'attr': {'class': 'form-control', 'style':'width:100%; padding:6px 8px; border-radius:5px; border:1px solid #ccc; font-size:0.9rem;'}}) }}
-            {{ form_errors(form.titre) }}
         </div>
 
-        {# -------- DESCRIPTION -------- #}
-        <div style="margin-bottom:12px;">
-            {{ form_label(form.description, null, {'label_attr': {'style': 'font-weight:600; color:#555; font-size:0.9rem;'}}) }}
+        <!-- DESCRIPTION -->
+        <div style="margin-bottom:15px;">
+            {{ form_label(form.description, null, {'label_attr': {'style': 'font-weight:600;'}}) }}
             {{ form_widget(form.description, {'attr': {
                 'class': 'form-control',
-                'style':'width:100%; padding:6px 8px; border-radius:5px; border:1px solid #ccc; font-size:0.9rem;'
+                'style':'width:100%; padding:8px; border-radius:6px; border:1px solid #ccc;'
             }}) }}
-            <div style="color:red; font-size:0.8rem;">
+            <div style="color:red; font-size:0.85rem;">
                 {{ form_errors(form.description) }}
             </div>
-            {{ form_widget(form.description, {'attr': {'class': 'form-control', 'style':'width:100%; padding:6px 8px; border-radius:5px; border:1px solid #ccc; font-size:0.9rem;'}}) }}
-            {{ form_errors(form.description) }}
         </div>
 
-        {# -------- NIVEAU -------- #}
-        <div style="margin-bottom:12px;">
-            {{ form_label(form.niveau, null, {'label_attr': {'style': 'font-weight:600; color:#555; font-size:0.9rem;'}}) }}
-
+        <!-- NIVEAU -->
+        <div style="margin-bottom:15px;">
+            {{ form_label(form.niveau, null, {'label_attr': {'style': 'font-weight:600;'}}) }}
             {{ form_widget(form.niveau, {'attr': {
                 'class': 'form-control',
-                'style':'width:100%; padding:6px 8px; border-radius:5px; border:1px solid #ccc; font-size:0.9rem;'
+                'style':'width:100%; padding:8px; border-radius:6px; border:1px solid #ccc;'
             }}) }}
-            <div style="color:red; font-size:0.8rem;">
+            <div style="color:red; font-size:0.85rem;">
                 {{ form_errors(form.niveau) }}
             </div>
-            {{ form_widget(form.niveau, {'attr': {'class': 'form-control', 'style':'width:100%; padding:6px 8px; border-radius:5px; border:1px solid #ccc; font-size:0.9rem;'}}) }}
-            {{ form_errors(form.niveau) }}
         </div>
 
-        {# -------- DATE CREATION -------- #}
-        <div style="margin-bottom:15px;">
-            {{ form_label(form.dateCreation, null, {'label_attr': {'style': 'font-weight:600; color:#555; font-size:0.9rem;'}}) }}
+        <!-- DATE CREATION -->
+        <div style="margin-bottom:20px;">
+            {{ form_label(form.dateCreation, null, {'label_attr': {'style': 'font-weight:600;'}}) }}
             {{ form_widget(form.dateCreation, {'attr': {
                 'class': 'form-control',
-                'style':'width:100%; padding:6px 8px; border-radius:5px; border:1px solid #ccc; font-size:0.9rem;'
+                'style':'width:100%; padding:8px; border-radius:6px; border:1px solid #ccc;'
             }}) }}
-            <div style="color:red; font-size:0.8rem;">
+            <div style="color:red; font-size:0.85rem;">
                 {{ form_errors(form.dateCreation) }}
             </div>
-            {{ form_widget(form.dateCreation, {'attr': {'class': 'form-control', 'style':'width:100%; padding:6px 8px; border-radius:5px; border:1px solid #ccc; font-size:0.9rem;'}}) }}
-            {{ form_errors(form.dateCreation) }}
         </div>
 
         <button type="submit"
-                style="padding:7px 15px; background-color:#28a745; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:600; font-size:0.95rem;">
+                style="padding:8px 20px; background-color:#28a745; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:600;">
             Enregistrer
         </button>
 
         {{ form_end(form) }}
-    </div>
 
+    </div>
 </div>
 {% endblock %}
+
 
 
 
