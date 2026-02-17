@@ -35,6 +35,9 @@ final class CategorieController extends AbstractController
 
             return $this->redirectToRoute('app_categorie_index', [], Response::HTTP_SEE_OTHER);
         }
+        if ($form->isSubmitted() && !$form->isValid()) {
+            $this->addFlash('error', 'Le formulaire contient des erreurs. Merci de verifier les champs.');
+        }
 
         return $this->render('categorie/new.html.twig', [
             'categorie' => $categorie,

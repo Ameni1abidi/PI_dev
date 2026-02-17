@@ -283,6 +283,13 @@ body {
   margin-top: 8px;
 }
 
+.admin-form ul {
+  margin: 6px 0 12px;
+  padding-left: 18px;
+  color: #b42318;
+  font-size: 13px;
+}
+
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));

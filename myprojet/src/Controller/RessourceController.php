@@ -35,6 +35,9 @@ final class RessourceController extends AbstractController
 
             return $this->redirectToRoute('app_ressource_index', [], Response::HTTP_SEE_OTHER);
         }
+        if ($form->isSubmitted() && !$form->isValid()) {
+            $this->addFlash('error', 'Le formulaire contient des erreurs. Merci de verifier les champs.');
+        }
 
         return $this->render('ressource/new.html.twig', [
             'ressource' => $ressource,

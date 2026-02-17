@@ -20,10 +20,31 @@ class SecurityController extends AbstractController
         $error = $authenticationUtils->getLastAuthenticationError();
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
+        $loginEmailError = null;
+        $loginPasswordError = null;
+        $globalError = $error;
+
+        if ($error) {
+            $message = $error->getMessageKey();
+
+            if ($message === 'Email obligatoire.') {
+                $loginEmailError = $message;
+                $globalError = null;
+            } elseif ($message === 'Mot de passe obligatoire.') {
+                $loginPasswordError = $message;
+                $globalError = null;
+            } elseif ($message === 'Email et mot de passe sont obligatoires.') {
+                $loginEmailError = 'Email obligatoire.';
+                $loginPasswordError = 'Mot de passe obligatoire.';
+                $globalError = null;
+            }
+        }
 
         return $this->render('home/index.html.twig', [
             'last_username' => $lastUsername,
-            'error' => $error,
+            'error' => $globalError,
+            'login_email_error' => $loginEmailError,
+            'login_password_error' => $loginPasswordError,
             'focus_login' => true,
         ]);
     }

@@ -1,4 +1,9 @@
-{{ form_start(form, {'attr': {'class': 'admin-form'}}) }}
-    {{ form_widget(form) }}
+{{ form_start(form, {'attr': {'class': 'admin-form', 'novalidate': 'novalidate'}}) }}
+    {{ form_errors(form) }}
+
+    {{ form_label(form.nom) }}
+    {{ form_widget(form.nom) }}
+    {{ form_errors(form.nom) }}
+
     <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
 {{ form_end(form) }}
