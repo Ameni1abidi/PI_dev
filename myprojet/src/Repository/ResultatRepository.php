@@ -28,7 +28,7 @@ class ResultatRepository extends ServiceEntityRepository
         }
 
         return $this->createQueryBuilder('r')
-            ->andWhere('r.eleveId IN (:ids)')
+            ->andWhere('IDENTITY(r.etudiant) IN (:ids)')
             ->setParameter('ids', $eleveIds, ArrayParameterType::INTEGER)
             ->orderBy('r.id', 'DESC')
             ->getQuery()

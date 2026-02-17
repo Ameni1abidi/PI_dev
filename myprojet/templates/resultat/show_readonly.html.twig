@@ -8,7 +8,7 @@
     <tbody>
       <tr><th>Note</th><td>{{ resultat.note }}</td></tr>
       <tr><th>Appreciation</th><td>{{ resultat.appreciation }}</td></tr>
-      <tr><th>Eleve ID</th><td>{{ resultat.eleveId }}</td></tr>
+      <tr><th>Eleve</th><td>{{ resultat.etudiant ? resultat.etudiant.nom ~ ' (#' ~ resultat.etudiant.id ~ ')' : '' }}</td></tr>
       <tr><th>Examen</th><td>{{ resultat.examen ? resultat.examen.titre : '' }}</td></tr>
     </tbody>
   </table>

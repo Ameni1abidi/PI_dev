@@ -6,6 +6,11 @@
     {{ form_errors(form.titre) }}
   </div>
   <div class="mb-3">
+    {{ form_label(form.contenuFile) }}
+    {{ form_widget(form.contenuFile, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.contenuFile) }}
+  </div>
+  <div class="mb-3">
     {{ form_label(form.type) }}
     {{ form_widget(form.type, {'attr': {'class': 'form-select'}}) }}
     {{ form_errors(form.type) }}
@@ -21,14 +26,14 @@
     {{ form_errors(form.duree) }}
   </div>
   <div class="mb-3">
-    {{ form_label(form.coursId) }}
-    {{ form_widget(form.coursId, {'attr': {'class': 'form-control'}}) }}
-    {{ form_errors(form.coursId) }}
+    {{ form_label(form.cours) }}
+    {{ form_widget(form.cours, {'attr': {'class': 'form-select'}}) }}
+    {{ form_errors(form.cours) }}
   </div>
   <div class="mb-3">
-    {{ form_label(form.enseignantId) }}
-    {{ form_widget(form.enseignantId, {'attr': {'class': 'form-control'}}) }}
-    {{ form_errors(form.enseignantId) }}
+    {{ form_label(form.enseignant) }}
+    {{ form_widget(form.enseignant, {'attr': {'class': 'form-select'}}) }}
+    {{ form_errors(form.enseignant) }}
   </div>
   <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
 {{ form_end(form) }}

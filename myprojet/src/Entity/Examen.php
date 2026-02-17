@@ -19,11 +19,12 @@ class Examen
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'Le titre est obligatoire.')]
-    #[Assert\Length(
-        max: 255,
-        maxMessage: 'Le titre ne doit pas dépasser {{ limit }} caractères.'
-    )]
+    #[Assert\Length(max: 255, maxMessage: 'Le titre ne doit pas depasser {{ limit }} caracteres.')]
     private ?string $titre = null;
+
+    #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank(message: 'Le contenu est obligatoire.')]
+    private ?string $contenu = null;
 
     #[ORM\Column(length: 20)]
     #[Assert\NotBlank(message: 'Le type est obligatoire.')]
@@ -31,23 +32,23 @@ class Examen
     private ?string $type = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    #[Assert\NotNull(message: 'La date de l’examen est obligatoire.')]
+    #[Assert\NotNull(message: 'La date de l examen est obligatoire.')]
     private ?\DateTimeInterface $dateExamen = null;
 
     #[ORM\Column]
-    #[Assert\NotNull(message: 'La durée est obligatoire.')]
-    #[Assert\Positive(message: 'La durée doit être positive.')]
+    #[Assert\NotNull(message: 'La duree est obligatoire.')]
+    #[Assert\Positive(message: 'La duree doit etre positive.')]
     private ?int $duree = null;
 
-    #[ORM\Column]
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(name: 'cours_id', referencedColumnName: 'id', nullable: false)]
     #[Assert\NotNull(message: 'Le cours est obligatoire.')]
-    #[Assert\Positive(message: 'Le cours doit être un identifiant positif.')]
-    private ?int $coursId = null;
+    private ?Cours $cours = null;
 
-    #[ORM\Column]
-    #[Assert\NotNull(message: 'L’enseignant est obligatoire.')]
-    #[Assert\Positive(message: 'L’enseignant doit être un identifiant positif.')]
-    private ?int $enseignantId = null;
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(name: 'enseignant_id', referencedColumnName: 'id', nullable: false)]
+    #[Assert\NotNull(message: 'L enseignant est obligatoire.')]
+    private ?Utilisateur $enseignant = null;
 
     /**
      * @var Collection<int, Resultat>
@@ -73,7 +74,17 @@ class Examen
     public function setTitre(string $titre): static
     {
         $this->titre = $titre;
+        return $this;
+    }
 
+    public function getContenu(): ?string
+    {
+        return $this->contenu;
+    }
+
+    public function setContenu(string $contenu): static
+    {
+        $this->contenu = $contenu;
         return $this;
     }
 
@@ -85,7 +96,6 @@ class Examen
     public function setType(string $type): static
     {
         $this->type = $type;
-
         return $this;
     }
 
@@ -97,7 +107,6 @@ class Examen
     public function setDateExamen(\DateTimeInterface $dateExamen): static
     {
         $this->dateExamen = $dateExamen;
-
         return $this;
     }
 
@@ -109,31 +118,28 @@ class Examen
     public function setDuree(int $duree): static
     {
         $this->duree = $duree;
-
         return $this;
     }
 
-    public function getCoursId(): ?int
+    public function getCours(): ?Cours
     {
-        return $this->coursId;
+        return $this->cours;
     }
 
-    public function setCoursId(int $coursId): static
+    public function setCours(?Cours $cours): static
     {
-        $this->coursId = $coursId;
-
+        $this->cours = $cours;
         return $this;
     }
 
-    public function getEnseignantId(): ?int
+    public function getEnseignant(): ?Utilisateur
     {
-        return $this->enseignantId;
+        return $this->enseignant;
     }
 
-    public function setEnseignantId(int $enseignantId): static
+    public function setEnseignant(?Utilisateur $enseignant): static
     {
-        $this->enseignantId = $enseignantId;
-
+        $this->enseignant = $enseignant;
         return $this;
     }
 
@@ -151,7 +157,6 @@ class Examen
             $this->resultats->add($resultat);
             $resultat->setExamen($this);
         }
-
         return $this;
     }
 
@@ -162,7 +167,6 @@ class Examen
                 $resultat->setExamen(null);
             }
         }
-
         return $this;
     }
 }

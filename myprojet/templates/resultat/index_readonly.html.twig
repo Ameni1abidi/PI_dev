@@ -17,7 +17,7 @@
             <th>ID</th>
             <th>Note</th>
             <th>Appreciation</th>
-            <th>Eleve ID</th>
+            <th>Eleve</th>
             <th>Examen</th>
             <th class="text-end">Actions</th>
           </tr>
@@ -28,7 +28,7 @@
               <td>{{ resultat.id }}</td>
               <td>{{ resultat.note }}</td>
               <td>{{ resultat.appreciation }}</td>
-              <td>{{ resultat.eleveId }}</td>
+              <td>{{ resultat.etudiant ? resultat.etudiant.nom ~ ' (#' ~ resultat.etudiant.id ~ ')' : '' }}</td>
               <td>{{ resultat.examen ? resultat.examen.titre : '' }}</td>
               <td class="text-end">
                 <a class="btn btn-sm btn-outline-secondary" href="{{ path('app_resultat_show', {'id': resultat.id}) }}">Voir</a>
