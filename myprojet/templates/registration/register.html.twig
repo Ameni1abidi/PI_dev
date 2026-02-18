@@ -1,6 +1,6 @@
 ﻿{% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Inscription{% endblock %}
 
 {% block stylesheets %}
 <style>
@@ -22,26 +22,26 @@
 {% block body %}
 <div class="row justify-content-center">
     <div class="col-md-6 col-lg-5">
-        <h1 class="h3 mb-3 font-weight-normal">Create account</h1>
+        <h1 class="h3 mb-3 font-weight-normal">Creer un compte</h1>
 
         {{ form_start(registrationForm) }}
             {{ form_errors(registrationForm) }}
 
             <div class="mb-3">
                 {{ form_label(registrationForm.nom) }}
-                {{ form_widget(registrationForm.nom, { attr: { class: 'form-control' } }) }}
+                {{ form_widget(registrationForm.nom, { attr: { class: 'form-control', placeholder: 'Entrez votre nom' } }) }}
                 {{ form_errors(registrationForm.nom) }}
             </div>
 
             <div class="mb-3">
                 {{ form_label(registrationForm.email) }}
-                {{ form_widget(registrationForm.email, { attr: { class: 'form-control' } }) }}
+                {{ form_widget(registrationForm.email, { attr: { class: 'form-control', placeholder: 'Entrez votre e-mail' } }) }}
                 {{ form_errors(registrationForm.email) }}
             </div>
 
             <div class="mb-3">
-                {{ form_label(registrationForm.plainPassword, 'Password') }}
-                {{ form_widget(registrationForm.plainPassword, { attr: { class: 'form-control' } }) }}
+                {{ form_label(registrationForm.plainPassword, 'Mot de passe') }}
+                {{ form_widget(registrationForm.plainPassword, { attr: { class: 'form-control', placeholder: 'Entrez votre mot de passe' } }) }}
                 {{ form_errors(registrationForm.plainPassword) }}
             </div>
 
@@ -57,7 +57,7 @@
                 {{ form_errors(registrationForm.agreeTerms) }}
             </div>
 
-            <button type="submit" class="btn btn-lg w-100 btn-register">Register</button>
+            <button type="submit" class="btn btn-lg w-100 btn-register">S'inscrire</button>
         {{ form_end(registrationForm) }}
     </div>
 </div>

@@ -1,217 +1,113 @@
-﻿<!DOCTYPE html>
-<html lang="fr">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>EduFlex - Espace Parent</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="{{ asset('parent/css/parent.css') }}" />
-  </head>
-  <body>
-    <div class="parent-shell">
-      <aside class="parent-sidebar">
-        <div class="parent-brand">
-          <div class="parent-brand-mark">EF</div>
-          <div>
-            <div class="parent-brand-name">EduFlex</div>
-            <div class="parent-brand-sub">Espace parent</div>
-          </div>
-        </div>
+{% extends 'scholar_base.html.twig' %}
 
-        <div class="parent-profile">
-          <div class="parent-avatar">SM</div>
-          <div>
-            <div class="parent-brand-name">Sonia Martin</div>
-            <div class="parent-role">Parent</div>
-          </div>
-        </div>
+{% block title %}Dashboard Parent - EduFlex{% endblock %}
 
-        <nav class="parent-nav">
-          <a class="is-active" href="#">
-            <span>🏠</span>
-            Tableau de bord
-          </a>
-          <a href="{{ path('app_forum_index_context', {'context': 'parent'}) }}">
-            <span>💬</span>
-            Forum
-          </a>
-          <a href="#">
-            <span>👧</span>
-            Mes enfants
-          </a>
-          <a href="#">
-            <span>📘</span>
-            Notes
-          </a>
-          <a href="#">
-            <span>📣</span>
-            Communication
-          </a>
-        </nav>
-      </aside>
-
-      <main class="parent-main">
-        <div class="parent-topbar">
-          <label class="parent-search">
-            <span>🔍</span>
-            <input type="search" placeholder="Rechercher" />
-          </label>
-          <div class="parent-top-actions">
-            <div class="parent-icon-btn">🔔</div>
-            <a class="parent-icon-btn" href="{{ logout_path() }}">Logout</a>
-            <div class="parent-pill">3</div>
-            <div class="parent-pill">12</div>
-          </div>
-        </div>
-
-        <section class="parent-hero">
-          <h1>Bienvenue, Sonia !</h1>
-          <p>Suivez les notes, evaluations et echanges avec les enseignants de vos enfants.</p>
-        </section>
-
-        <section class="parent-stats">
-          <div class="parent-stat">
-            <div class="icon">🎓</div>
-            <div class="value">2</div>
-            <div class="label">Enfants suivis</div>
-          </div>
-          <div class="parent-stat">
-            <div class="icon">📘</div>
-            <div class="value">6</div>
-            <div class="label">Notes recentes</div>
-          </div>
-          <div class="parent-stat">
-            <div class="icon">📝</div>
-            <div class="value">4</div>
-            <div class="label">Evaluations</div>
-          </div>
-          <div class="parent-stat">
-            <div class="icon">💬</div>
-            <div class="value">2</div>
-            <div class="label">Messages</div>
-          </div>
-        </section>
-
-        <section class="parent-grid">
-          <div class="parent-panel">
-            <h2>Notes par enfant</h2>
-            <div class="parent-panel-sub">Periode actuelle</div>
-            <div class="student-tabs">
-              <div class="student-tab is-active">Alex Martin</div>
-              <div class="student-tab">Lina Martin</div>
-            </div>
-            <div class="note-list">
-              <div class="note-item">
-                <div class="item-left">
-                  <div class="item-icon purple">Fr</div>
-                  <div>
-                    <div class="item-title">Francais</div>
-                    <div class="item-meta">Controle du 18 avril</div>
-                  </div>
-                </div>
-                <div class="item-pill">17/20</div>
-              </div>
-              <div class="note-item">
-                <div class="item-left">
-                  <div class="item-icon orange">Ma</div>
-                  <div>
-                    <div class="item-title">Mathematiques</div>
-                    <div class="item-meta">Interrogation du 20 avril</div>
-                  </div>
-                </div>
-                <div class="item-pill">14/20</div>
-              </div>
-              <div class="note-item">
-                <div class="item-left">
-                  <div class="item-icon green">Sc</div>
-                  <div>
-                    <div class="item-title">Sciences</div>
-                    <div class="item-meta">Projet du 21 avril</div>
-                  </div>
-                </div>
-                <div class="item-pill">15/20</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="parent-panel">
-            <h2>Evaluations a venir</h2>
-            <div class="parent-panel-sub">Semaine du 22 avril</div>
-            <div class="eval-list">
-              <div class="eval-item">
-                <div class="item-left">
-                  <div class="item-icon purple">Fr</div>
-                  <div>
-                    <div class="item-title">Controle Francais</div>
-                    <div class="item-meta">Mercredi 24 avril</div>
-                  </div>
-                </div>
-                <div class="item-pill">J-2</div>
-              </div>
-              <div class="eval-item">
-                <div class="item-left">
-                  <div class="item-icon orange">Ma</div>
-                  <div>
-                    <div class="item-title">Interro Maths</div>
-                    <div class="item-meta">Jeudi 25 avril</div>
-                  </div>
-                </div>
-                <div class="item-pill">J-3</div>
-              </div>
-              <div class="eval-item">
-                <div class="item-left">
-                  <div class="item-icon green">Sc</div>
-                  <div>
-                    <div class="item-title">Quiz Sciences</div>
-                    <div class="item-meta">Vendredi 26 avril</div>
-                  </div>
-                </div>
-                <div class="item-pill">J-4</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="parent-panel">
-            <h2>Communication enseignants</h2>
-            <div class="parent-panel-sub">Derniers messages</div>
-            <div class="message-list">
-              <div class="message-item">
-                <div class="item-left">
-                  <div class="item-icon purple">ML</div>
-                  <div>
-                    <div class="item-title">Mme Legrand</div>
-                    <div class="item-meta">Alex progresse en lecture.</div>
-                  </div>
-                </div>
-                <div class="item-pill">Aujourd'hui</div>
-              </div>
-              <div class="message-item">
-                <div class="item-left">
-                  <div class="item-icon orange">MR</div>
-                  <div>
-                    <div class="item-title">M. Rachid</div>
-                    <div class="item-meta">Exercice de maths a revoir.</div>
-                  </div>
-                </div>
-                <div class="item-pill">Hier</div>
-              </div>
-              <div class="message-item">
-                <div class="item-left">
-                  <div class="item-icon green">MD</div>
-                  <div>
-                    <div class="item-title">Mme Dubois</div>
-                    <div class="item-meta">Bravo pour le projet sciences.</div>
-                  </div>
-                </div>
-                <div class="item-pill">Lun</div>
-              </div>
-            </div>
-          </div>
-        </section>
-      </main>
+{% block body %}
+  <div id="js-preloader" class="js-preloader">
+    <div class="preloader-inner">
+      <span class="dot"></span>
+      <div class="dots"><span></span><span></span><span></span></div>
     </div>
-  </body>
-</html>
+  </div>
+
+  <header class="header-area header-sticky">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <nav class="main-nav">
+            <a href="{{ path('app_home') }}" class="logo"><h1>Eduflex</h1></a>
+            <ul class="nav">
+              <li><a class="active" href="{{ path('app_parent_dashboard') }}">Dashboard</a></li>
+              <li><a href="{{ path('app_forum_index_context', {'context': 'parent'}) }}">Forum</a></li>
+              <li><a href="{{ logout_path() }}">Logout</a></li>
+            </ul>
+            <a class="menu-trigger"><span>Menu</span></a>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="main-banner" id="top">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="owl-carousel owl-banner">
+            <div class="item item-1">
+              <div class="header-text">
+                <span class="category">Espace Parent</span>
+                <h2>Suivez la progression de vos enfants</h2>
+                <p>Visualisez notes, evaluations et informations utiles depuis un seul dashboard.</p>
+                <div class="buttons">
+                  <div class="main-button"><a href="{{ path('app_forum_index_context', {'context': 'parent'}) }}">Acceder forum</a></div>
+                </div>
+              </div>
+            </div>
+            <div class="item item-2">
+              <div class="header-text">
+                <span class="category">Communication</span>
+                <h2>Restez connecte avec l'ecole</h2>
+                <p>Suivez les annonces et discutez avec la communaute educative.</p>
+              </div>
+            </div>
+            <div class="item item-3">
+              <div class="header-text">
+                <span class="category">Vision claire</span>
+                <h2>Un espace simple et lisible</h2>
+                <p>Toutes les informations importantes sont centralisees.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="services section">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-md-6">
+          <div class="service-item">
+            <div class="icon"><img src="{{ asset('images/service-01.png') }}" alt="enfants"></div>
+            <div class="main-content">
+              <h4>Enfants suivis</h4>
+              <p>Acces rapide aux donnees de vos enfants scolarises.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <div class="service-item">
+            <div class="icon"><img src="{{ asset('images/service-02.png') }}" alt="notes"></div>
+            <div class="main-content">
+              <h4>Notes et evaluations</h4>
+              <p>Consultez les performances recentes en un coup d'oeil.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <div class="service-item">
+            <div class="icon"><img src="{{ asset('images/service-03.png') }}" alt="messages"></div>
+            <div class="main-content">
+              <h4>Messages</h4>
+              <p>Restez informes des echanges importants avec l'ecole.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script>
+    (function () {
+      function hidePreloader() {
+        var preloader = document.getElementById('js-preloader');
+        if (preloader) preloader.classList.add('loaded');
+      }
+      window.addEventListener('load', hidePreloader);
+      setTimeout(hidePreloader, 1500);
+    })();
+  </script>
+{% endblock %}
