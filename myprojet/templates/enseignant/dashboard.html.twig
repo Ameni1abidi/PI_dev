@@ -1,213 +1,242 @@
-<!DOCTYPE html>
-<html lang="fr">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>EduFlex - Espace Enseignant</title>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('enseignant/css/enseignant.css') }}">
-  </head>
-  <body>
-    <div class="teacher-shell">
-      <aside class="teacher-sidebar">
-        <div class="teacher-brand">
-          <div class="teacher-brand-mark">EF</div>
-          <div>
-            <div class="teacher-brand-name">EduFlex</div>
-            <div class="teacher-brand-sub">Espace enseignant</div>
-          </div>
-        </div>
+{% extends 'scholar_base.html.twig' %}
 
-        <div class="teacher-profile">
-          <div class="teacher-avatar">ML</div>
-          <div>
-            <div class="teacher-name">Mme Legrand</div>
-            <div class="teacher-role">Enseignante</div>
-          </div>
-        </div>
+{% block title %}Dashboard Enseignant - EduFlex{% endblock %}
 
-        <nav class="teacher-nav">
-          <a class="is-active" href="{{ path('app_enseignant_dashboard') }}">
-            <span>DB</span>
-            Tableau de bord
-          </a>
-          <a href="{{ path('app_forum_index_context', {'context': 'enseignant'}) }}">
-            <span>FO</span>
-            Forum
-          </a>
-          <a href="{{ path('app_enseignant_classes') }}">
-            <span>CL</span>
-            Mes classes
-          </a>
-           <a href="{{ path('app_cours_index') }}">
-            <span>C</span>
-            Cours
-          </a>
-          <a href="{{ path('app_examen_index') }}">
-            <span>EX</span>
-            Examens
-          </a>
-          <a href="{{ path('app_enseignant_evaluations') }}">
-            <span>EV</span>
-            Evaluations
-          </a>
-          <a href="{{ path('app_resultat_index_readonly') }}">
-            <span>RS</span>
-            Resultats
-          </a>
-        </nav>
-      </aside>
+{% block stylesheets %}
+  {{ parent() }}
+  <style>
+    .teacher-main {
+      padding-top: 30px;
+    }
 
-      <main class="teacher-main">
-        <header class="teacher-topbar">
-          <div>
-            <div class="teacher-title">Dashboard enseignant</div>
-            <div class="teacher-sub">Bienvenue sur EduFlex, Mme Legrand</div>
-          </div>
-          <div class="teacher-actions">
-            <a class="teacher-btn teacher-btn-primary" href="{{ path('app_examen_index') }}">Creer un examen</a>
-            <a class="teacher-btn" href="{{ logout_path() }}">Logout</a>
-            <div class="teacher-avatar teacher-avatar-small">ML</div>
-          </div>
-        </header>
+    .teacher-pill {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      margin-right: 8px;
+    }
 
-        <section class="teacher-stats">
-          <div class="teacher-stat">
-            <div class="stat-icon">EL</div>
-            <div class="stat-label">Eleves</div>
-            <div class="stat-value">86</div>
-            <div class="stat-meta up">+4 nouveaux</div>
-          </div>
-          <div class="teacher-stat">
-            <div class="stat-icon">EX</div>
-            <div class="stat-label">Examens</div>
-            <div class="stat-value">6</div>
-            <div class="stat-meta up">Semaine en cours</div>
-          </div>
-          <div class="teacher-stat">
-            <div class="stat-icon">EV</div>
-            <div class="stat-label">Evaluations</div>
-            <div class="stat-value">12</div>
-            <div class="stat-meta down">A corriger</div>
-          </div>
-          <div class="teacher-stat">
-            <div class="stat-icon">MS</div>
-            <div class="stat-label">Messages</div>
-            <div class="stat-value">4</div>
-            <div class="stat-meta up">Nouveaux</div>
-          </div>
-        </section>
+    .teacher-pill-primary {
+      background: rgba(122, 106, 216, 0.16);
+      color: #6a5acd;
+    }
 
-        <!-- Section Prochaines evaluations -->
-        <section class="teacher-grid">
-          <div class="teacher-panel">
-            <div class="panel-header">
-              <h2>Prochaines evaluations</h2>
-              <span class="panel-sub">Cette semaine</span>
-            </div>
-            <div class="teacher-list">
-              <a class="teacher-item" href="{{ path('app_enseignant_evaluations_planifiees') }}" style="text-decoration:none; color:inherit;">
-                <div>
-                  <div class="item-title">Maths - Interrogation</div>
-                  <div class="item-meta">Lundi 08:00</div>
-                </div>
-                <span class="pill warning">J-2</span>
-              </a>
-              <a class="teacher-item" href="{{ path('app_enseignant_evaluations_planifiees') }}" style="text-decoration:none; color:inherit;">
-                <div>
-                  <div class="item-title">Francais - Controle</div>
-                  <div class="item-meta">Mercredi 10:00</div>
-                </div>
-                <span class="pill success">J-4</span>
-              </a>
-              <a class="teacher-item" href="{{ path('app_enseignant_evaluations_planifiees') }}" style="text-decoration:none; color:inherit;">
-                <div>
-                  <div class="item-title">Sciences - Quiz</div>
-                  <div class="item-meta">Vendredi 14:00</div>
-                </div>
-                <span class="pill success">J-6</span>
-              </a>
-            </div>
-          </div>
+    .teacher-pill-secondary {
+      background: rgba(140, 110, 220, 0.16);
+      color: #7a55d8;
+    }
+  </style>
+{% endblock %}
 
-          <!-- Section Suivi classes -->
-          <div class="teacher-panel">
-            <div class="panel-header">
-              <h2>Suivi classes</h2>
-              <span class="panel-sub">Activite recente</span>
-            </div>
-            <div class="teacher-list">
-              <a class="teacher-item" href="{{ path('app_enseignant_suivi') }}" style="text-decoration:none; color:inherit;">
-                <div>
-                  <div class="item-title">3A - Mathematiques</div>
-                  <div class="item-meta">Cours termine</div>
-                </div>
-                <span class="pill success">OK</span>
-              </a>
-              <a class="teacher-item" href="{{ path('app_enseignant_suivi') }}" style="text-decoration:none; color:inherit;">
-                <div>
-                  <div class="item-title">2B - Francais</div>
-                  <div class="item-meta">Evaluation publiee</div>
-                </div>
-                <span class="pill warning">Nouveau</span>
-              </a>
-              <a class="teacher-item" href="{{ path('app_enseignant_suivi') }}" style="text-decoration:none; color:inherit;">
-                <div>
-                  <div class="item-title">1C - Sciences</div>
-                  <div class="item-meta">Devoir a corriger</div>
-                </div>
-                <span class="pill danger">Urgent</span>
-              </a>
-            </div>
-          </div>
-        </section>
-
-        <!-- Section Mes Cours -->
-        <section class="teacher-grid">
-          <div class="teacher-panel full">
-            <div class="panel-header">
-              <h2>Mes Cours</h2>
-              <span class="panel-sub">Cliquez sur un cours pour gérer les chapitres</span>
-            </div>
-            <div class="teacher-list">
- {% for cour in cours %}
-<div class="teacher-item" style="background:#f9f9f9; padding:12px 15px; border-radius:8px; margin-bottom:12px; box-shadow:0 1px 4px rgba(0,0,0,0.1);">
-
-    <div style="margin-bottom:10px;">
-        <div style="font-weight:700; font-size:1rem;">
-            {{ cour.titre }}
-            {% if cour.nouveau ?? false %}
-                <span style="background-color:#ffc107; color:#212529; font-size:0.7rem; padding:2px 6px; border-radius:12px; font-weight:600; margin-left:5px;">Nouveau</span>
-            {% endif %}
-        </div>
-        <div style="font-size:0.85rem; color:#555;">
-            {{ cour.niveau }} - Créé le {{ cour.dateCreation ? cour.dateCreation|date('d/m/Y') : 'N/A' }}
-        </div>
+{% block body %}
+  <div id="js-preloader" class="js-preloader">
+    <div class="preloader-inner">
+      <span class="dot"></span>
+      <div class="dots">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
     </div>
+  </div>
 
-   <!-- Pills pour gérer le cours et ajouter chapitre -->
-<div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:6px;">
-    <a href="{{ path('app_cours_show', {'id': cour.id}) }}" 
-       style="background-color:rgba(0,123,255,0.1); color:#007bff; font-size:0.75rem; padding:3px 8px; border-radius:12px; text-decoration:none; font-weight:600;">
-       Gérer Cours
-    </a>
-    <a href="{{ path('app_chapitre_new', {'coursId': cour.id}) }}" 
-       style="background-color:rgba(40,167,69,0.1); color:#28a745; font-size:0.75rem; padding:3px 8px; border-radius:12px; text-decoration:none; font-weight:600;">
-       Ajouter Chapitre
-    </a>
-</div>
+  <header class="header-area header-sticky">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <nav class="main-nav">
+            <a href="{{ path('app_home') }}" class="logo">
+              <h1>Eduflex</h1>
+            </a>
+            <div class="search-input">
+              <form id="search" action="#">
+                <input type="text" placeholder="Type Something" id="searchText" name="searchKeyword" onkeypress="handle" />
+                <i class="fa fa-search"></i>
+              </form>
+            </div>
+            <ul class="nav">
+        
+              <li><a href="{{ path('app_forum_index_context', {'context': 'enseignant'}) }}">Forum</a></li>
+              <li><a href="{{ path('app_enseignant_classes') }}">Mes classes</a></li>
+              <li><a href="{{ path('app_cours_index') }}">Cours</a></li>
+              <li><a href="{{ path('app_examen_index') }}">Examens</a></li>
+              <li><a href="{{ path('app_enseignant_evaluations') }}">Evaluations</a></li>
+              <li><a href="{{ path('app_resultat_index_readonly') }}">Resultats</a></li>
+              <li><a href="{{ logout_path() }}">Logout</a></li>
+            </ul>
+            <a class="menu-trigger">
+              <span>Menu</span>
+            </a>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </header>
 
-</div>
-{% else %}
-<div style="text-align:center; padding:10px; background:#e9ecef; border-radius:5px; color:;">
-    Aucun cours disponible pour le moment.
-</div>
-{% endfor %}
+  <div class="main-banner" id="top">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="owl-carousel owl-banner">
+            <div class="item item-1">
+              <div class="header-text">
+                <span class="category">Espace Enseignant</span>
+                <h2>Gerer vos cours et evaluations facilement</h2>
+                <p>Accedez rapidement a vos classes, examens, chapitres et resultats depuis votre dashboard enseignant.</p>
+                <div class="buttons">
+                  <div class="main-button">
+                    <a href="{{ path('app_examen_index') }}">Creer un examen</a>
+                  </div>
+                  <div class="icon-button">
+                    <a href="{{ path('app_cours_index') }}"><i class="fa fa-book"></i> Voir les cours</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="item item-2">
+              <div class="header-text">
+                <span class="category">Suivi Pedagogique</span>
+                <h2>Suivez les notes et les progressions</h2>
+                <p>Consultez les resultats et mettez a jour vos activites pedagogiques en quelques clics.</p>
+                <div class="buttons">
+                  <div class="main-button">
+                    <a href="{{ path('app_resultat_index_readonly') }}">Voir les resultats</a>
+                  </div>
+                  <div class="icon-button">
+                    <a href="{{ path('app_enseignant_classes') }}"><i class="fa fa-users"></i> Mes classes</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="item item-3">
+              <div class="header-text">
+                <span class="category">Communication</span>
+                <h2>Echangez avec votre communaute</h2>
+                <p>Partagez vos annonces et repondez aux discussions depuis le forum enseignant.</p>
+                <div class="buttons">
+                  <div class="main-button">
+                    <a href="{{ path('app_forum_index_context', {'context': 'enseignant'}) }}">Acceder au forum</a>
+                  </div>
+                  <div class="icon-button">
+                    <a href="{{ path('app_enseignant_evaluations') }}"><i class="fa fa-check"></i> Evaluations</a>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </section>
-
-      </main>
+        </div>
+      </div>
     </div>
-  </body>
-</html>
+  </div>
+
+  <div class="services section teacher-main">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-md-6">
+          <div class="service-item">
+            <div class="icon">
+              <img src="{{ asset('images/service-01.png') }}" alt="classes">
+            </div>
+            <div class="main-content">
+              <h4>Mes classes</h4>
+              <p>Consultez vos classes et l'organisation pedagogique.</p>
+              <div class="main-button">
+                <a href="{{ path('app_enseignant_classes') }}">Acceder</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <div class="service-item">
+            <div class="icon">
+              <img src="{{ asset('images/service-02.png') }}" alt="cours">
+            </div>
+            <div class="main-content">
+              <h4>Gestion des cours</h4>
+              <p>Creez, modifiez et detaillez vos contenus de cours.</p>
+              <div class="main-button">
+                <a href="{{ path('app_cours_index') }}">Gerer</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <div class="service-item">
+            <div class="icon">
+              <img src="{{ asset('images/service-03.png') }}" alt="evaluations">
+            </div>
+            <div class="main-content">
+              <h4>Evaluations</h4>
+              <p>Planifiez vos examens et suivez les evaluations.</p>
+              <div class="main-button">
+                <a href="{{ path('app_enseignant_evaluations') }}">Ouvrir</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="section courses" id="courses">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12 text-center">
+          <div class="section-heading">
+            <h6>Mes Cours</h6>
+            <h2>Gestion Rapide</h2>
+          </div>
+        </div>
+      </div>
+      <div class="row event_box">
+        {% for cour in cours %}
+          <div class="col-lg-4 col-md-6 align-self-center mb-30 event_outer">
+            <div class="events_item">
+              <div class="down-content">
+                <span class="author">{{ cour.niveau }}</span>
+                <h4>{{ cour.titre }}</h4>
+                <p style="margin-bottom: 14px;">Cree le {{ cour.dateCreation ? cour.dateCreation|date('d/m/Y') : 'N/A' }}</p>
+                <a class="teacher-pill teacher-pill-primary" href="{{ path('app_cours_show', {'id': cour.id}) }}">Gerer</a>
+                <a class="teacher-pill teacher-pill-secondary" href="{{ path('app_chapitre_new', {'coursId': cour.id}) }}">Chapitre</a>
+              </div>
+            </div>
+          </div>
+        {% else %}
+          <div class="col-lg-12">
+            <div class="events_item">
+              <div class="down-content">
+                <h4>Aucun cours disponible</h4>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script>
+    function handle(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+      }
+    }
+  </script>
+  <script>
+    (function () {
+      function hidePreloader() {
+        var preloader = document.getElementById('js-preloader');
+        if (preloader) {
+          preloader.classList.add('loaded');
+        }
+      }
+      window.addEventListener('load', hidePreloader);
+      setTimeout(hidePreloader, 1500);
+    })();
+  </script>
+{% endblock %}

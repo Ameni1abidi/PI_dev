@@ -35,6 +35,7 @@ class RegistrationFormType extends AbstractType
             ])
 
             ->add('plainPassword', PasswordType::class, [
+                'label' => 'Mot de passe',
                 'mapped' => false,
                 'attr' => ['autocomplete' => 'new-password'],
                 'constraints' => [
@@ -47,6 +48,7 @@ class RegistrationFormType extends AbstractType
             ])
 
             ->add('agreeTerms', CheckboxType::class, [
+                'label' => "J'accepte les conditions",
                 'mapped' => false,
                 'constraints' => [
                     new IsTrue(message: 'Vous devez accepter les conditions'),
@@ -54,10 +56,12 @@ class RegistrationFormType extends AbstractType
             ])
 
             ->add('role', ChoiceType::class, [
+                'placeholder' => 'Choisir un role',
                 'label' => 'Rôle',
                 'choices' => [
-                    'Étudiant' => 'ROLE_ETUDIANT',
-                    'Professeur' => 'ROLE_PROF',
+                    'Élève' => 'ROLE_ETUDIANT',
+                    'Enseignant' => 'ROLE_PROF',
+                    'Parent' => 'ROLE_PARENT',
                     'Administrateur' => 'ROLE_ADMIN',
                 ],
             ]);

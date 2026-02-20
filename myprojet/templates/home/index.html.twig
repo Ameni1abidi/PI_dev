@@ -1,6 +1,6 @@
 {% extends 'scholar_base.html.twig' %}
 
-{% block title %}Scholar - Online School HTML5 Template{% endblock %}
+{% block title %}Home - EduFlex{% endblock %}
 
 {% block stylesheets %}
   {{ parent() }}
@@ -111,7 +111,7 @@
                 <nav class="main-nav">
                     <!-- ***** Logo Start ***** -->
                     <a href="{{ path('app_home') }}" class="logo">
-                        <h1>Scholar</h1>
+                        <h1>Eduflex</h1>
                     </a>
                     <!-- ***** Logo End ***** -->
                     <!-- ***** Serach Start ***** -->
@@ -129,7 +129,7 @@
                       <li class="scroll-to-section"><a href="#courses">Courses</a></li>
                       <li class="scroll-to-section"><a href="#team">Team</a></li>
                       <li class="scroll-to-section"><a href="#events">Events</a></li>
-                      <li><a href="{{ path('app_register') }}">Register Now!</a></li>
+                      <li><a href="{{ path('app_register') }}">Inscription</a></li>
                       <li><a href="{{ path('app_login') }}">Login</a></li>
                   </ul>   
                     <a class='menu-trigger'>
@@ -715,19 +715,19 @@
                   </div>
                   <div class="col-lg-12">
                     <fieldset>
-                      {{ form_widget(registrationForm.nom, { attr: { placeholder: 'Your Name...', class: 'auth-input' } }) }}
+                      {{ form_widget(registrationForm.nom, { attr: { placeholder: 'Votre nom...', class: 'auth-input' } }) }}
                       {{ form_errors(registrationForm.nom) }}
                     </fieldset>
                   </div>
                   <div class="col-lg-12">
                     <fieldset>
-                      {{ form_widget(registrationForm.email, { attr: { placeholder: 'Your E-mail...', class: 'auth-input' } }) }}
+                      {{ form_widget(registrationForm.email, { attr: { placeholder: 'Votre e-mail...', class: 'auth-input' } }) }}
                       {{ form_errors(registrationForm.email) }}
                     </fieldset>
                   </div>
                   <div class="col-lg-12">
                     <fieldset>
-                      {{ form_widget(registrationForm.plainPassword, { attr: { placeholder: 'Password...', class: 'auth-input' } }) }}
+                      {{ form_widget(registrationForm.plainPassword, { attr: { placeholder: 'Mot de passe...', class: 'auth-input' } }) }}
                       {{ form_errors(registrationForm.plainPassword) }}
                     </fieldset>
                   </div>
@@ -746,7 +746,7 @@
                   </div>
                   <div class="col-lg-12">
                     <fieldset>
-                      <button type="submit" id="form-submit" class="orange-button">Register</button>
+                      <button type="submit" id="form-submit" class="orange-button">S'inscrire</button>
                     </fieldset>
                   </div>
                 <div class="col-lg-12">
@@ -766,7 +766,7 @@
                   {% endif %}
                   <div class="col-lg-12">
                     <fieldset>
-                      <input type="text" name="email" id="inputemail" value="{{ last_username|default('') }}" placeholder="Your E-mail..." autocomplete="username">
+                      <input type="text" name="email" id="inputemail" value="{{ last_username|default('') }}" placeholder="Votre e-mail..." autocomplete="username">
                     </fieldset>
                     {% if login_email_error is defined and login_email_error %}
                       <div class="auth-field-error">{{ login_email_error }}</div>
@@ -774,7 +774,7 @@
                   </div>
                   <div class="col-lg-12">
                     <fieldset>
-                      <input type="password" name="password" id="inputPassword" placeholder="Password..." autocomplete="current-password">
+                      <input type="password" name="password" id="inputPassword" placeholder="Mot de passe..." autocomplete="current-password">
                     </fieldset>
                     {% if login_password_error is defined and login_password_error %}
                       <div class="auth-field-error">{{ login_password_error }}</div>
