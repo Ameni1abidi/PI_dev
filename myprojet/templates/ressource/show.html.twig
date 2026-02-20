@@ -27,8 +27,12 @@
                 <td>{{ ressource.titre }}</td>
             </tr>
             <tr>
-                <th>Type</th>
-                <td>{{ ressource.type }}</td>
+                <th>Categorie</th>
+                <td>{{ ressource.categorie ? ressource.categorie.nom : '' }}</td>
+            </tr>
+            <tr>
+                <th>Chapitre</th>
+                <td>{{ ressource.chapitre ? ressource.chapitre.titre : '' }}</td>
             </tr>
             <tr>
                 <th>Contenu</th>

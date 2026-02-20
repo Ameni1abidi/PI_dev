@@ -9,9 +9,16 @@
 
 {% block body %}
     <div class="admin-page-header">
-        <h1 class="admin-title">Ressources</h1>
+        <h1 class="admin-title">
+            Ressources
+            {% if categorie_nom is defined and categorie_nom != '' %} - Categorie: {{ categorie_nom }}{% endif %}
+            {% if chapitre_titre is defined and chapitre_titre != '' %} - Chapitre: {{ chapitre_titre }}{% endif %}
+        </h1>
         <div class="admin-actions">
-            <a class="btn btn-primary" href="{{ path('app_ressource_new') }}">Créer</a>
+            {% if (categorie_nom is defined and categorie_nom != '') or (chapitre_id is defined and chapitre_id > 0) %}
+                <a class="btn btn-outline" href="{{ path('app_ressource_index') }}">Voir toutes</a>
+            {% endif %}
+            <a class="btn btn-primary" href="{{ path('app_ressource_new') }}">Creer</a>
         </div>
     </div>
 
@@ -20,7 +27,8 @@
             <tr>
                 <th>Id</th>
                 <th>Titre</th>
-                <th>Type</th>
+                <th>Categorie</th>
+                <th>Chapitre</th>
                 <th>Contenu</th>
                 <th>Actions</th>
             </tr>
@@ -30,7 +38,8 @@
             <tr>
                 <td>{{ ressource.id }}</td>
                 <td>{{ ressource.titre }}</td>
-                <td>{{ ressource.type }}</td>
+                <td>{{ ressource.categorie ? ressource.categorie.nom : '' }}</td>
+                <td>{{ ressource.chapitre ? ressource.chapitre.titre : '' }}</td>
                 <td>{{ ressource.contenu }}</td>
                 <td>
                     <a class="btn btn-outline small" href="{{ path('app_ressource_show', {'id': ressource.id}) }}">Voir</a>
@@ -39,7 +48,7 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="5">Aucune ressource trouvée.</td>
+                <td colspan="6">Aucune ressource trouvee.</td>
             </tr>
         {% endfor %}
         </tbody>

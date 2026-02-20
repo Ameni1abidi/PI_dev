@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Cours;
+use App\Entity\Chapitre;
 use App\Form\CoursType;
 use App\Repository\CoursRepository;
+use App\Repository\RessourceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -110,6 +112,18 @@ public function delete(Request $request, Cours $cour, EntityManagerInterface $en
         return $this->render('student/cours_show.html.twig', [
             'cours' => $cours,
             'chapitres' => $cours->getChapitres(),
+        ]);
+    }
+
+    #[Route('/eleve/chapitre/{id}/ressources', name: 'eleve_chapitre_ressources', methods: ['GET'])]
+    public function chapitreRessources(Chapitre $chapitre, RessourceRepository $ressourceRepository): Response
+    {
+        $ressources = $ressourceRepository->findByChapitreId((int) $chapitre->getId());
+
+        return $this->render('student/chapitre_ressources.html.twig', [
+            'chapitre' => $chapitre,
+            'cours' => $chapitre->getCours(),
+            'ressources' => $ressources,
         ]);
     }
 }

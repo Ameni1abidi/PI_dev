@@ -6,9 +6,11 @@ use App\Repository\CategorieRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CategorieRepository::class)]
+#[UniqueEntity(fields: ['nom'], message: 'Cette categorie existe deja.')]
 class Categorie
 {
     #[ORM\Id]
@@ -17,12 +19,16 @@ class Categorie
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
-    #[Assert\NotBlank(message: "Le nom de la catégorie est obligatoire.")]
+    #[Assert\NotBlank(message: 'Le nom de la categorie est obligatoire.')]
     #[Assert\Length(
         min: 2,
         max: 100,
-        minMessage: "Le nom doit avoir au moins {{ limit }} caractères.",
-        maxMessage: "Le nom ne peut pas dépasser {{ limit }} caractères."
+        minMessage: 'Le nom doit avoir au moins {{ limit }} caracteres.',
+        maxMessage: 'Le nom ne peut pas depasser {{ limit }} caracteres.'
+    )]
+    #[Assert\Choice(
+        choices: ['video', 'audio', 'lien', 'image'],
+        message: 'La categorie doit etre video, audio, lien ou image.'
     )]
     private ?string $nom = null;
 
@@ -46,7 +52,8 @@ class Categorie
 
     public function setNom(string $nom): static
     {
-        $this->nom = $nom;
+        $this->nom = strtolower(trim($nom));
+
         return $this;
     }
 
@@ -61,6 +68,7 @@ class Categorie
             $this->ressources->add($ressource);
             $ressource->setCategorie($this);
         }
+
         return $this;
     }
 
@@ -71,6 +79,7 @@ class Categorie
                 $ressource->setCategorie(null);
             }
         }
+
         return $this;
     }
 }

@@ -5,17 +5,124 @@
     {{ form_widget(form.titre) }}
     {{ form_errors(form.titre) }}
 
-    {{ form_label(form.type) }}
-    {{ form_widget(form.type) }}
-    {{ form_errors(form.type) }}
-
-    {{ form_label(form.contenu) }}
-    {{ form_widget(form.contenu) }}
-    {{ form_errors(form.contenu) }}
-
     {{ form_label(form.categorie) }}
     {{ form_widget(form.categorie) }}
     {{ form_errors(form.categorie) }}
 
+    <div id="ressource-video-wrapper" style="display: none;">
+        {{ form_label(form.videoUrl) }}
+        {{ form_widget(form.videoUrl) }}
+        {{ form_errors(form.videoUrl) }}
+
+        {{ form_widget(form.videoFile, {'attr': {'accept': 'video/mp4', 'style': 'display:none;'}}) }}
+        <button type="button" id="video-picker-button" class="btn btn-outline">Choisir une video MP4</button>
+        <div id="video-selected-name" style="margin-top: 8px;">Aucune video n'a ete selectionnee</div>
+        {{ form_errors(form.videoFile) }}
+    </div>
+
+    <div id="ressource-audio-wrapper" style="display: none;">
+        {{ form_label(form.audioUrl) }}
+        {{ form_widget(form.audioUrl) }}
+        {{ form_errors(form.audioUrl) }}
+
+        {{ form_widget(form.audioFile, {'attr': {'accept': '.mp3,.wav,audio/mpeg,audio/wav', 'style': 'display:none;'}}) }}
+        <button type="button" id="audio-picker-button" class="btn btn-outline">Choisir un audio</button>
+        <div id="audio-selected-name" style="margin-top: 8px;">Aucun audio n'a ete selectionne</div>
+        {{ form_errors(form.audioFile) }}
+    </div>
+
+    <div id="ressource-lien-wrapper" style="display: none;">
+        {{ form_label(form.lienUrl) }}
+        {{ form_widget(form.lienUrl) }}
+        {{ form_errors(form.lienUrl) }}
+    </div>
+
+    <div id="ressource-image-wrapper" style="display: none;">
+        {{ form_label(form.imageFile, 'Image') }}
+        {{ form_widget(form.imageFile, {'attr': {'accept': 'image/*', 'style': 'display:none;'}}) }}
+        <button type="button" id="image-picker-button" class="btn btn-outline">Choisit une image</button>
+        <div id="image-selected-name" style="margin-top: 8px;">Aucune image n'a ete selectionnee</div>
+        {{ form_errors(form.imageFile) }}
+    </div>
+
+    {{ form_label(form.chapitre) }}
+    {{ form_widget(form.chapitre) }}
+    {{ form_errors(form.chapitre) }}
+
     <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
 {{ form_end(form) }}
+
+<script>
+    (function () {
+        const categorieField = document.getElementById('{{ form.categorie.vars.id }}');
+        const videoWrapper = document.getElementById('ressource-video-wrapper');
+        const audioWrapper = document.getElementById('ressource-audio-wrapper');
+        const lienWrapper = document.getElementById('ressource-lien-wrapper');
+        const imageWrapper = document.getElementById('ressource-image-wrapper');
+
+        function getSelectedCategorieKind() {
+            if (!categorieField) {
+                return '';
+            }
+
+            const selectedOption = categorieField.options[categorieField.selectedIndex];
+
+            return selectedOption ? (selectedOption.dataset.kind || '') : '';
+        }
+
+        function toggleCategorieFields() {
+            const categorieKind = getSelectedCategorieKind();
+            videoWrapper.style.display = categorieKind === 'video' ? '' : 'none';
+            audioWrapper.style.display = categorieKind === 'audio' ? '' : 'none';
+            lienWrapper.style.display = categorieKind === 'lien' ? '' : 'none';
+            imageWrapper.style.display = categorieKind === 'image' ? '' : 'none';
+        }
+
+        function initPicker(inputId, buttonId, labelId, defaultText) {
+            const input = document.getElementById(inputId);
+            const button = document.getElementById(buttonId);
+            const label = document.getElementById(labelId);
+
+            if (button && input) {
+                button.addEventListener('click', function () {
+                    input.click();
+                });
+            }
+
+            if (input && label) {
+                input.addEventListener('change', function () {
+                    if (input.files && input.files.length > 0) {
+                        label.textContent = input.files[0].name;
+                    } else {
+                        label.textContent = defaultText;
+                    }
+                });
+                label.textContent = defaultText;
+            }
+        }
+
+        if (categorieField) {
+            categorieField.addEventListener('change', toggleCategorieFields);
+            toggleCategorieFields();
+        }
+
+        initPicker(
+            '{{ form.videoFile.vars.id }}',
+            'video-picker-button',
+            'video-selected-name',
+            "Aucune video n'a ete selectionnee"
+        );
+        initPicker(
+            '{{ form.audioFile.vars.id }}',
+            'audio-picker-button',
+            'audio-selected-name',
+            "Aucun audio n'a ete selectionne"
+        );
+        initPicker(
+            '{{ form.imageFile.vars.id }}',
+            'image-picker-button',
+            'image-selected-name',
+            "Aucune image n'a ete selectionnee"
+        );
+    })();
+</script>

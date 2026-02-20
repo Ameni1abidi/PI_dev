@@ -1,0 +1,43 @@
+{% extends 'student/dashCours.html.twig' %}
+
+{% block title %}Chapitres du cours{% endblock %}
+
+{% block body %}
+<div style="padding:25px; font-family:'Manrope', sans-serif; background:linear-gradient(135deg,#fdfbfb,#ebedee); min-height:100vh;">
+  <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:20px;">
+    <h2 style="margin:0; font-weight:800; font-size:1.7rem; color:#2c2c2c;">Chapitres - {{ cours.titre }}</h2>
+    <a href="{{ path('eleve_cours_index') }}" style="text-decoration:none; padding:9px 14px; border-radius:999px; background:#eef2ff; color:#2f3a8f; font-weight:700;">Retour aux cours</a>
+  </div>
+
+  {% if chapitres is not empty %}
+    <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:18px;">
+      {% for chap in chapitres %}
+        {% set ressourcesCount = chap.ressources|length %}
+        <article style="background:#fff; border-radius:18px; padding:18px; box-shadow:0 10px 25px rgba(20,24,40,0.08); border:1px solid #edf0ff;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:10px;">
+            <h3 style="margin:0; font-size:1.1rem; color:#1f2937;">{{ chap.ordre }}. {{ chap.titre }}</h3>
+            <span style="font-size:0.73rem; font-weight:700; background:#f5f3ff; color:#5b21b6; padding:4px 10px; border-radius:999px;">{{ chap.typeContenu }}</span>
+          </div>
+
+          <div style="font-size:0.86rem; color:#5b6475; margin-bottom:12px;">Duree estimee: {{ chap.dureeEstimee }} min</div>
+
+          {% if ressourcesCount > 0 %}
+            <a href="{{ path('eleve_chapitre_ressources', {'id': chap.id}) }}"
+               style="display:inline-block; text-decoration:none; padding:10px 14px; border-radius:12px; background:#dbeafe; color:#1e3a8a; border:1px solid #bfdbfe; font-weight:700; font-size:0.9rem;">
+              Voir les ressources ({{ ressourcesCount }})
+            </a>
+          {% else %}
+            <div style="display:inline-block; padding:10px 14px; border-radius:12px; background:#f3f4f6; color:#6b7280; font-weight:700; font-size:0.86rem;">
+              Aucune ressource pour ce chapitre
+            </div>
+          {% endif %}
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div style="background:#fff; border-radius:16px; padding:20px; color:#6b7280; box-shadow:0 10px 24px rgba(20,24,40,0.06);">
+      Aucun chapitre n'est encore ajoute pour ce cours.
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

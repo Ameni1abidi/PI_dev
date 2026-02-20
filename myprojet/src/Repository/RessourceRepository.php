@@ -16,6 +16,34 @@ class RessourceRepository extends ServiceEntityRepository
         parent::__construct($registry, Ressource::class);
     }
 
+    /**
+     * @return Ressource[]
+     */
+    public function findByCategorieNom(string $categorieNom): array
+    {
+        return $this->createQueryBuilder('r')
+            ->innerJoin('r.categorie', 'c')
+            ->andWhere('LOWER(c.nom) = LOWER(:nom)')
+            ->setParameter('nom', trim($categorieNom))
+            ->orderBy('r.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return Ressource[]
+     */
+    public function findByChapitreId(int $chapitreId): array
+    {
+        return $this->createQueryBuilder('r')
+            ->innerJoin('r.chapitre', 'ch')
+            ->andWhere('ch.id = :id')
+            ->setParameter('id', $chapitreId)
+            ->orderBy('r.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Ressource[] Returns an array of Ressource objects
     //     */

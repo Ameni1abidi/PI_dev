@@ -15,8 +15,8 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/chapitre')]
 final class ChapitreController extends AbstractController
 {
-  #[Route('/chapitre/{coursId?}', name: 'app_chapitre_index')]
-public function index(?int $coursId = null, ChapitreRepository $chapitreRepo, CoursRepository $coursRepo): Response
+#[Route('/chapitre/{coursId?}', name: 'app_chapitre_index')]
+public function index(ChapitreRepository $chapitreRepo, CoursRepository $coursRepo, ?int $coursId = null): Response
 {
     if ($coursId) {
         $cours = $coursRepo->find($coursId);
@@ -62,7 +62,11 @@ public function new(Request $request, EntityManagerInterface $em): Response
     }
 
     #[Route('/{id}/edit', name: 'app_chapitre_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Chapitre $chapitre, EntityManagerInterface $entityManager): Response
+    public function edit(
+        Request $request,
+        Chapitre $chapitre,
+        EntityManagerInterface $entityManager
+    ): Response
     {
         $form = $this->createForm(ChapitreType::class, $chapitre);
         $form->handleRequest($request);

@@ -25,26 +25,17 @@ class Ressource
     )]
     private ?string $titre = null;
 
-    #[ORM\Column(length: 50)]
-    #[Assert\NotBlank(message: 'Le type est obligatoire.')]
-    #[Assert\Choice(
-        choices: ['document', 'video', 'lien'],
-        message: 'Le type doit etre: document, video ou lien.'
-    )]
-    private ?string $type = null;
-
     #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank(message: 'Le contenu est obligatoire.')]
-    #[Assert\Length(
-        min: 10,
-        minMessage: 'Le contenu doit contenir au moins {{ limit }} caracteres.'
-    )]
     private ?string $contenu = null;
 
     #[ORM\ManyToOne(inversedBy: 'ressources')]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotNull(message: 'La categorie est obligatoire.')]
     private ?Categorie $categorie = null;
+
+    #[ORM\ManyToOne(inversedBy: 'ressources')]
+    #[Assert\NotNull(message: 'Le chapitre est obligatoire.')]
+    private ?Chapitre $chapitre = null;
 
     public function getId(): ?int
     {
@@ -59,18 +50,6 @@ class Ressource
     public function setTitre(string $titre): static
     {
         $this->titre = $titre;
-
-        return $this;
-    }
-
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
-
-    public function setType(string $type): static
-    {
-        $this->type = $type;
 
         return $this;
     }
@@ -95,6 +74,18 @@ class Ressource
     public function setCategorie(?Categorie $categorie): static
     {
         $this->categorie = $categorie;
+
+        return $this;
+    }
+
+    public function getChapitre(): ?Chapitre
+    {
+        return $this->chapitre;
+    }
+
+    public function setChapitre(?Chapitre $chapitre): static
+    {
+        $this->chapitre = $chapitre;
 
         return $this;
     }

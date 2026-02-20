@@ -37,7 +37,8 @@ final class ExamenController extends AbstractController
             if ($uploadedFile !== null) {
                 $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $uploadedFile->guessExtension();
+                $extension = $this->resolveUploadedExtension($uploadedFile);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $extension;
                 $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads/examens';
                 if (!is_dir($uploadDir)) {
                     mkdir($uploadDir, 0775, true);
@@ -85,7 +86,8 @@ final class ExamenController extends AbstractController
             if ($uploadedFile !== null) {
                 $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $uploadedFile->guessExtension();
+                $extension = $this->resolveUploadedExtension($uploadedFile);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $extension;
                 $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads/examens';
                 if (!is_dir($uploadDir)) {
                     mkdir($uploadDir, 0775, true);
@@ -119,5 +121,12 @@ final class ExamenController extends AbstractController
         }
 
         return $this->redirectToRoute('app_examen_index');
+    }
+
+    private function resolveUploadedExtension(UploadedFile $uploadedFile): string
+    {
+        $extension = strtolower((string) pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_EXTENSION));
+
+        return $extension !== '' ? $extension : 'bin';
     }
 }

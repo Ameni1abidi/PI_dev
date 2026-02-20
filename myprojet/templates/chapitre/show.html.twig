@@ -17,7 +17,27 @@
             </tr>
             <tr>
                 <th>Contenu</th>
-                <td>{{ chapitre.contenu }}</td>
+                <td>
+                    {% if chapitre.typeContenu == 'texte' %}
+                        {{ chapitre.contenuTexte ?: 'Aucun contenu texte.' }}
+                    {% elseif chapitre.typeContenu == 'video' %}
+                        {% if chapitre.videoUrl %}
+                            <a href="{{ chapitre.videoUrl }}" target="_blank" rel="noopener">Voir la video</a>
+                        {% else %}
+                            Aucun lien video.
+                        {% endif %}
+                    {% elseif chapitre.typeContenu in ['fichier', 'devoir', 'exercice_corrige'] %}
+                        {% if chapitre.contenuFichier %}
+                            <a href="{{ asset('uploads/chapitres/' ~ chapitre.contenuFichier) }}" target="_blank" rel="noopener">
+                                Ouvrir le fichier
+                            </a>
+                        {% else %}
+                            Aucun fichier.
+                        {% endif %}
+                    {% else %}
+                        Aucun contenu.
+                    {% endif %}
+                </td>
             </tr>
             <tr>
                 <th>Ordre</th>
@@ -30,7 +50,7 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_chapitre_index', {'coursId': cour.id}) }}">Voir Chapitres</a>
+    <a href="{{ path('app_chapitre_index', {'coursId': chapitre.cours.id}) }}">Voir Chapitres</a>
 
     <a href="{{ path('app_chapitre_edit', {'id': chapitre.id}) }}">edit</a>
 

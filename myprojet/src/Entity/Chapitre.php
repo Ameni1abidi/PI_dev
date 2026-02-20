@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ChapitreRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -67,7 +69,13 @@ class Chapitre
     #[Assert\NotNull(message: 'Le cours est obligatoire.')]
     private ?Cours $cours = null;
 
-    
+    #[ORM\OneToMany(targetEntity: Ressource::class, mappedBy: 'chapitre')]
+    private Collection $ressources;
+
+    public function __construct()
+    {
+        $this->ressources = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -161,6 +169,32 @@ public function getVideoUrl(): ?string
 public function setVideoUrl(?string $videoUrl): static
 {
     $this->videoUrl = $videoUrl;
+    return $this;
+}
+
+public function getRessources(): Collection
+{
+    return $this->ressources;
+}
+
+public function addRessource(Ressource $ressource): static
+{
+    if (!$this->ressources->contains($ressource)) {
+        $this->ressources->add($ressource);
+        $ressource->setChapitre($this);
+    }
+
+    return $this;
+}
+
+public function removeRessource(Ressource $ressource): static
+{
+    if ($this->ressources->removeElement($ressource)) {
+        if ($ressource->getChapitre() === $this) {
+            $ressource->setChapitre(null);
+        }
+    }
+
     return $this;
 }
 }

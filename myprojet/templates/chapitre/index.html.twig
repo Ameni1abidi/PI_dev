@@ -70,6 +70,11 @@
           </div>
 
           <div style="margin-top:auto; display:flex; flex-wrap:wrap; gap:5px;">
+            <a href="{{ path('app_ressource_index', {'chapitre_id': chapitre.id}) }}"
+               style="padding:4px 8px; border:1px solid #28a745; color:#28a745; text-decoration:none; border-radius:12px; font-size:0.75rem; font-weight:600;">
+               Ressources
+            </a>
+
             <a href="{{ path('app_chapitre_edit', {'id': chapitre.id}) }}" 
                style="padding:4px 8px; border:1px solid #007bff; color:#007bff; text-decoration:none; border-radius:12px; font-size:0.75rem; font-weight:600;">
                Modifier
