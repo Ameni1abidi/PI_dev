@@ -3,6 +3,8 @@
 namespace App\Form;
 
 use App\Entity\Cours;
+use App\Entity\Utilisateur;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -26,6 +28,12 @@ class CoursType extends AbstractType
     ->add('dateCreation', DateType::class, [
         'widget' => 'single_text',
         'required' => false,
+    ])
+    ->add('enseignant', EntityType::class, [
+        'class' => Utilisateur::class,
+        'choice_label' => 'nom',
+        'required' => false,
+        'placeholder' => 'Sélectionner un enseignant',
     ]);
     }
 

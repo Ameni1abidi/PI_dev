@@ -26,6 +26,19 @@ class CoursRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @return Cours[] Returns courses belonging to a specific teacher
+     */
+    public function findByEnseignant(int $enseignantId): array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.enseignant = :enseignantId')
+            ->setParameter('enseignantId', $enseignantId)
+            ->orderBy('c.dateCreation', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Cours[] Returns an array of Cours objects
     //     */
