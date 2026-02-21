@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Commentaire;
+use App\Service\ProfanityFilterService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,7 +17,8 @@ class CommentaireController extends AbstractController
     public function edit(
         Request $request,
         Commentaire $commentaire,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        ProfanityFilterService $profanityFilterService
     ): Response {
 
         if ($request->isMethod('POST')) {
@@ -24,6 +26,16 @@ class CommentaireController extends AbstractController
             $contenu = $request->request->get('contenu');
 
             if ($contenu) {
+                $badWords = $profanityFilterService->findInappropriateWords((string) $contenu);
+                if ($badWords !== []) {
+                    $this->addFlash(
+                        'error',
+                        'Commentaire refuse: mots inappropries detectes (' . implode(', ', $badWords) . ').'
+                    );
+
+                    return $this->redirectToRoute('app_forum_index');
+                }
+
                 $commentaire->setContenu($contenu);
                 $entityManager->flush();
             }

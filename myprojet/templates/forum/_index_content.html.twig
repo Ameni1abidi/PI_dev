@@ -3,10 +3,10 @@
     <div class="forum-header">
         <div>
             <h1>Forum</h1>
-            <div class="forum-meta">Discussions de la communauté</div>
+            <div class="forum-meta">Discussions de la communaute</div>
         </div>
         <a href="{{ path(forum_routes.new, forum_route_params) }}" class="btn btn-primary">
-            Créer un sujet
+            Creer un sujet
         </a>
     </div>
 
@@ -38,7 +38,7 @@
 
                 <div class="forum-meta">
                     Type : {{ forum.type }} |
-                    Créé le {{ forum.dateCreation|date('d/m/Y H:i') }}
+                    Cree le {{ forum.dateCreation|date('d/m/Y H:i') }}
                 </div>
 
                 <div class="forum-content">
@@ -67,30 +67,53 @@
                         <p class="comment-empty">Aucun commentaire.</p>
                     {% else %}
                         {% for commentaire in forum.commentaires %}
-                            <div class="comment-box">
+                            {% set isAiComment = commentaire.contenu starts with '[Bot IA] ' %}
+                            <div class="comment-box" data-comment-id="{{ commentaire.id }}">
 
                                 <div class="comment-date">
                                     {{ commentaire.dateEnvoi|date('d/m/Y H:i') }}
+                                    {% if isAiComment %}
+                                        | Assistant IA
+                                    {% endif %}
                                 </div>
 
                                 <div>
-                                    {{ commentaire.contenu }}
+                                    {% if isAiComment %}
+                                        {{ commentaire.contenu|replace({'[Bot IA] ': ''}) }}
+                                    {% else %}
+                                        {{ commentaire.contenu }}
+                                    {% endif %}
                                 </div>
+                                {% if not isAiComment %}
+                                    <div class="comment-translate" data-translate-url="{{ path(forum_routes.comment_translate, forum_route_params|merge({'id': commentaire.id})) }}">
+                                        <select class="comment-translate-select" aria-label="Choisir une langue">
+                                            <option value="">Traduire...</option>
+                                            <option value="fr">Francais</option>
+                                            <option value="en">English</option>
+                                            <option value="es">Espanol</option>
+                                            <option value="de">Deutsch</option>
+                                            <option value="it">Italiano</option>
+                                            <option value="ar">Arabic</option>
+                                        </select>
+                                        <div class="comment-translation-result" hidden></div>
+                                    </div>
+                                    <div class="comment-reactions" data-comment-id="{{ commentaire.id }}"></div>
 
-                                <a href="{{ path(forum_routes.comment_edit, forum_route_params|merge({'id': commentaire.id})) }}"
-                                   class="comment-edit">
-                                   Modifier
-                                </a>
+                                    <a href="{{ path(forum_routes.comment_edit, forum_route_params|merge({'id': commentaire.id})) }}"
+                                       class="comment-edit">
+                                       Modifier
+                                    </a>
 
-                                <form method="post"
-                                      action="{{ path(forum_routes.comment_delete, forum_route_params|merge({'id': commentaire.id})) }}"
-                                      onsubmit="return confirm('Supprimer ce commentaire ?');">
+                                    <form method="post"
+                                          action="{{ path(forum_routes.comment_delete, forum_route_params|merge({'id': commentaire.id})) }}"
+                                          onsubmit="return confirm('Supprimer ce commentaire ?');">
 
-                                    <button type="submit" class="comment-delete">
-                                        Supprimer
-                                    </button>
+                                        <button type="submit" class="comment-delete">
+                                            Supprimer
+                                        </button>
 
-                                </form>
+                                    </form>
+                                {% endif %}
 
                             </div>
                         {% endfor %}
@@ -98,7 +121,7 @@
 
                     <form method="post" class="comment-form">
                         <input type="hidden" name="forum_id" value="{{ forum.id }}">
-                        <textarea name="contenu" rows="3" placeholder="Écrire un commentaire..." required></textarea>
+                        <textarea name="contenu" rows="3" placeholder="Ecrire un commentaire..." required></textarea>
                         <button type="submit">Commenter</button>
                     </form>
 
@@ -111,3 +134,50 @@
     {% endif %}
 
 </div>
+
+<script defer src="{{ asset('dist/forum-emoji.js') }}"></script>
+<script>
+document.addEventListener('change', async function (event) {
+    const select = event.target.closest('.comment-translate-select');
+    if (!select) {
+        return;
+    }
+
+    const wrapper = select.closest('.comment-translate');
+    if (!wrapper) {
+        return;
+    }
+
+    const result = wrapper.querySelector('.comment-translation-result');
+    const target = select.value;
+
+    if (!target) {
+        result.textContent = '';
+        result.hidden = true;
+        return;
+    }
+
+    result.hidden = false;
+    result.textContent = 'Traduction...';
+
+    try {
+        const response = await fetch(wrapper.dataset.translateUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({ target: target })
+        });
+
+        const data = await response.json();
+        if (!response.ok || !data.success) {
+            throw new Error(data.message || 'Erreur de traduction.');
+        }
+
+        result.textContent = '🌍 ' + data.translatedText;
+    } catch (e) {
+        result.textContent = 'Erreur de traduction.';
+    }
+});
+</script>
