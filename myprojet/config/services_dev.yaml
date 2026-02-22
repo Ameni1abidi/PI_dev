@@ -1,0 +1,5 @@
+services:
+    knpu.oauth2.dev_http_client:
+        class: GuzzleHttp\Client
+        arguments:
+            - { verify: false, timeout: 30 }

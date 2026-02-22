@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduFlex - Espace Eleve</title>
+    <title>{% block title %}EduFlex - Espace Eleve{% endblock %}</title>
     <link rel="stylesheet" href="{{ asset('student/css/student.css') }}">
 </head>
 <body>
@@ -63,5 +63,6 @@
     </main>
 
 </div>
+{% block javascripts %}{% endblock %}
 </body>
 </html>

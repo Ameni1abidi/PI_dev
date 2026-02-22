@@ -86,6 +86,16 @@
       position: relative;
       z-index: 3;
     }
+
+    #contact-form .password-toggle-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: -10px 0 14px;
+      color: #ffffff;
+      position: relative;
+      z-index: 3;
+    }
   </style>
 {% endblock %}
 
@@ -130,7 +140,7 @@
                       <li class="scroll-to-section"><a href="#team">Team</a></li>
                       <li class="scroll-to-section"><a href="#events">Events</a></li>
                       <li><a href="{{ path('app_register') }}">Inscription</a></li>
-                      <li><a href="{{ path('app_login') }}">Login</a></li>
+                      <li><a href="{{ path('app_login') }}">Connexion</a></li>
                   </ul>   
                     <a class='menu-trigger'>
                         <span>Menu</span>
@@ -727,9 +737,22 @@
                   </div>
                   <div class="col-lg-12">
                     <fieldset>
-                      {{ form_widget(registrationForm.plainPassword, { attr: { placeholder: 'Mot de passe...', class: 'auth-input' } }) }}
+                      {{ form_widget(registrationForm.plainPassword.first, { attr: { placeholder: 'Mot de passe...', class: 'auth-input js-register-password' } }) }}
+                      {{ form_errors(registrationForm.plainPassword.first) }}
+                    </fieldset>
+                  </div>
+                  <div class="col-lg-12">
+                    <fieldset>
+                      {{ form_widget(registrationForm.plainPassword.second, { attr: { placeholder: 'Confirmer le mot de passe...', class: 'auth-input js-register-password' } }) }}
+                      {{ form_errors(registrationForm.plainPassword.second) }}
                       {{ form_errors(registrationForm.plainPassword) }}
                     </fieldset>
+                  </div>
+                  <div class="col-lg-12">
+                    <label class="password-toggle-wrap">
+                      <input type="checkbox" id="toggle-register-passwords">
+                      Afficher les mots de passe
+                    </label>
                   </div>
                   <div class="col-lg-12">
                     <fieldset>
@@ -742,8 +765,17 @@
                       {{ form_widget(registrationForm.agreeTerms, { attr: { class: 'auth-check' } }) }}
                       {{ form_label(registrationForm.agreeTerms, null, { label_attr: { class: 'auth-check-label' } }) }}
                     </fieldset>
-                    {{ form_errors(registrationForm.agreeTerms) }}
+                    {% if registrationForm.agreeTerms.vars.errors|length > 0 %}
+                      <div class="auth-field-error">
+                        {{ form_errors(registrationForm.agreeTerms) }}
+                      </div>
+                    {% endif %}
                   </div>
+                  {% if recaptcha_enabled is defined and recaptcha_enabled and recaptcha_site_key is defined and recaptcha_site_key %}
+                    <div class="col-lg-12">
+                      <div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div>
+                    </div>
+                  {% endif %}
                   <div class="col-lg-12">
                     <fieldset>
                       <button type="submit" id="form-submit" class="orange-button">S'inscrire</button>
@@ -759,6 +791,11 @@
             {% else %}
               <form id="contact-form" action="{{ path('app_login') }}" method="post" novalidate>
                 <div class="row">
+                  {% for message in app.flashes('error') %}
+                    <div class="col-lg-12">
+                      <div class="alert alert-danger">{{ message }}</div>
+                    </div>
+                  {% endfor %}
                   {% if error is defined and error %}
                     <div class="col-lg-12">
                       <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
@@ -779,18 +816,26 @@
                     {% if login_password_error is defined and login_password_error %}
                       <div class="auth-field-error">{{ login_password_error }}</div>
                     {% endif %}
+                    <div class="auth-switch">
+                      <a href="{{ path('app_forgot_password_request') }}">Mot de passe oublie ?</a>
+                    </div>
                   </div>
                   <div class="col-lg-12">
                     <fieldset>
                       <label class="auth-check-wrap">
-                        <input class="auth-check" type="checkbox" name="_remember_me"> Remember me
+                        <input class="auth-check" type="checkbox" name="_remember_me"> Se souvenir de moi
                       </label>
                       <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
                     </fieldset>
                   </div>
                   <div class="col-lg-12">
                     <fieldset>
-                      <button type="submit" id="form-submit" class="orange-button">Sign in</button>
+                      <button type="submit" id="form-submit" class="orange-button">Se connecter</button>
+                    </fieldset>
+                  </div>
+                  <div class="col-lg-12">
+                    <fieldset>
+                      <a href="{{ path('connect_google_start') }}" class="orange-button" style="display:inline-block;text-align:center;">Continuer avec Google</a>
                     </fieldset>
                   </div>
                   <div class="col-lg-12">
@@ -848,6 +893,26 @@
       });
     })();
   </script>
+  {% endif %}
+  <script>
+    (function () {
+      var toggle = document.getElementById('toggle-register-passwords');
+      if (!toggle) {
+        return;
+      }
+
+      toggle.addEventListener('change', function () {
+        var fields = document.querySelectorAll('.js-register-password');
+        var type = toggle.checked ? 'text' : 'password';
+
+        fields.forEach(function (field) {
+          field.type = type;
+        });
+      });
+    })();
+  </script>
+  {% if recaptcha_enabled is defined and recaptcha_enabled %}
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   {% endif %}
 {% endblock %}
 

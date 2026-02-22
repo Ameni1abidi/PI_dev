@@ -1,6 +1,6 @@
 ﻿{% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}Connexion{% endblock %}
 
 {% block stylesheets %}
 <style>
@@ -23,32 +23,42 @@
 <div class="row justify-content-center">
     <div class="col-md-6 col-lg-5">
         <form method="post">
+            {% for message in app.flashes('error') %}
+                <div class="alert alert-danger">{{ message }}</div>
+            {% endfor %}
             {% if error %}
                 <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
             {% endif %}
 
             {% if app.user %}
                 <div class="mb-3">
-                    You are logged in as {{ app.user.userIdentifier }}, <a href="{{ logout_path() }}">Logout</a>
+                    Vous etes connecte en tant que {{ app.user.userIdentifier }}, <a href="{{ logout_path() }}">Deconnexion</a>
                 </div>
             {% endif %}
 
-            <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-            <label for="inputemail">email</label>
+            <h1 class="h3 mb-3 font-weight-normal">Connectez-vous</h1>
+            <label for="inputemail">Email</label>
             <input type="text" value="{{ last_username }}" name="email" id="inputemail" class="form-control" autocomplete="username" required autofocus>
-            <label for="inputPassword">Password</label>
+            <label for="inputPassword">Mot de passe</label>
             <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
             <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
+            <div class="mb-2">
+                <a href="{{ path('app_forgot_password_request') }}">Mot de passe oublie ?</a>
+            </div>
 
             <div class="checkbox mb-3">
                 <label>
-                    <input type="checkbox" name="_remember_me"> Remember me
+                    <input type="checkbox" name="_remember_me"> Se souvenir de moi
                 </label>
             </div>
 
             <button class="btn btn-lg w-100 btn-register" type="submit">
-                Sign in
+                Se connecter
             </button>
+
+            <a class="btn btn-lg w-100 btn-register mt-2" href="{{ path('connect_google_start') }}">
+                Continuer avec Google
+            </a>
         </form>
     </div>
 </div>

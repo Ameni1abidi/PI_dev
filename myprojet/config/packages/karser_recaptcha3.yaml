@@ -1,0 +1,6 @@
+karser_recaptcha3:
+    enabled: false
+    site_key: ''
+    secret_key: ''
+    score_threshold: 0.5
+

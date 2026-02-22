@@ -67,6 +67,14 @@
       <main class="teacher-main">
         <div class="container mt-5 pt-5">
           <div class="card shadow p-4">
+            {% for label, messages in app.flashes %}
+              {% for message in messages %}
+                <div class="alert alert-{{ label == 'error' ? 'danger' : label }} mb-3" role="alert">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            {% endfor %}
+
             {% block crud_content %}{% endblock %}
             {% block body %}{% endblock %}
           </div>
