@@ -1465,6 +1465,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  * @psalm-type CmenGoogleChartsConfig = array{
  *     version?: scalar|Param|null, // Default: "current"
  *     language?: scalar|Param|null, // Default: ""
+ * }
  * @psalm-type SymfonycastsResetPasswordConfig = array{
  *     request_password_repository: scalar|Param|null, // A class that implements ResetPasswordRequestRepositoryInterface - usually your ResetPasswordRequestRepository.
  *     lifetime?: int|Param, // The length of time in seconds that a password reset request is valid for after it is created. // Default: 3600
@@ -1667,4 +1668,3 @@ final class Routes
         return $config;
     }
 }
-

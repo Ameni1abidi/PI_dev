@@ -6,14 +6,26 @@
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
     <style>
-        .admin-table {
-            table-layout: fixed;
+        .admin-table-scroll {
             width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 6px;
+        }
+
+        .admin-table {
+            width: 100%;
+            min-width: 1400px;
+            table-layout: auto;
         }
 
         .admin-table th:last-child,
         .admin-table td:last-child {
             width: 180px;
+        }
+
+        .admin-table thead th {
+            white-space: nowrap;
         }
 
         .admin-table td:last-child {
@@ -79,6 +91,7 @@
         </div>
     {% endif %}
 
+    <div class="admin-table-scroll">
     <table class="admin-table">
         <thead>
             <tr>
@@ -150,4 +163,5 @@
         {% endfor %}
         </tbody>
     </table>
+    </div>
 {% endblock %}
