@@ -23,7 +23,6 @@ class Examen
     private ?string $titre = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank(message: 'Le contenu est obligatoire.')]
     private ?string $contenu = null;
 
     #[ORM\Column(length: 20)]
@@ -104,7 +103,7 @@ class Examen
         return $this->dateExamen;
     }
 
-    public function setDateExamen(\DateTimeInterface $dateExamen): static
+    public function setDateExamen(?\DateTimeInterface $dateExamen): static
     {
         $this->dateExamen = $dateExamen;
         return $this;

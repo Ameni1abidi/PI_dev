@@ -47,6 +47,10 @@ class Cours
     #[ORM\OneToMany(targetEntity: Chapitre::class, mappedBy: 'cours', orphanRemoval: true, cascade: ['persist'])]
 private Collection $chapitres;
 
+    #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: 'cours')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Utilisateur $enseignant = null;
+
     public function __construct()
     {
         $this->chapitres = new ArrayCollection();
@@ -135,6 +139,15 @@ private Collection $chapitres;
         return $this;
     }
 
-    
+    public function getEnseignant(): ?Utilisateur
+    {
+        return $this->enseignant;
+    }
+
+    public function setEnseignant(?Utilisateur $enseignant): static
+    {
+        $this->enseignant = $enseignant;
+        return $this;
+    }
 
 }
