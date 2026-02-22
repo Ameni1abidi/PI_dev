@@ -12,6 +12,7 @@ use App\Entity\Resultat;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -23,7 +24,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank(message: "Le nom est obligatoire")]
     #[Assert\Length(
         min: 3,
-        minMessage: "Le nom doit contenir au moins {{ limit }} caractères"
+        minMessage: "Le nom doit contenir au moins {{ limit }} caracteres"
     )]
     private ?string $nom = null;
 
@@ -31,7 +32,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 200)]
-    #[Assert\NotBlank(message: "L’email est obligatoire")]
+    #[Assert\NotBlank(message: "L'email est obligatoire")]
     #[Assert\Email(message: "Veuillez saisir une adresse email valide")]
     private ?string $email = null;
 
@@ -40,19 +41,17 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'boolean')]
     private bool $isVerified = false;
-    
+
+    #[ORM\Column(type: 'datetime_immutable')]
+    private ?\DateTimeImmutable $createdAt = null;
+
     #[ORM\OneToMany(mappedBy: 'etudiant', targetEntity: Resultat::class)]
     private Collection $resultats;
 
     public function __construct()
     {
-    $this->resultats = new ArrayCollection();
+        $this->resultats = new ArrayCollection();
     }
-
-
-    /* =========================
-       Getters & Setters
-       ========================= */
 
     public function getId(): ?int
     {
@@ -67,6 +66,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setNom(string $nom): self
     {
         $this->nom = $nom;
+
         return $this;
     }
 
@@ -78,6 +78,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): self
     {
         $this->email = $email;
+
         return $this;
     }
 
@@ -89,6 +90,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): self
     {
         $this->password = $password;
+
         return $this;
     }
 
@@ -100,6 +102,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setRole(string $role): self
     {
         $this->role = $role;
+
         return $this;
     }
 
@@ -107,30 +110,32 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return [$this->role ?? 'ROLE_USER'];
     }
+
     public function getResultats(): Collection
-{
-    return $this->resultats;
-}
-
-public function addResultat(Resultat $resultat): self
-{
-    if (!$this->resultats->contains($resultat)) {
-        $this->resultats->add($resultat);
-        $resultat->setEtudiant($this);
+    {
+        return $this->resultats;
     }
-    return $this;
-}
 
-public function removeResultat(Resultat $resultat): self
-{
-    if ($this->resultats->removeElement($resultat)) {
-        if ($resultat->getEtudiant() === $this) {
-            $resultat->setEtudiant(null);
+    public function addResultat(Resultat $resultat): self
+    {
+        if (!$this->resultats->contains($resultat)) {
+            $this->resultats->add($resultat);
+            $resultat->setEtudiant($this);
         }
-    }
-    return $this;
-}
 
+        return $this;
+    }
+
+    public function removeResultat(Resultat $resultat): self
+    {
+        if ($this->resultats->removeElement($resultat)) {
+            if ($resultat->getEtudiant() === $this) {
+                $resultat->setEtudiant(null);
+            }
+        }
+
+        return $this;
+    }
 
     public function getUserIdentifier(): string
     {
@@ -139,7 +144,6 @@ public function removeResultat(Resultat $resultat): self
 
     public function eraseCredentials(): void
     {
-        // À utiliser si tu stockes des données sensibles temporaires
     }
 
     public function isVerified(): bool
@@ -150,6 +154,27 @@ public function removeResultat(Resultat $resultat): self
     public function setIsVerified(bool $isVerified): self
     {
         $this->isVerified = $isVerified;
+
         return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function initializeCreatedAt(): void
+    {
+        if ($this->createdAt === null) {
+            $this->createdAt = new \DateTimeImmutable();
+        }
     }
 }
