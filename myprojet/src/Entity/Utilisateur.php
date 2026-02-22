@@ -44,9 +44,30 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'etudiant', targetEntity: Resultat::class)]
     private Collection $resultats;
 
+    /**
+     * @var Collection<int, RessourceLike>
+     */
+    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: RessourceLike::class, orphanRemoval: true)]
+    private Collection $ressourceLikes;
+
+    /**
+     * @var Collection<int, RessourceFavori>
+     */
+    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: RessourceFavori::class, orphanRemoval: true)]
+    private Collection $ressourceFavoris;
+
+    /**
+     * @var Collection<int, RessourceInteraction>
+     */
+    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: RessourceInteraction::class)]
+    private Collection $ressourceInteractions;
+
     public function __construct()
     {
-    $this->resultats = new ArrayCollection();
+        $this->resultats = new ArrayCollection();
+        $this->ressourceLikes = new ArrayCollection();
+        $this->ressourceFavoris = new ArrayCollection();
+        $this->ressourceInteractions = new ArrayCollection();
     }
 
 
@@ -128,6 +149,84 @@ public function removeResultat(Resultat $resultat): self
             $resultat->setEtudiant(null);
         }
     }
+    return $this;
+}
+
+public function getRessourceLikes(): Collection
+{
+    return $this->ressourceLikes;
+}
+
+public function addRessourceLike(RessourceLike $ressourceLike): self
+{
+    if (!$this->ressourceLikes->contains($ressourceLike)) {
+        $this->ressourceLikes->add($ressourceLike);
+        $ressourceLike->setUtilisateur($this);
+    }
+
+    return $this;
+}
+
+public function removeRessourceLike(RessourceLike $ressourceLike): self
+{
+    if ($this->ressourceLikes->removeElement($ressourceLike)) {
+        if ($ressourceLike->getUtilisateur() === $this) {
+            $ressourceLike->setUtilisateur(null);
+        }
+    }
+
+    return $this;
+}
+
+public function getRessourceFavoris(): Collection
+{
+    return $this->ressourceFavoris;
+}
+
+public function addRessourceFavori(RessourceFavori $ressourceFavori): self
+{
+    if (!$this->ressourceFavoris->contains($ressourceFavori)) {
+        $this->ressourceFavoris->add($ressourceFavori);
+        $ressourceFavori->setUtilisateur($this);
+    }
+
+    return $this;
+}
+
+public function removeRessourceFavori(RessourceFavori $ressourceFavori): self
+{
+    if ($this->ressourceFavoris->removeElement($ressourceFavori)) {
+        if ($ressourceFavori->getUtilisateur() === $this) {
+            $ressourceFavori->setUtilisateur(null);
+        }
+    }
+
+    return $this;
+}
+
+public function getRessourceInteractions(): Collection
+{
+    return $this->ressourceInteractions;
+}
+
+public function addRessourceInteraction(RessourceInteraction $ressourceInteraction): self
+{
+    if (!$this->ressourceInteractions->contains($ressourceInteraction)) {
+        $this->ressourceInteractions->add($ressourceInteraction);
+        $ressourceInteraction->setUtilisateur($this);
+    }
+
+    return $this;
+}
+
+public function removeRessourceInteraction(RessourceInteraction $ressourceInteraction): self
+{
+    if ($this->ressourceInteractions->removeElement($ressourceInteraction)) {
+        if ($ressourceInteraction->getUtilisateur() === $this) {
+            $ressourceInteraction->setUtilisateur(null);
+        }
+    }
+
     return $this;
 }
 

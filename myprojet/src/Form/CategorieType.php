@@ -19,6 +19,7 @@ class CategorieType extends AbstractType
                     'Audio' => 'audio',
                     'Lien' => 'lien',
                     'Image' => 'image',
+                    'PDF' => 'pdf',
                 ],
                 'placeholder' => 'Choisir une categorie',
                 'required' => true,

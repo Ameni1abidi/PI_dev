@@ -1,0 +1,139 @@
+{% extends 'enseignant/dashboard_base.html.twig' %}
+
+{% block title %}Dashboard Ressources{% endblock %}
+
+{% block body %}
+<div style="padding:20px; background:#f8fafc; border-radius:16px;">
+  <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:16px; flex-wrap:wrap;">
+    <div>
+      <h2 style="margin:0; color:#0f172a;">Dashboard des ressources</h2>
+      <div style="margin-top:4px; color:#475569;">
+        {% if chapitre is not null %}
+          Chapitre: {{ chapitre.titre }} | Cours: {{ cours ? cours.titre : '' }}
+        {% else %}
+          Vue globale: toutes les ressources
+        {% endif %}
+      </div>
+    </div>
+    <div style="display:flex; gap:8px;">
+      <button id="refresh-dashboard" style="padding:8px 12px; border:none; background:#dcfce7; color:#166534; border-radius:999px; font-weight:700; cursor:pointer;">Actualiser (Ajax)</button>
+      <a href="{{ path('app_ressource_calendar', chapitre_id is defined and chapitre_id > 0 ? {'chapitre_id': chapitre_id} : {}) }}" style="padding:8px 12px; background:#e2e8f0; border-radius:999px; text-decoration:none; color:#0f172a; font-weight:700;">Calendrier</a>
+      <a href="{{ path('app_ressource_index', chapitre_id is defined and chapitre_id > 0 ? {'chapitre_id': chapitre_id} : {}) }}" style="padding:8px 12px; background:#dbeafe; border-radius:999px; text-decoration:none; color:#1e3a8a; font-weight:700;">Retour ressources</a>
+    </div>
+  </div>
+
+  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px; margin-bottom:16px;">
+    <div style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:12px;">
+      <div style="color:#64748b; font-size:0.85rem;">Total vues</div>
+      <div id="kpi-vues" style="font-size:1.4rem; font-weight:800;">{{ summary.totalVues }}</div>
+    </div>
+    <div style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:12px;">
+      <div style="color:#64748b; font-size:0.85rem;">Total likes</div>
+      <div id="kpi-likes" style="font-size:1.4rem; font-weight:800;">{{ summary.totalLikes }}</div>
+    </div>
+    <div style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:12px;">
+      <div style="color:#64748b; font-size:0.85rem;">Total favoris</div>
+      <div id="kpi-favoris" style="font-size:1.4rem; font-weight:800;">{{ summary.totalFavoris }}</div>
+    </div>
+    <div style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:12px;">
+      <div style="color:#64748b; font-size:0.85rem;">Score moyen</div>
+      <div id="kpi-score" style="font-size:1.4rem; font-weight:800;">{{ summary.scoreMoyen }}</div>
+    </div>
+  </div>
+
+  <div style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:12px; margin-bottom:16px;">
+    <strong>Top ressources</strong>
+    <ol id="top-ressources" style="margin:8px 0 0 18px;">
+      {% for row in top_ressources %}
+        <li>{{ row.titre }} - score {{ row.score }} ({{ row.categorie }})</li>
+      {% endfor %}
+    </ol>
+    <div id="last-refresh" style="margin-top:8px; color:#64748b; font-size:0.82rem;">Derniere mise a jour: chargement initial</div>
+  </div>
+
+  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(360px,1fr)); gap:12px;">
+    <div id="chart-engagement" style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; min-height:380px;"></div>
+    <div id="chart-ranking" style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; min-height:380px;"></div>
+    <div id="chart-category" style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; min-height:380px;"></div>
+    <div id="chart-timeline" style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; min-height:380px;"></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+    (function () {
+      const payload = {{ chart_payload|json_encode|raw }};
+
+      function drawAllCharts() {
+        try {
+          const engagementData = google.visualization.arrayToDataTable(payload.engagement);
+          const rankingData = google.visualization.arrayToDataTable(payload.ranking);
+          const categoryData = google.visualization.arrayToDataTable(payload.category);
+          const timelineData = google.visualization.arrayToDataTable(payload.timeline);
+
+          new google.visualization.ColumnChart(document.getElementById('chart-engagement')).draw(
+            engagementData,
+            { title: 'Engagement par ressource', height: 360, legend: { position: 'top' } }
+          );
+          new google.visualization.ColumnChart(document.getElementById('chart-ranking')).draw(
+            rankingData,
+            { title: 'Top ressources par score', height: 360, legend: { position: 'none' } }
+          );
+          new google.visualization.PieChart(document.getElementById('chart-category')).draw(
+            categoryData,
+            { title: 'Repartition des ressources par categorie', height: 360 }
+          );
+          new google.visualization.LineChart(document.getElementById('chart-timeline')).draw(
+            timelineData,
+            { title: 'Evolution des interactions (30 jours)', height: 360, legend: { position: 'top' } }
+          );
+        } catch (e) {
+          console.error('Erreur Google Charts:', e);
+          ['chart-engagement', 'chart-ranking', 'chart-category', 'chart-timeline'].forEach(function (id) {
+            const el = document.getElementById(id);
+            if (el) {
+              el.innerHTML = '<div style="padding:16px;color:#b91c1c;font-weight:700;">Erreur affichage graphique</div>';
+            }
+          });
+        }
+      }
+
+      google.charts.load('current', {packages: ['corechart']});
+      google.charts.setOnLoadCallback(drawAllCharts);
+      window.addEventListener('resize', drawAllCharts);
+    })();
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const btn = document.getElementById('refresh-dashboard');
+      const endpoint = '{{ path('app_ressource_dashboard_data', chapitre_id is defined and chapitre_id > 0 ? {'chapitre_id': chapitre_id} : {}) }}';
+      if (!btn) {
+        return;
+      }
+
+      btn.addEventListener('click', function () {
+        fetch(endpoint)
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            document.getElementById('kpi-vues').textContent = data.summary.totalVues;
+            document.getElementById('kpi-likes').textContent = data.summary.totalLikes;
+            document.getElementById('kpi-favoris').textContent = data.summary.totalFavoris;
+            document.getElementById('kpi-score').textContent = data.summary.scoreMoyen;
+
+            const top = document.getElementById('top-ressources');
+            top.innerHTML = '';
+            (data.topRessources || []).forEach(function (row) {
+              const li = document.createElement('li');
+              li.textContent = row.titre + ' - score ' + row.score + ' (' + row.categorie + ')';
+              top.appendChild(li);
+            });
+
+            document.getElementById('last-refresh').textContent = 'Derniere mise a jour: ' + data.generatedAt;
+          });
+      });
+    });
+  </script>
+{% endblock %}

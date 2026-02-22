@@ -7,6 +7,8 @@
         "php": ">=8.4",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "cloudinary/cloudinary_php": "^3.1",
+        "cmen/google-charts-bundle": "^7.1",
         "doctrine/doctrine-bundle": "^3.2.2",
         "doctrine/doctrine-migrations-bundle": "^4.0",
         "doctrine/orm": "^3.6.2",
@@ -43,6 +45,7 @@
         "symfony/web-link": "8.0.*",
         "symfony/yaml": "8.0.*",
         "symfonycasts/verify-email-bundle": "*",
+        "tattali/calendar-bundle": "^8.2",
         "twig/extra-bundle": "^2.12|^3.23",
         "twig/twig": "^2.12|^3.23"
     },

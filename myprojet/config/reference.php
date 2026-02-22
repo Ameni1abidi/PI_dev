@@ -1458,6 +1458,14 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  * @psalm-type SymfonycastsVerifyEmailConfig = array{
  *     lifetime?: int|Param, // The length of time in seconds that a signed URI is valid for after it is created. // Default: 3600
  * }
+ * @psalm-type CalendarConfig = array{
+ *     cache_max_age?: int|Param, // HTTP cache max-age in seconds (0 to disable) // Default: 300
+ *     json_max_depth?: int|Param, // Maximum JSON nesting depth for filters parameter // Default: 4
+ * }
+ * @psalm-type CmenGoogleChartsConfig = array{
+ *     version?: scalar|Param|null, // Default: "current"
+ *     language?: scalar|Param|null, // Default: ""
+ * }
  * @psalm-type ConfigType = array{
  *     imports?: ImportsConfig,
  *     parameters?: ParametersConfig,
@@ -1472,6 +1480,8 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     security?: SecurityConfig,
  *     monolog?: MonologConfig,
  *     symfonycasts_verify_email?: SymfonycastsVerifyEmailConfig,
+ *     calendar?: CalendarConfig,
+ *     cmen_google_charts?: CmenGoogleChartsConfig,
  *     "when@dev"?: array{
  *         imports?: ImportsConfig,
  *         parameters?: ParametersConfig,
@@ -1489,6 +1499,8 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         monolog?: MonologConfig,
  *         maker?: MakerConfig,
  *         symfonycasts_verify_email?: SymfonycastsVerifyEmailConfig,
+ *         calendar?: CalendarConfig,
+ *         cmen_google_charts?: CmenGoogleChartsConfig,
  *     },
  *     "when@prod"?: array{
  *         imports?: ImportsConfig,
@@ -1504,6 +1516,8 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         security?: SecurityConfig,
  *         monolog?: MonologConfig,
  *         symfonycasts_verify_email?: SymfonycastsVerifyEmailConfig,
+ *         calendar?: CalendarConfig,
+ *         cmen_google_charts?: CmenGoogleChartsConfig,
  *     },
  *     "when@test"?: array{
  *         imports?: ImportsConfig,
@@ -1520,6 +1534,8 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         security?: SecurityConfig,
  *         monolog?: MonologConfig,
  *         symfonycasts_verify_email?: SymfonycastsVerifyEmailConfig,
+ *         calendar?: CalendarConfig,
+ *         cmen_google_charts?: CmenGoogleChartsConfig,
  *     },
  *     ...<string, ExtensionType|array{ // extra keys must follow the when@%env% pattern or match an extension alias
  *         imports?: ImportsConfig,

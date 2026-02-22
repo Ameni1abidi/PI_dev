@@ -9,6 +9,7 @@ use App\Repository\CategorieRepository;
 use App\Repository\ChapitreRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
@@ -24,6 +25,11 @@ class RessourceType extends AbstractType
             ->add('titre', TextType::class, [
                 'required' => true,
                 'trim' => true,
+            ])
+            ->add('availableAt', DateTimeType::class, [
+                'required' => false,
+                'widget' => 'single_text',
+                'label' => 'Date de disponibilite',
             ])
             ->add('videoUrl', UrlType::class, [
                 'mapped' => false,
@@ -85,6 +91,16 @@ class RessourceType extends AbstractType
                     ),
                 ],
             ])
+            ->add('documentFile', FileType::class, [
+                'mapped' => false,
+                'required' => false,
+                'label' => 'Document PDF',
+                'constraints' => [
+                    new Assert\File(
+                        maxSize: '20M'
+                    ),
+                ],
+            ])
             ->add('categorie', EntityType::class, [
                 'class' => Categorie::class,
                 'choice_label' => 'nom',
@@ -96,7 +112,7 @@ class RessourceType extends AbstractType
                 'query_builder' => static function (CategorieRepository $repository) {
                     return $repository->createQueryBuilder('c')
                         ->andWhere('LOWER(c.nom) IN (:noms)')
-                        ->setParameter('noms', ['video', 'audio', 'lien', 'image'])
+                        ->setParameter('noms', ['video', 'audio', 'lien', 'image', 'pdf'])
                         ->orderBy('c.nom', 'ASC');
                 },
                 'placeholder' => 'Choisir une categorie',

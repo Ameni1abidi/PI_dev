@@ -5,6 +5,50 @@
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+    <style>
+        .admin-table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        .admin-table th:last-child,
+        .admin-table td:last-child {
+            width: 180px;
+        }
+
+        .admin-table td:last-child {
+            white-space: nowrap;
+        }
+
+        .ressource-contenu-inline {
+            display: inline-block;
+            max-width: 280px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+
+        @media (max-width: 980px) {
+            .admin-table th:last-child,
+            .admin-table td:last-child {
+                width: 140px;
+            }
+
+            .ressource-contenu-inline {
+                max-width: 180px;
+            }
+        }
+
+        .ressource-contenu-link {
+            color: #1f4b7a;
+            text-decoration: none;
+        }
+
+        .ressource-contenu-link:hover {
+            text-decoration: underline;
+        }
+    </style>
 {% endblock %}
 
 {% block body %}
@@ -18,9 +62,22 @@
             {% if (categorie_nom is defined and categorie_nom != '') or (chapitre_id is defined and chapitre_id > 0) %}
                 <a class="btn btn-outline" href="{{ path('app_ressource_index') }}">Voir toutes</a>
             {% endif %}
+            <a class="btn btn-outline" href="{{ path('app_ressource_calendar', chapitre_id is defined and chapitre_id > 0 ? {'chapitre_id': chapitre_id} : {}) }}">Calendrier</a>
+            <a class="btn btn-outline" href="{{ path('app_ressource_dashboard', chapitre_id is defined and chapitre_id > 0 ? {'chapitre_id': chapitre_id} : {}) }}">Dashboard</a>
             <a class="btn btn-primary" href="{{ path('app_ressource_new') }}">Creer</a>
         </div>
     </div>
+
+    {% if top_ressources is defined and top_ressources is not empty %}
+        <div class="admin-card" style="margin-bottom:16px; padding:12px 14px;">
+            <strong>Top 3 ressources du chapitre</strong>
+            <ul style="margin:8px 0 0 20px;">
+                {% for top in top_ressources %}
+                    <li>{{ top.titre }} - score {{ top.score }} ({{ top.badge }})</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
 
     <table class="admin-table">
         <thead>
@@ -29,6 +86,13 @@
                 <th>Titre</th>
                 <th>Categorie</th>
                 <th>Chapitre</th>
+                <th>Disponible le</th>
+                <th>Statut</th>
+                <th>Vues</th>
+                <th>Likes</th>
+                <th>Favoris</th>
+                <th>Score</th>
+                <th>Badge</th>
                 <th>Contenu</th>
                 <th>Actions</th>
             </tr>
@@ -40,15 +104,48 @@
                 <td>{{ ressource.titre }}</td>
                 <td>{{ ressource.categorie ? ressource.categorie.nom : '' }}</td>
                 <td>{{ ressource.chapitre ? ressource.chapitre.titre : '' }}</td>
-                <td>{{ ressource.contenu }}</td>
+                <td>{{ ressource.availableAt ? ressource.availableAt|date('Y-m-d H:i') : '-' }}</td>
+                <td>
+                    {% if ressource.availableAt is null or ressource.availableAt <= date() %}
+                        <span style="background:#dcfce7;color:#166534;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:700;">Disponible</span>
+                    {% else %}
+                        <span style="background:#fef3c7;color:#92400e;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:700;">Disponible bientot</span>
+                    {% endif %}
+                </td>
+                <td>{{ ressource.nbVues }}</td>
+                <td>{{ ressource.nbLikes }}</td>
+                <td>{{ ressource.nbFavoris }}</td>
+                <td>{{ ressource.score }}</td>
+                <td>{{ ressource.badge }}</td>
+                {% set contenu = ressource.contenu|default('') %}
+                {% set isUrl = contenu starts with 'http://' or contenu starts with 'https://' %}
+                <td>
+                    {% if isUrl %}
+                        <a
+                            class="ressource-contenu-inline ressource-contenu-link"
+                            href="{{ contenu }}"
+                            target="_blank"
+                            rel="noopener"
+                            title="{{ contenu }}"
+                        >
+                            {{ contenu }}
+                        </a>
+                    {% else %}
+                        <span class="ressource-contenu-inline" title="{{ contenu }}">{{ contenu }}</span>
+                    {% endif %}
+                </td>
                 <td>
                     <a class="btn btn-outline small" href="{{ path('app_ressource_show', {'id': ressource.id}) }}">Voir</a>
                     <a class="btn btn-primary small" href="{{ path('app_ressource_edit', {'id': ressource.id}) }}">Modifier</a>
+                    <form method="post" action="{{ path('app_ressource_delete', {'id': ressource.id}) }}" style="display:inline;" onsubmit="return confirm('Supprimer cette ressource ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ ressource.id) }}">
+                        <button class="btn btn-danger small" type="submit">Supprimer</button>
+                    </form>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="6">Aucune ressource trouvee.</td>
+                <td colspan="13">Aucune ressource trouvee.</td>
             </tr>
         {% endfor %}
         </tbody>

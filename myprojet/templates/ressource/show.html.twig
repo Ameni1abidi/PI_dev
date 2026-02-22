@@ -36,10 +36,53 @@
             </tr>
             <tr>
                 <th>Contenu</th>
-                <td>{{ ressource.contenu }}</td>
+                <td>
+                    {% set kind = ressource.categorie ? ressource.categorie.nom|lower : '' %}
+                    {% set isUrl = ressource.contenu starts with 'http://' or ressource.contenu starts with 'https://' %}
+                    {% if isUrl %}
+                        <a href="{{ ressource.contenu }}" target="_blank" rel="noopener">{{ ressource.contenu }}</a>
+                    {% elseif kind == 'pdf' %}
+                        <a href="{{ asset(ressource.contenu) }}" target="_blank" rel="noopener">Ouvrir le PDF</a>
+                    {% else %}
+                        {{ ressource.contenu }}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Disponible le</th>
+                <td>{{ ressource.availableAt ? ressource.availableAt|date('Y-m-d H:i') : '-' }}</td>
+            </tr>
+            <tr>
+                <th>Vues</th>
+                <td>{{ ressource.nbVues }}</td>
+            </tr>
+            <tr>
+                <th>Likes</th>
+                <td>{{ ressource.nbLikes }}</td>
+            </tr>
+            <tr>
+                <th>Favoris</th>
+                <td>{{ ressource.nbFavoris }}</td>
+            </tr>
+            <tr>
+                <th>Score</th>
+                <td>{{ ressource.score }}</td>
+            </tr>
+            <tr>
+                <th>Badge</th>
+                <td>{{ ressource.badge }}</td>
             </tr>
         </tbody>
     </table>
+
+    <div style="display:flex; gap:8px; margin-bottom:14px;">
+        <form method="post" action="{{ path('app_ressource_like', {'id': ressource.id}) }}">
+            <button class="btn btn-outline small">{{ is_liked ? 'Retirer Like' : 'Like' }}</button>
+        </form>
+        <form method="post" action="{{ path('app_ressource_favori', {'id': ressource.id}) }}">
+            <button class="btn btn-primary small">{{ is_favori ? 'Retirer Favori' : 'Favori' }}</button>
+        </form>
+    </div>
 
     {{ include('ressource/_delete_form.html.twig') }}
 {% endblock %}
