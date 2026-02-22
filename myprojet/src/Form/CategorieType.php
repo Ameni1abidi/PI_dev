@@ -12,19 +12,19 @@ class CategorieType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder
-            ->add('nom', ChoiceType::class, [
-                'choices' => [
-                    'Video' => 'video',
-                    'Audio' => 'audio',
-                    'Lien' => 'lien',
-                    'Image' => 'image',
-                    'PDF' => 'pdf',
-                ],
-                'placeholder' => 'Choisir une categorie',
-                'required' => true,
-            ])
-        ;
+        $builder->add('nom', ChoiceType::class, [
+            'label' => 'Categorie',
+            'choices' => [
+                'Video' => 'video',
+                'Audio' => 'audio',
+                'Lien' => 'lien',
+                'Image' => 'image',
+                'PDF' => 'pdf',
+            ],
+            'placeholder' => 'Choisir une categorie',
+            'required' => true,
+            'choice_translation_domain' => false,
+        ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
