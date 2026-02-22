@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Copilote Admin - EduFlex</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+  </head>
+  <body>
+    <div class="admin-shell">
+      <aside class="admin-sidebar">
+        <div class="brand">
+          <img class="brand-logo" src="{{ asset('images/eduflex-logo.png') }}" alt="EduFlex">
+          <div class="brand-text">
+            <div class="brand-name">EduFlex</div>
+          </div>
+        </div>
+
+        <nav class="nav">
+          <a class="nav-link" href="{{ path('app_admin') }}"><span class="nav-icon">🏠</span>Dashboard Admin</a>
+          <a class="nav-link is-active" href="{{ path('app_admin_copilot') }}"><span class="nav-icon">AI</span>Copilote IA</a>
+          <a class="nav-link" href="{{ path('app_forum_index_context', {'context': 'admin'}) }}"><span class="nav-icon">F</span>Forum</a>
+          <a class="nav-link" href="{{ path('app_utilisateur_index') }}"><span class="nav-icon">👥</span>Utilisateurs</a>
+          <a class="nav-link" href="{{ path('app_logout') }}"><span class="nav-icon">↩</span>Logout</a>
+        </nav>
+      </aside>
+
+      <main class="admin-main">
+        <header class="topbar">
+          <div>
+            <div class="topbar-title">Assistant Admin</div>
+            <div class="topbar-sub">Posez une question sur la gestion des utilisateurs</div>
+          </div>
+          <div class="topbar-actions">
+            <a class="chip" href="{{ path('app_admin') }}">Retour dashboard</a>
+            <div class="avatar">{{ admin_initials }}</div>
+          </div>
+        </header>
+
+        <section class="panel copilot-page-panel">
+          {% for message in app.flashes('error') %}
+            <div class="copilot-alert">{{ message }}</div>
+          {% endfor %}
+
+          <form id="copilot-form" method="post" action="{{ path('app_admin_copilot') }}" class="copilot-form">
+            <input type="hidden" name="_token" value="{{ csrf_token('admin_copilot_page') }}">
+
+            <label class="copilot-label" for="copilot-question">Votre question</label>
+            <div class="copilot-row">
+              <input
+                id="copilot-question"
+                name="question"
+                type="text"
+                value="{{ question }}"
+                placeholder="Ex: combien de nouveaux comptes cette semaine ?"
+                class="copilot-input"
+                required
+              >
+              <button id="copilot-submit" type="submit" class="btn btn-primary">Demander</button>
+            </div>
+
+            <div class="copilot-examples">
+              <button class="btn btn-outline small js-copilot-chip" type="button" data-question="combien de nouveaux comptes cette semaine ?">Nouveaux comptes</button>
+              <button class="btn btn-outline small js-copilot-chip" type="button" data-question="liste comptes non verifies">Comptes non verifies</button>
+              <button class="btn btn-outline small js-copilot-chip" type="button" data-question="repartition des roles utilisateurs">Repartition des roles</button>
+            </div>
+          </form>
+
+          {% if result %}
+            <div class="copilot-answer is-visible" id="copilot-answer">
+              <h3>Reponse</h3>
+              <p>{{ result.answer }}</p>
+
+              {% if result.links is not empty %}
+                <div class="copilot-links">
+                  {% for link in result.links %}
+                    <a class="btn btn-outline small" href="{{ path(link.route) }}">{{ link.label }}</a>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+          {% else %}
+            <div class="copilot-empty" id="copilot-answer">
+              Posez une question pour obtenir une reponse contextuelle instantanee.
+            </div>
+          {% endif %}
+        </section>
+      </main>
+    </div>
+
+    <script>
+      (function () {
+        const form = document.getElementById('copilot-form');
+        const input = document.getElementById('copilot-question');
+        const submit = document.getElementById('copilot-submit');
+        const chips = document.querySelectorAll('.js-copilot-chip');
+
+        chips.forEach((chip) => {
+          chip.addEventListener('click', function () {
+            input.value = this.dataset.question || '';
+            input.focus();
+          });
+        });
+
+        if (form && submit) {
+          form.addEventListener('submit', function () {
+            submit.disabled = true;
+            submit.textContent = 'Analyse...';
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>

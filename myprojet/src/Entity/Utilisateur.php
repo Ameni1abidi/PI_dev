@@ -3,15 +3,15 @@
 namespace App\Entity;
 
 use App\Repository\UtilisateurRepository;
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
-use App\Entity\Resultat;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -23,7 +23,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank(message: "Le nom est obligatoire")]
     #[Assert\Length(
         min: 3,
-        minMessage: "Le nom doit contenir au moins {{ limit }} caractères"
+        minMessage: "Le nom doit contenir au moins {{ limit }} caracteres"
     )]
     private ?string $nom = null;
 
@@ -31,7 +31,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 200)]
-    #[Assert\NotBlank(message: "L’email est obligatoire")]
+    #[Assert\NotBlank(message: "L'email est obligatoire")]
     #[Assert\Email(message: "Veuillez saisir une adresse email valide")]
     private ?string $email = null;
 
@@ -40,7 +40,10 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'boolean')]
     private bool $isVerified = false;
-    
+
+    #[ORM\Column(type: 'datetime_immutable')]
+    private ?\DateTimeImmutable $createdAt = null;
+
     #[ORM\OneToMany(mappedBy: 'etudiant', targetEntity: Resultat::class)]
     private Collection $resultats;
 
@@ -70,11 +73,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         $this->ressourceInteractions = new ArrayCollection();
     }
 
-
-    /* =========================
-       Getters & Setters
-       ========================= */
-
     public function getId(): ?int
     {
         return $this->id;
@@ -88,6 +86,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setNom(string $nom): self
     {
         $this->nom = $nom;
+
         return $this;
     }
 
@@ -99,6 +98,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): self
     {
         $this->email = $email;
+
         return $this;
     }
 
@@ -110,6 +110,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): self
     {
         $this->password = $password;
+
         return $this;
     }
 
@@ -121,6 +122,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setRole(string $role): self
     {
         $this->role = $role;
+
         return $this;
     }
 
@@ -128,108 +130,110 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return [$this->role ?? 'ROLE_USER'];
     }
+
     public function getResultats(): Collection
-{
-    return $this->resultats;
-}
-
-public function addResultat(Resultat $resultat): self
-{
-    if (!$this->resultats->contains($resultat)) {
-        $this->resultats->add($resultat);
-        $resultat->setEtudiant($this);
+    {
+        return $this->resultats;
     }
-    return $this;
-}
 
-public function removeResultat(Resultat $resultat): self
-{
-    if ($this->resultats->removeElement($resultat)) {
-        if ($resultat->getEtudiant() === $this) {
-            $resultat->setEtudiant(null);
+    public function addResultat(Resultat $resultat): self
+    {
+        if (!$this->resultats->contains($resultat)) {
+            $this->resultats->add($resultat);
+            $resultat->setEtudiant($this);
         }
-    }
-    return $this;
-}
 
-public function getRessourceLikes(): Collection
-{
-    return $this->ressourceLikes;
-}
-
-public function addRessourceLike(RessourceLike $ressourceLike): self
-{
-    if (!$this->ressourceLikes->contains($ressourceLike)) {
-        $this->ressourceLikes->add($ressourceLike);
-        $ressourceLike->setUtilisateur($this);
+        return $this;
     }
 
-    return $this;
-}
-
-public function removeRessourceLike(RessourceLike $ressourceLike): self
-{
-    if ($this->ressourceLikes->removeElement($ressourceLike)) {
-        if ($ressourceLike->getUtilisateur() === $this) {
-            $ressourceLike->setUtilisateur(null);
+    public function removeResultat(Resultat $resultat): self
+    {
+        if ($this->resultats->removeElement($resultat)) {
+            if ($resultat->getEtudiant() === $this) {
+                $resultat->setEtudiant(null);
+            }
         }
+
+        return $this;
     }
 
-    return $this;
-}
-
-public function getRessourceFavoris(): Collection
-{
-    return $this->ressourceFavoris;
-}
-
-public function addRessourceFavori(RessourceFavori $ressourceFavori): self
-{
-    if (!$this->ressourceFavoris->contains($ressourceFavori)) {
-        $this->ressourceFavoris->add($ressourceFavori);
-        $ressourceFavori->setUtilisateur($this);
+    public function getRessourceLikes(): Collection
+    {
+        return $this->ressourceLikes;
     }
 
-    return $this;
-}
-
-public function removeRessourceFavori(RessourceFavori $ressourceFavori): self
-{
-    if ($this->ressourceFavoris->removeElement($ressourceFavori)) {
-        if ($ressourceFavori->getUtilisateur() === $this) {
-            $ressourceFavori->setUtilisateur(null);
+    public function addRessourceLike(RessourceLike $ressourceLike): self
+    {
+        if (!$this->ressourceLikes->contains($ressourceLike)) {
+            $this->ressourceLikes->add($ressourceLike);
+            $ressourceLike->setUtilisateur($this);
         }
+
+        return $this;
     }
 
-    return $this;
-}
-
-public function getRessourceInteractions(): Collection
-{
-    return $this->ressourceInteractions;
-}
-
-public function addRessourceInteraction(RessourceInteraction $ressourceInteraction): self
-{
-    if (!$this->ressourceInteractions->contains($ressourceInteraction)) {
-        $this->ressourceInteractions->add($ressourceInteraction);
-        $ressourceInteraction->setUtilisateur($this);
-    }
-
-    return $this;
-}
-
-public function removeRessourceInteraction(RessourceInteraction $ressourceInteraction): self
-{
-    if ($this->ressourceInteractions->removeElement($ressourceInteraction)) {
-        if ($ressourceInteraction->getUtilisateur() === $this) {
-            $ressourceInteraction->setUtilisateur(null);
+    public function removeRessourceLike(RessourceLike $ressourceLike): self
+    {
+        if ($this->ressourceLikes->removeElement($ressourceLike)) {
+            if ($ressourceLike->getUtilisateur() === $this) {
+                $ressourceLike->setUtilisateur(null);
+            }
         }
+
+        return $this;
     }
 
-    return $this;
-}
+    public function getRessourceFavoris(): Collection
+    {
+        return $this->ressourceFavoris;
+    }
 
+    public function addRessourceFavori(RessourceFavori $ressourceFavori): self
+    {
+        if (!$this->ressourceFavoris->contains($ressourceFavori)) {
+            $this->ressourceFavoris->add($ressourceFavori);
+            $ressourceFavori->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRessourceFavori(RessourceFavori $ressourceFavori): self
+    {
+        if ($this->ressourceFavoris->removeElement($ressourceFavori)) {
+            if ($ressourceFavori->getUtilisateur() === $this) {
+                $ressourceFavori->setUtilisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getRessourceInteractions(): Collection
+    {
+        return $this->ressourceInteractions;
+    }
+
+    public function addRessourceInteraction(RessourceInteraction $ressourceInteraction): self
+    {
+        if (!$this->ressourceInteractions->contains($ressourceInteraction)) {
+            $this->ressourceInteractions->add($ressourceInteraction);
+            $ressourceInteraction->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRessourceInteraction(RessourceInteraction $ressourceInteraction): self
+    {
+        if ($this->ressourceInteractions->removeElement($ressourceInteraction)) {
+            if ($ressourceInteraction->getUtilisateur() === $this) {
+                $ressourceInteraction->setUtilisateur(null);
+            }
+        }
+
+        return $this;
+    }
 
     public function getUserIdentifier(): string
     {
@@ -238,7 +242,6 @@ public function removeRessourceInteraction(RessourceInteraction $ressourceIntera
 
     public function eraseCredentials(): void
     {
-        // À utiliser si tu stockes des données sensibles temporaires
     }
 
     public function isVerified(): bool
@@ -249,6 +252,27 @@ public function removeRessourceInteraction(RessourceInteraction $ressourceIntera
     public function setIsVerified(bool $isVerified): self
     {
         $this->isVerified = $isVerified;
+
         return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function initializeCreatedAt(): void
+    {
+        if ($this->createdAt === null) {
+            $this->createdAt = new \DateTimeImmutable();
+        }
     }
 }
