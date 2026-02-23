@@ -47,4 +47,23 @@ class RessourceFavoriRepository extends ServiceEntityRepository
 
         return array_map(static fn (array $row): int => (int) $row['ressourceId'], $rows);
     }
+
+    /**
+     * @return RessourceFavori[]
+     */
+    public function findByUtilisateurOrderedByRecent(Utilisateur $utilisateur): array
+    {
+        return $this->createQueryBuilder('rf')
+            ->innerJoin('rf.ressource', 'r')
+            ->addSelect('r')
+            ->leftJoin('r.chapitre', 'ch')
+            ->addSelect('ch')
+            ->leftJoin('ch.cours', 'c')
+            ->addSelect('c')
+            ->andWhere('rf.utilisateur = :utilisateur')
+            ->setParameter('utilisateur', $utilisateur)
+            ->orderBy('rf.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }
