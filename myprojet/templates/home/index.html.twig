@@ -715,6 +715,11 @@
             {% if registrationForm is defined %}
               {{ form_start(registrationForm, { attr: { id: 'contact-form', novalidate: 'novalidate' } }) }}
                 <div class="row">
+                  {% for message in app.flashes('success') %}
+                    <div class="col-lg-12">
+                      <div class="alert alert-success">{{ message }}</div>
+                    </div>
+                  {% endfor %}
                   {% for message in app.flashes('error') %}
                     <div class="col-lg-12">
                       <div class="alert alert-danger">{{ message }}</div>
@@ -791,6 +796,11 @@
             {% else %}
               <form id="contact-form" action="{{ path('app_login') }}" method="post" novalidate>
                 <div class="row">
+                  {% for message in app.flashes('success') %}
+                    <div class="col-lg-12">
+                      <div class="alert alert-success">{{ message }}</div>
+                    </div>
+                  {% endfor %}
                   {% for message in app.flashes('error') %}
                     <div class="col-lg-12">
                       <div class="alert alert-danger">{{ message }}</div>
