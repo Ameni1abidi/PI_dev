@@ -30,7 +30,7 @@ class Chapitre
      #[ORM\Column(length: 50)]
     #[Assert\NotBlank(message: 'Le type de contenu est obligatoire.')]
     #[Assert\Choice(
-        choices: ['texte', 'fichier', 'video', 'devoir', 'exercice_corrige'],
+        choices: ['texte', 'fichier',],
         message: 'Type de contenu invalide.'
     )]
     private ?string $typeContenu = null;
@@ -47,15 +47,7 @@ class Chapitre
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $contenuFichier = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\When(
-        expression: 'this.getTypeContenu() == "video"',
-        constraints: [
-            new Assert\NotBlank(message: 'Le lien vidéo est obligatoire.'),
-            new Assert\Url(message: 'Le lien vidéo doit être une URL valide.')
-        ]
-    )]
-    private ?string $videoUrl = null;
+   
 
     #[ORM\Column]
     #[Assert\NotNull(message: 'La durée estimée est obligatoire.')]
@@ -152,15 +144,18 @@ public function setContenuFichier(?string $contenuFichier): static
     $this->contenuFichier = $contenuFichier;
     return $this;
 }
+#[ORM\Column(type: "text", nullable: true)]
+private ?string $resume = null;
 
-public function getVideoUrl(): ?string
+public function getResume(): ?string
 {
-    return $this->videoUrl;
+    return $this->resume;
 }
 
-public function setVideoUrl(?string $videoUrl): static
+public function setResume(?string $resume): self
 {
-    $this->videoUrl = $videoUrl;
+    $this->resume = $resume;
     return $this;
 }
+
 }

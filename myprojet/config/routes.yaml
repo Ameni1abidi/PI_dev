@@ -10,3 +10,13 @@
 controllers:
     resource: routing.controllers
 
+test_mail_explicit:
+    path: /cours/test-mail
+    controller: App\Controller\CoursController::testMail
+    methods: [GET]
+
+test_mail_explicit_dot:
+    path: /cours/test-mail.
+    controller: App\Controller\CoursController::testMail
+    methods: [GET]
+

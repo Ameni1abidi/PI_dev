@@ -19,6 +19,16 @@ class ChapitreType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $contentChoices = [
+            'Fichier' => 'fichier',
+            'Vidéo' => 'video',
+            'Devoir' => 'devoir',
+            'Exercice corrigé' => 'exercice_corrige',
+        ];
+        if ($options['allow_text_type']) {
+            $contentChoices = ['Texte' => 'texte'] + $contentChoices;
+        }
+
        $builder
     ->add('titre', null, [
     'required' => false,
@@ -27,29 +37,25 @@ class ChapitreType extends AbstractType
         'required' => false,
     ])
     ->add('typeContenu', ChoiceType::class, [
-        'choices' => [
-            'Texte' => 'texte',
-            'Fichier' => 'fichier',
-            'Vidéo' => 'video',
-            'Devoir' => 'devoir',
-            'Exercice corrigé' => 'exercice_corrige',
-        ],
+        'choices' => $contentChoices,
         'required' => false,
     ])
-    ->add('contenuTexte', null, [
-        'required' => false,
-    ])
-    ->add('contenuFichier', FileType::class, [
-        'label' => 'Fichier (PDF, DOC, etc.)',
-        'mapped' => false,           // IMPORTANT : pas lié directement à l'entité
-        'required' => false,
-        'attr' => [
-            'accept' => '.pdf,.doc,.docx,.txt', // types autorisés
-        ],
-    ])
-    ->add('videoUrl', null, [
-        'required' => false,
-    ])
+    ;
+        if ($options['show_text_field']) {
+            $builder->add('contenuTexte', null, [
+                'required' => false,
+            ]);
+        }
+
+        $builder
+     ->add('contenuFichier', FileType::class, [
+                'label' => 'Fichier PDF',
+                'mapped' => false,
+                'required' => true,
+                'attr' => [
+                    'accept' => '.pdf',
+                ],
+            ])
     ->add('dureeEstimee', null, [
         'required' => false,
     ])
@@ -68,6 +74,8 @@ class ChapitreType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Chapitre::class,
+            'show_text_field' => true,
+            'allow_text_type' => true,
         ]);
     }
 }

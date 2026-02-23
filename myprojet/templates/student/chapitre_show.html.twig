@@ -1,0 +1,115 @@
+{% extends 'student/dashCours.html.twig' %}
+
+{% block title %}Chapitre{% endblock %}
+
+{% block body %}
+<div style="padding:25px; background:#fdfbfb; min-height:100vh; font-family:'Manrope', sans-serif;">
+
+    <h2 style="font-size:1.8rem; font-weight:800; color:#333;">{{ chapitre.titre }}</h2>
+
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div style="margin:10px 0; padding:10px 14px; border-radius:12px; font-weight:600;
+                background:{% if label == 'success' %}#e8fff0{% elseif label == 'warning' %}#fff7e0{% else %}#ffe9e9{% endif %};
+                color:{% if label == 'success' %}#1c6b3a{% elseif label == 'warning' %}#7a5b00{% else %}#8a1f1f{% endif %};">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+   <div class="chapitre-content" style="padding:20px; max-width:900px; margin:auto; background:#fff; border-radius:15px; box-shadow:0 4px 12px rgba(0,0,0,0.05);">
+
+    {% set progress = chapterProgress|default({'completed': false, 'spentMinutes': 0, 'estimatedMinutes': chapitre.dureeEstimee, 'timeBadge': 'En cours'}) %}
+    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
+        <span style="background:#eef3ff; color:#2d4d86; border-radius:999px; padding:6px 12px; font-size:0.82rem; font-weight:700;">
+            Duree estimee: {{ progress.estimatedMinutes }} min
+        </span>
+        <span style="background:#eef3ff; color:#2d4d86; border-radius:999px; padding:6px 12px; font-size:0.82rem; font-weight:700;">
+            Temps passe: {{ progress.spentMinutes }} min
+        </span>
+        <span style="border-radius:999px; padding:6px 12px; font-size:0.82rem; font-weight:700;
+            background:{% if progress.timeBadge == 'Rapide' %}#e8fff0{% elseif progress.timeBadge == 'Normal' %}#eaf2ff{% elseif progress.timeBadge == 'A revoir' %}#fff4e3{% else %}#f0f0f0{% endif %};
+            color:{% if progress.timeBadge == 'Rapide' %}#1c6b3a{% elseif progress.timeBadge == 'Normal' %}#1f4d99{% elseif progress.timeBadge == 'A revoir' %}#9a5b00{% else %}#666{% endif %};">
+            Badge: {{ progress.timeBadge }}
+        </span>
+    </div>
+
+    {% set resumeText = resume|default(chapitre.resume) %}
+    {% if resumeText %}
+        <div class="resume" style="padding:15px; background:#f6f8ff; border-radius:12px; line-height:1.5; margin-bottom:20px;">
+    <strong>Resume :</strong>
+    <p>{{ resumeText }}</p>
+</div>
+    {% else %}
+        <div class="resume" style="padding:15px; background:#fff3cd; border:1px solid #ffe69c; border-radius:12px; margin-bottom:20px;">
+            <strong>Resume :</strong>
+            <p>Aucun resume disponible pour ce chapitre.</p>
+        </div>
+    {% endif %}
+
+    {% if chapitre.typeContenu == 'fichier' and chapitre.contenuFichier %}
+        <h3 style="color:#555; margin-bottom:10px;">PDF :</h3>
+        <iframe
+            src="{{ asset('uploads/' ~ chapitre.contenuFichier) }}"
+            width="100%"
+            height="600px"
+            style="border:1px solid #ddd; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.08);">
+        </iframe>
+    {% endif %}
+
+    <div style="margin-top:24px; background:#f8fbff; border:1px solid #dfe9ff; border-radius:14px; padding:14px;">
+        <h3 style="margin:0 0 10px; color:#27466f;">Chat du chapitre</h3>
+        <p style="margin:0 0 12px; color:#50627a; font-size:0.9rem;">
+            Posez une question sur ce chapitre. La reponse est basee sur son contenu.
+        </p>
+
+        <form method="post" action="{{ path('student_chapitre_chat', {'id': chapitre.id}) }}" style="display:flex; gap:8px; flex-wrap:wrap;">
+            <input type="hidden" name="_token" value="{{ csrf_token('chat_chapitre_' ~ chapitre.id) }}">
+            <input
+                type="text"
+                name="question"
+                required
+                maxlength="400"
+                placeholder="Ex: C'est quoi la difference entre ... ?"
+                style="flex:1; min-width:260px; padding:10px 12px; border:1px solid #cdd9f0; border-radius:10px; outline:none;">
+            <button type="submit" style="padding:10px 14px; border:none; border-radius:10px; background:#2d89ef; color:#fff; font-weight:700; cursor:pointer;">
+                Envoyer
+            </button>
+        </form>
+
+        {% if chatMessages is defined and chatMessages is not empty %}
+            <div style="margin-top:14px; display:flex; flex-direction:column; gap:10px;">
+                {% for item in chatMessages|reverse %}
+                    <div style="background:#fff; border:1px solid #e3e9f5; border-radius:10px; padding:10px;">
+                        <div style="font-size:0.8rem; color:#5f6f86; margin-bottom:5px;">Vous · {{ item.askedAt }}</div>
+                        <div style="font-weight:700; color:#30435f; margin-bottom:8px;">{{ item.question }}</div>
+                        <div style="font-size:0.8rem; color:#5f6f86; margin-bottom:4px;">Assistant IA</div>
+                        <div style="color:#2d3b52; line-height:1.45;">{{ item.answer }}</div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <div style="margin-top:25px;">
+        {% if not progress.completed %}
+            <form method="post" action="{{ path('student_chapitre_complete', {'id': chapitre.id}) }}" style="display:inline-block; margin-right:8px;">
+                <input type="hidden" name="_token" value="{{ csrf_token('complete_chapitre_' ~ chapitre.id) }}">
+                <button type="submit" style="display:inline-block; padding:10px 20px; background:#2d89ef; color:white; border-radius:25px; font-weight:600; text-decoration:none; border:none; cursor:pointer;">
+                    Marquer comme termine
+                </button>
+            </form>
+        {% else %}
+            <span style="display:inline-block; padding:10px 20px; background:#e8fff0; color:#1c6b3a; border-radius:25px; font-weight:700; margin-right:8px;">
+                Chapitre termine
+            </span>
+        {% endif %}
+
+        <a href="{{ path('student_cours_index') }}"
+           style="display:inline-block; padding:10px 20px; background:#ff416c; color:white; border-radius:25px; font-weight:600; text-decoration:none; transition:0.3s;">
+           Retour aux cours
+        </a>
+    </div>
+
+</div>
+{% endblock %}

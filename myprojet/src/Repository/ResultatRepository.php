@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Resultat;
+use App\Entity\Utilisateur;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\DBAL\ArrayParameterType;
@@ -34,4 +35,25 @@ class ResultatRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findAverageNoteForStudentAndCours(Utilisateur $student, int $coursId): ?float
+    {
+        $avgNote = $this->createQueryBuilder('r')
+            ->select('AVG(r.note) AS avgNote')
+            ->join('r.examen', 'e')
+            ->andWhere('(r.etudiant = :student OR r.eleveId = :studentId)')
+            ->andWhere('e.coursId = :coursId')
+            ->setParameter('student', $student)
+            ->setParameter('studentId', $student->getId())
+            ->setParameter('coursId', $coursId)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        if (null === $avgNote) {
+            return null;
+        }
+
+        return round((float) $avgNote, 2);
+    }
+
 }

@@ -38,13 +38,6 @@
             {{ form_errors(form.contenuFichier) }}
         </div>
 
-        {# Video URL #}
-        <div style="margin-bottom:15px;">
-            {{ form_label(form.videoUrl, null, {'label_attr': {'style': 'display:block; font-weight:600; color:#555; font-size:0.9rem; margin-bottom:4px;'}}) }}
-            {{ form_widget(form.videoUrl, {'attr': {'class':'form-control', 'style':'width:100%; padding:8px 10px; border-radius:5px; border:1px solid #ccc; font-size:0.95rem;'}}) }}
-            {{ form_errors(form.videoUrl) }}
-        </div>
-
         {# Ordre #}
         <div style="margin-bottom:15px;">
             {{ form_label(form.ordre, null, {'label_attr': {'style': 'display:block; font-weight:600; color:#555; font-size:0.9rem; margin-bottom:4px;'}}) }}
