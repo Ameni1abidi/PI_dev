@@ -4,10 +4,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{% block title %}EduFlex - Espace Eleve{% endblock %}</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ asset('css/fontawesome.css') }}" />
     <link rel="stylesheet" href="{{ asset('student/css/student.css') }}" />
     {% block stylesheets %}{% endblock %}
   </head>
@@ -23,37 +21,45 @@
         </div>
 
         <div class="student-profile">
-          <div class="student-avatar">AM</div>
+          {% set fullName = app.user ? app.user.nom : 'Eleve' %}
+          {% set parts = fullName|split(' ') %}
+          {% set initials = '' %}
+          {% for p in parts %}
+            {% if p|length > 0 and initials|length < 2 %}
+              {% set initials = initials ~ p|slice(0, 1)|upper %}
+            {% endif %}
+          {% endfor %}
+          <div class="student-avatar">{{ initials ?: 'EL' }}</div>
           <div>
-            <div class="student-brand-name">Alex Martin</div>
+            <div class="student-brand-name">{{ fullName }}</div>
             <div class="student-role">Eleve</div>
           </div>
         </div>
 
         <nav class="student-nav">
-          <a href="{{ path('app_student_dashboard') }}">
-            <span>🏠</span>
+          <a class="{{ app.request.attributes.get('_route') == 'app_student_dashboard' ? 'is-active' : '' }}" href="{{ path('app_student_dashboard') }}">
+            <span><i class="fa fa-home"></i></span>
             Tableau de bord
           </a>
-          <a href="{{ path('app_forum_index_context', {'context': 'student'}) }}">
-            <span>💬</span>
-            Forum
-          </a>
-          <a href="{{ path('eleve_cours_index') }}">
-            <span>📘</span>
+          <a class="{{ app.request.attributes.get('_route') starts with 'eleve_cours_' ? 'is-active' : '' }}" href="{{ path('eleve_cours_index') }}">
+            <span><i class="fa fa-book"></i></span>
             Mes cours
           </a>
-          <a href="#">
-            <span>📝</span>
+          <a class="{{ app.request.attributes.get('_route') == 'app_student_examens' ? 'is-active' : '' }}" href="{{ path('app_student_examens') }}">
+            <span><i class="fa fa-file-text-o"></i></span>
             Mes examens
           </a>
-          <a href="#">
-            <span>💬</span>
-            Messages
+          <a class="{{ app.request.attributes.get('_route') == 'app_student_resultats' ? 'is-active' : '' }}" href="{{ path('app_student_resultats') }}">
+            <span><i class="fa fa-line-chart"></i></span>
+            Mes resultats
           </a>
-          <a href="#">
-            <span>📅</span>
-            Planning
+          <a class="{{ app.request.attributes.get('_route') starts with 'app_forum_' ? 'is-active' : '' }}" href="{{ path('app_forum_index_context', {'context': 'student'}) }}">
+            <span><i class="fa fa-comments"></i></span>
+            Forum
+          </a>
+          <a href="{{ path('app_logout') }}">
+            <span><i class="fa fa-sign-out"></i></span>
+            Logout
           </a>
         </nav>
       </aside>
@@ -61,13 +67,12 @@
       <main class="student-main">
         <div class="student-topbar">
           <label class="student-search">
-            <span>🔍</span>
-            <input type="search" placeholder="Rechercher" />
+            <span><i class="fa fa-search"></i></span>
+            <input type="search" placeholder="Rechercher..." disabled />
           </label>
           <div class="student-top-actions">
-            <div class="student-icon-btn">🔔</div>
-            <div class="student-pill">8</div>
-            <div class="student-pill">93</div>
+            <div class="student-icon-btn"><i class="fa fa-user"></i></div>
+            <div class="student-pill">Eleve</div>
           </div>
         </div>
 

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Utilisateur;
 use App\Repository\CoursRepository;
+use App\Repository\DevoirIaRepository;
 use App\Repository\ExamenRepository;
 use App\Repository\ForumRepository;
 use App\Repository\ResultatRepository;
@@ -18,6 +19,7 @@ final class EnseignantController extends AbstractController
 public function dashboard(
         CoursRepository $coursRepo,
         ExamenRepository $examenRepo,
+        DevoirIaRepository $devoirIaRepo,
         ForumRepository $forumRepo,
         ResultatRepository $resultatRepo
     ): Response {
@@ -42,6 +44,7 @@ public function dashboard(
             ->addOrderBy('e.id', 'DESC')
             ->getQuery()
             ->getResult();
+        $devoirsIa = $devoirIaRepo->findForTeacher($enseignantId);
 
 $forums = $forumRepo->findBy([], ['dateCreation' => 'DESC']);
         $classesCount = count(array_unique(array_map(
@@ -66,6 +69,15 @@ $forums = $forumRepo->findBy([], ['dateCreation' => 'DESC']);
                 'title' => $evaluation->getTitre(),
                 'date' => $evaluation->getDateExamen(),
                 'icon' => 'fa-clipboard',
+                'color' => 'primary'
+            ];
+        }
+        foreach (array_slice($devoirsIa, 0, 2) as $devoirIa) {
+            $activities[] = [
+                'type' => 'devoir_ia',
+                'title' => 'Devoir: ' . $devoirIa->getTitre(),
+                'date' => $devoirIa->getDateCreation(),
+                'icon' => 'fa-magic',
                 'color' => 'primary'
             ];
         }
@@ -110,7 +122,7 @@ $forums = $forumRepo->findBy([], ['dateCreation' => 'DESC']);
             'activities' => $activities,
             'stats' => [
                 'total_cours' => count($cours),
-                'total_evaluations' => count($evaluations),
+                'total_evaluations' => count($evaluations) + count($devoirsIa),
                 'total_forums' => count($forums),
                 'classes_count' => $classesCount
             ]
@@ -126,10 +138,13 @@ $forums = $forumRepo->findBy([], ['dateCreation' => 'DESC']);
     #[Route('/enseignant/classes', name: 'app_enseignant_classes', methods: ['GET'])]
     public function classes(): Response
     {
+        $user = $this->getUser();
+        $teacherName = $user instanceof Utilisateur ? ($user->getNom() ?? 'Enseignant') : 'Enseignant';
+
         $classes = [
-            ['nom' => '3A', 'niveau' => 'College', 'eleves' => 28, 'prof' => 'Mme Legrand'],
-            ['nom' => '2B', 'niveau' => 'College', 'eleves' => 26, 'prof' => 'Mme Legrand'],
-            ['nom' => '1C', 'niveau' => 'College', 'eleves' => 24, 'prof' => 'Mme Legrand'],
+            ['nom' => '3A', 'niveau' => 'College', 'eleves' => 28, 'prof' => $teacherName],
+            ['nom' => '2B', 'niveau' => 'College', 'eleves' => 26, 'prof' => $teacherName],
+            ['nom' => '1C', 'niveau' => 'College', 'eleves' => 24, 'prof' => $teacherName],
         ];
 
         return $this->render('enseignant/classes.html.twig', [

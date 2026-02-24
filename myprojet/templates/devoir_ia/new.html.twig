@@ -1,0 +1,9 @@
+{% extends 'crud_base.html.twig' %}
+
+{% block title %}Nouveau devoir IA{% endblock %}
+
+{% block body %}
+  <h1 class="h3 mb-4">Creer un devoir IA depuis un cours</h1>
+  {% include 'devoir_ia/_form.html.twig' with {'form': form, 'button_label': 'Generer le devoir IA'} %}
+  <a class="btn btn-link mt-3" href="{{ path('app_devoir_ia_index') }}">Retour a la liste</a>
+{% endblock %}

@@ -18,9 +18,12 @@
             <a href="{{ path('app_home') }}" class="logo"><h1>Eduflex</h1></a>
             <ul class="nav">
               <li><a class="active" href="{{ path('app_student_dashboard') }}">Dashboard</a></li>
-              <li><a href="{{ path('app_forum_index_context', {'context': 'student'}) }}">Forum</a></li>
               <li><a href="{{ path('eleve_cours_index') }}">Mes cours</a></li>
-              <li><a href="{{ logout_path() }}">Logout</a></li>
+              <li><a href="{{ path('app_student_examens') }}">Mes examens</a></li>
+              <li><a href="{{ path('app_student_devoirs_ia') }}">Devoirs</a></li>
+              <li><a href="{{ path('app_student_resultats') }}">Mes resultats</a></li>
+              <li><a href="{{ path('app_forum_index_context', {'context': 'student'}) }}">Forum</a></li>
+              <li><a href="{{ path('app_logout') }}">Logout</a></li>
             </ul>
             <a class="menu-trigger"><span>Menu</span></a>
           </nav>
@@ -41,7 +44,8 @@
                 <p>Consultez vos contenus de cours, suivez vos activites et avancez sereinement.</p>
                 <div class="buttons">
                   <div class="main-button"><a href="{{ path('eleve_cours_index') }}">Voir mes cours</a></div>
-                  <div class="icon-button"><a href="{{ path('app_forum_index_context', {'context': 'student'}) }}"><i class="fa fa-comments"></i> Forum</a></div>
+                  <div class="main-button"><a href="{{ path('app_student_devoirs_ia') }}">Devoirs</a></div>
+                  <div class="icon-button"><a href="{{ path('app_student_resultats') }}"><i class="fa fa-line-chart"></i> Resultats</a></div>
                 </div>
               </div>
             </div>
@@ -93,7 +97,8 @@
             <div class="icon"><img src="{{ asset('images/service-03.png') }}" alt="suivi"></div>
             <div class="main-content">
               <h4>Suivi</h4>
-              <p>Conservez une vue globale de vos activites.</p>
+              <p>Consultez vos notes et appreciations en un clic.</p>
+              <div class="main-button"><a href="{{ path('app_student_resultats') }}">Voir mes resultats</a></div>
             </div>
           </div>
         </div>

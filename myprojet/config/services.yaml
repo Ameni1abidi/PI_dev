@@ -17,6 +17,10 @@ parameters:
         - bitch
         - fuck
         - shit
+    app.twilio_account_sid: '%env(string:TWILIO_ACCOUNT_SID)%'
+    app.twilio_auth_token: '%env(string:TWILIO_AUTH_TOKEN)%'
+    app.twilio_from_number: '%env(string:TWILIO_FROM_NUMBER)%'
+    app.twilio_whatsapp_from: '%env(default::TWILIO_WHATSAPP_FROM)%'
 
 services:
     # default configuration for services in *this* file
@@ -32,6 +36,13 @@ services:
     App\Service\ProfanityFilterService:
         arguments:
             $blockedWords: '%app.profanity_words%'
+
+    App\Service\EvaluationNotificationService:
+        arguments:
+            $twilioAccountSid: '%app.twilio_account_sid%'
+            $twilioAuthToken: '%app.twilio_auth_token%'
+            $twilioFromNumber: '%app.twilio_from_number%'
+            $twilioWhatsAppFrom: '%app.twilio_whatsapp_from%'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduFlex - Espace Eleve</title>
+    <title>{% block title %}EduFlex - Espace Eleve{% endblock %}</title>
+    <link rel="stylesheet" href="{{ asset('css/fontawesome.css') }}">
     <link rel="stylesheet" href="{{ asset('student/css/student.css') }}">
+    {% block stylesheets %}{% endblock %}
 </head>
 <body>
 <div class="student-shell">
@@ -19,49 +21,72 @@
         </div>
 
         <div class="student-profile">
-            <div class="student-avatar">AM</div>
+            {% set fullName = app.user ? app.user.nom : 'Eleve' %}
+            {% set parts = fullName|split(' ') %}
+            {% set initials = '' %}
+            {% for p in parts %}
+                {% if p|length > 0 and initials|length < 2 %}
+                    {% set initials = initials ~ p|slice(0, 1)|upper %}
+                {% endif %}
+            {% endfor %}
+            <div class="student-avatar">{{ initials ?: 'EL' }}</div>
             <div>
-                <div class="student-brand-name">Alex Martin</div>
+                <div class="student-brand-name">{{ fullName }}</div>
                 <div class="student-role">Eleve</div>
             </div>
         </div>
 
         <nav class="student-nav">
-            <a href="{{ path('app_student_dashboard') }}">
-                <span>🏠</span> Tableau de bord
+            <a class="{{ app.request.attributes.get('_route') == 'app_student_dashboard' ? 'is-active' : '' }}" href="{{ path('app_student_dashboard') }}">
+                <span><i class="fa fa-home"></i></span> Tableau de bord
             </a>
-            <a href="{{ path('app_forum_index_context', {'context': 'student'}) }}">
-                <span>F</span> Forum
+            <a class="{{ app.request.attributes.get('_route') starts with 'eleve_cours_' ? 'is-active' : '' }}" href="{{ path('eleve_cours_index') }}">
+                <span><i class="fa fa-book"></i></span> Mes cours
             </a>
-            <a class="is-active" href="{{ path('eleve_cours_index') }}">
-    <span>📘</span>
-    Mes cours
-</a>
-            <a href="#">
-                <span>📝</span> Mes examens
+            <a class="{{ app.request.attributes.get('_route') == 'app_student_examens' ? 'is-active' : '' }}" href="{{ path('app_student_examens') }}">
+                <span><i class="fa fa-file-text-o"></i></span> Mes examens
             </a>
-            <a href="#">
-                <span>💬</span> Messages
+            <a class="{{ app.request.attributes.get('_route') starts with 'app_student_devoir_ia' or app.request.attributes.get('_route') == 'app_student_devoirs_ia' ? 'is-active' : '' }}" href="{{ path('app_student_devoirs_ia') }}">
+                <span><i class="fa fa-magic"></i></span> Devoirs
             </a>
-            <a href="#">
-                <span>📅</span> Planning
+            <a class="{{ app.request.attributes.get('_route') == 'app_student_resultats' ? 'is-active' : '' }}" href="{{ path('app_student_resultats') }}">
+                <span><i class="fa fa-line-chart"></i></span> Mes resultats
+            </a>
+            <a class="{{ app.request.attributes.get('_route') starts with 'app_forum_' ? 'is-active' : '' }}" href="{{ path('app_forum_index_context', {'context': 'student'}) }}">
+                <span><i class="fa fa-comments"></i></span> Forum
+            </a>
+            <a href="{{ path('app_logout') }}">
+                <span><i class="fa fa-sign-out"></i></span> Logout
             </a>
         </nav>
     </aside>
 
-    <main class="teacher-main">
-        <header class="teacher-topbar">
-            <div style="display:flex; flex-direction:column;">
-                <img src="{{ asset('images/cours.jpg') }}" alt="Cours" style="height:80px; width:auto; border-radius:5px; margin-bottom:5px;">
-                <div class="teacher-sub">Bienvenue dans votre espace</div>
+    <main class="student-main">
+        <header class="student-topbar">
+            <form class="student-search" method="get" action="{{ path('eleve_cours_index') }}">
+                <span><i class="fa fa-search"></i></span>
+                <input type="search" name="q" placeholder="Rechercher un cours...">
+            </form>
+            <div class="student-top-actions">
+                {% if app.user %}
+                    <a class="student-icon-btn" href="{{ path('app_student_profile_edit') }}" title="Modifier mon profil">
+                        <i class="fa fa-user"></i>
+                    </a>
+                {% else %}
+                    <a class="student-icon-btn" href="{{ path('app_login') }}" title="Se connecter">
+                        <i class="fa fa-user"></i>
+                    </a>
+                {% endif %}
+                <div class="student-pill">Eleve</div>
             </div>
         </header>
 
-        <div class="teacher-content">
+        <div class="student-content">
             {% block body %}{% endblock %}
         </div>
     </main>
 
 </div>
+{% block javascripts %}{% endblock %}
 </body>
 </html>

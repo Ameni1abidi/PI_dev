@@ -21,9 +21,17 @@
         </div>
 
         <div class="teacher-profile">
-          <div class="teacher-avatar">ML</div>
+          {% set teacherName = app.user ? app.user.nom : 'Enseignant' %}
+          {% set teacherParts = teacherName|split(' ') %}
+          {% set teacherInitials = '' %}
+          {% for part in teacherParts %}
+            {% if part|length > 0 and teacherInitials|length < 2 %}
+              {% set teacherInitials = teacherInitials ~ part|slice(0, 1)|upper %}
+            {% endif %}
+          {% endfor %}
+          <div class="teacher-avatar">{{ teacherInitials ?: 'EN' }}</div>
           <div>
-            <div class="teacher-name">Mme Legrand</div>
+            <div class="teacher-name">{{ teacherName }}</div>
             <div class="teacher-role">Enseignante</div>
           </div>
         </div>
@@ -37,7 +45,7 @@
             <span>FO</span>
             Forum
           </a>
-          <a href="#">
+          <a href="{{ path('app_enseignant_classes') }}">
             <span>CL</span>
             Mes classes
           </a>
@@ -53,6 +61,10 @@
             <span>EX</span>
             Examens
           </a>
+          <a href="{{ path('app_devoir_ia_index') }}">
+            <span>IA</span>
+            Devoirs
+          </a>
           <a href="{{ path('app_enseignant_evaluations') }}">
             <span>EV</span>
             Evaluations
@@ -60,6 +72,10 @@
           <a href="{{ path('app_resultat_index_readonly') }}">
             <span>RS</span>
             Resultats
+          </a>
+          <a href="{{ path('app_logout') }}">
+            <span>LO</span>
+            Logout
           </a>
         </nav>
       </aside>
@@ -73,5 +89,8 @@
         </div>
       </main>
     </div>
+
+    <script src="{{ asset('vendor/bootstrap/js/bootstrap.min.js') }}"></script>
+    {% block javascripts %}{% endblock %}
   </body>
 </html>

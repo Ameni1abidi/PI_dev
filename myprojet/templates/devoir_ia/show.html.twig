@@ -1,0 +1,53 @@
+{% extends 'crud_base.html.twig' %}
+
+{% block title %}Detail devoir IA{% endblock %}
+
+{% block body %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 m-0">{{ devoir.titre }}</h1>
+    <a class="btn btn-outline-secondary" href="{{ path('app_devoir_ia_index') }}">Retour</a>
+  </div>
+
+  <div class="mb-3">
+    <span class="badge text-bg-primary">{{ devoir.niveauDifficulte|upper }}</span>
+    <span class="badge text-bg-light">{{ devoir.duree }} min</span>
+    <span class="badge text-bg-light">{{ devoir.cours ? devoir.cours.titre : '-' }}</span>
+    {% if payload.source is defined %}
+      <span class="badge text-bg-info">Source: {{ payload.source }}</span>
+    {% endif %}
+  </div>
+
+  {% if payload.instructions is defined and payload.instructions %}
+    <div class="alert alert-secondary">
+      <strong>Consignes:</strong> {{ payload.instructions }}
+    </div>
+  {% endif %}
+
+  {% set questions = payload.questions is defined and payload.questions is iterable ? payload.questions : [] %}
+  {% if questions is empty %}
+    <div class="alert alert-warning">Aucune question generee.</div>
+  {% else %}
+    {% for q in questions %}
+      <article class="card mb-3">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <strong>Question {{ loop.index }}</strong>
+            <span class="badge text-bg-dark">{{ q.type|default('')|replace({'_': ' '})|upper }}</span>
+          </div>
+          <p class="mb-2">{{ q.question|default('') }}</p>
+
+          {% if q.options is defined and q.options is iterable and q.options|length > 0 %}
+            <ul class="mb-2">
+              {% for option in q.options %}
+                <li>{{ option }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+
+          <div class="small text-success"><strong>Reponse:</strong> {{ q.answer|default('-') }}</div>
+          <div class="small text-muted"><strong>Explication:</strong> {{ q.explanation|default('-') }}</div>
+        </div>
+      </article>
+    {% endfor %}
+  {% endif %}
+{% endblock %}
