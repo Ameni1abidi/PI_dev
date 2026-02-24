@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20260222010426 extends AbstractMigration
+final class Version20260223001742 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -23,20 +23,24 @@ final class Version20260222010426 extends AbstractMigration
         $this->addSql('CREATE TABLE categorie (id INT AUTO_INCREMENT NOT NULL, nom VARCHAR(100) NOT NULL, PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE chapitre (id INT AUTO_INCREMENT NOT NULL, titre VARCHAR(30) NOT NULL, ordre INT NOT NULL, type_contenu VARCHAR(50) NOT NULL, contenu_texte LONGTEXT DEFAULT NULL, contenu_fichier VARCHAR(255) DEFAULT NULL, video_url VARCHAR(255) DEFAULT NULL, duree_estimee INT NOT NULL, cours_id INT NOT NULL, INDEX IDX_8C62B0257ECF78B0 (cours_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE commentaire (id INT AUTO_INCREMENT NOT NULL, contenu LONGTEXT NOT NULL, date_envoi DATETIME NOT NULL, forum_id INT NOT NULL, INDEX IDX_67F068BC29CCBAD0 (forum_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
-        $this->addSql('CREATE TABLE cours (id INT AUTO_INCREMENT NOT NULL, titre VARCHAR(30) NOT NULL, description LONGTEXT NOT NULL, niveau VARCHAR(255) NOT NULL, date_creation DATE NOT NULL, PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
+        $this->addSql('CREATE TABLE cours (id INT AUTO_INCREMENT NOT NULL, titre VARCHAR(30) NOT NULL, description LONGTEXT NOT NULL, niveau VARCHAR(255) NOT NULL, date_creation DATE NOT NULL, enseignant_id INT DEFAULT NULL, INDEX IDX_FDCA8C9CE455FCC0 (enseignant_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE examen (id INT AUTO_INCREMENT NOT NULL, titre VARCHAR(255) NOT NULL, contenu LONGTEXT NOT NULL, type VARCHAR(20) NOT NULL, date_examen DATE NOT NULL, duree INT NOT NULL, cours_id INT NOT NULL, enseignant_id INT NOT NULL, INDEX IDX_514C8FEC7ECF78B0 (cours_id), INDEX IDX_514C8FECE455FCC0 (enseignant_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE forum (id INT AUTO_INCREMENT NOT NULL, titre VARCHAR(255) NOT NULL, type VARCHAR(255) NOT NULL, contenu LONGTEXT NOT NULL, date_creation DATETIME NOT NULL, PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
-        $this->addSql('CREATE TABLE ressource (id INT AUTO_INCREMENT NOT NULL, titre VARCHAR(150) NOT NULL, contenu LONGTEXT NOT NULL, available_at DATETIME DEFAULT NULL, nb_vues INT DEFAULT 0 NOT NULL, nb_likes INT DEFAULT 0 NOT NULL, nb_favoris INT DEFAULT 0 NOT NULL, score INT DEFAULT 0 NOT NULL, badge VARCHAR(20) DEFAULT \'Moyen\' NOT NULL, categorie_id INT NOT NULL, chapitre_id INT DEFAULT NULL, INDEX IDX_939F4544BCF5E72D (categorie_id), INDEX IDX_939F45441FBEEF7B (chapitre_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
+        $this->addSql('CREATE TABLE reset_password_request (id INT AUTO_INCREMENT NOT NULL, selector VARCHAR(20) NOT NULL, hashed_token VARCHAR(100) NOT NULL, requested_at DATETIME NOT NULL, expires_at DATETIME NOT NULL, user_id INT NOT NULL, INDEX IDX_7CE748AA76ED395 (user_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
+        $this->addSql('CREATE TABLE ressource (id INT AUTO_INCREMENT NOT NULL, titre VARCHAR(150) NOT NULL, contenu LONGTEXT NOT NULL, cloudinary_public_id VARCHAR(255) DEFAULT NULL, cloudinary_resource_type VARCHAR(20) DEFAULT NULL, available_at DATETIME DEFAULT NULL, nb_vues INT DEFAULT 0 NOT NULL, nb_likes INT DEFAULT 0 NOT NULL, nb_favoris INT DEFAULT 0 NOT NULL, score INT DEFAULT 0 NOT NULL, badge VARCHAR(20) DEFAULT \'Moyen\' NOT NULL, categorie_id INT NOT NULL, chapitre_id INT DEFAULT NULL, INDEX IDX_939F4544BCF5E72D (categorie_id), INDEX IDX_939F45441FBEEF7B (chapitre_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE ressource_favori (id INT AUTO_INCREMENT NOT NULL, created_at DATETIME NOT NULL, ressource_id INT NOT NULL, utilisateur_id INT NOT NULL, INDEX IDX_5C47171FC6CD52A (ressource_id), INDEX IDX_5C47171FB88E14F (utilisateur_id), UNIQUE INDEX uniq_ressource_favori_user (ressource_id, utilisateur_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE ressource_interaction (id INT AUTO_INCREMENT NOT NULL, type VARCHAR(20) NOT NULL, created_at DATETIME NOT NULL, ressource_id INT NOT NULL, utilisateur_id INT DEFAULT NULL, INDEX IDX_3EF2DBE4FC6CD52A (ressource_id), INDEX IDX_3EF2DBE4FB88E14F (utilisateur_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE ressource_like (id INT AUTO_INCREMENT NOT NULL, created_at DATETIME NOT NULL, ressource_id INT NOT NULL, utilisateur_id INT NOT NULL, INDEX IDX_5CDC403AFC6CD52A (ressource_id), INDEX IDX_5CDC403AFB88E14F (utilisateur_id), UNIQUE INDEX uniq_ressource_like_user (ressource_id, utilisateur_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
+        $this->addSql('CREATE TABLE ressource_quiz (id INT AUTO_INCREMENT NOT NULL, type VARCHAR(12) NOT NULL, question VARCHAR(255) NOT NULL, choices JSON DEFAULT NULL, answer_hint LONGTEXT DEFAULT NULL, position INT NOT NULL, ressource_id INT NOT NULL, INDEX IDX_54ADFA1BFC6CD52A (ressource_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE resultat (id INT AUTO_INCREMENT NOT NULL, note NUMERIC(5, 2) NOT NULL, appreciation LONGTEXT DEFAULT NULL, examen_id INT NOT NULL, eleve_id INT NOT NULL, INDEX IDX_E7DB5DE25C8659A (examen_id), INDEX IDX_E7DB5DE2A6CC7B2 (eleve_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
-        $this->addSql('CREATE TABLE utilisateur (id INT AUTO_INCREMENT NOT NULL, nom VARCHAR(200) NOT NULL, password VARCHAR(255) NOT NULL, email VARCHAR(200) NOT NULL, role VARCHAR(200) NOT NULL, is_verified TINYINT NOT NULL, PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
+        $this->addSql('CREATE TABLE utilisateur (id INT AUTO_INCREMENT NOT NULL, nom VARCHAR(200) NOT NULL, password VARCHAR(255) NOT NULL, email VARCHAR(200) NOT NULL, role VARCHAR(200) NOT NULL, is_verified TINYINT NOT NULL, created_at DATETIME NOT NULL, PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE messenger_messages (id BIGINT AUTO_INCREMENT NOT NULL, body LONGTEXT NOT NULL, headers LONGTEXT NOT NULL, queue_name VARCHAR(190) NOT NULL, created_at DATETIME NOT NULL, available_at DATETIME NOT NULL, delivered_at DATETIME DEFAULT NULL, INDEX IDX_75EA56E0FB7336F0E3BD61CE16BA31DBBF396750 (queue_name, available_at, delivered_at, id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('ALTER TABLE chapitre ADD CONSTRAINT FK_8C62B0257ECF78B0 FOREIGN KEY (cours_id) REFERENCES cours (id)');
         $this->addSql('ALTER TABLE commentaire ADD CONSTRAINT FK_67F068BC29CCBAD0 FOREIGN KEY (forum_id) REFERENCES forum (id)');
+        $this->addSql('ALTER TABLE cours ADD CONSTRAINT FK_FDCA8C9CE455FCC0 FOREIGN KEY (enseignant_id) REFERENCES utilisateur (id)');
         $this->addSql('ALTER TABLE examen ADD CONSTRAINT FK_514C8FEC7ECF78B0 FOREIGN KEY (cours_id) REFERENCES cours (id)');
         $this->addSql('ALTER TABLE examen ADD CONSTRAINT FK_514C8FECE455FCC0 FOREIGN KEY (enseignant_id) REFERENCES utilisateur (id)');
+        $this->addSql('ALTER TABLE reset_password_request ADD CONSTRAINT FK_7CE748AA76ED395 FOREIGN KEY (user_id) REFERENCES utilisateur (id)');
         $this->addSql('ALTER TABLE ressource ADD CONSTRAINT FK_939F4544BCF5E72D FOREIGN KEY (categorie_id) REFERENCES categorie (id)');
         $this->addSql('ALTER TABLE ressource ADD CONSTRAINT FK_939F45441FBEEF7B FOREIGN KEY (chapitre_id) REFERENCES chapitre (id)');
         $this->addSql('ALTER TABLE ressource_favori ADD CONSTRAINT FK_5C47171FC6CD52A FOREIGN KEY (ressource_id) REFERENCES ressource (id) ON DELETE CASCADE');
@@ -45,6 +49,7 @@ final class Version20260222010426 extends AbstractMigration
         $this->addSql('ALTER TABLE ressource_interaction ADD CONSTRAINT FK_3EF2DBE4FB88E14F FOREIGN KEY (utilisateur_id) REFERENCES utilisateur (id) ON DELETE SET NULL');
         $this->addSql('ALTER TABLE ressource_like ADD CONSTRAINT FK_5CDC403AFC6CD52A FOREIGN KEY (ressource_id) REFERENCES ressource (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE ressource_like ADD CONSTRAINT FK_5CDC403AFB88E14F FOREIGN KEY (utilisateur_id) REFERENCES utilisateur (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE ressource_quiz ADD CONSTRAINT FK_54ADFA1BFC6CD52A FOREIGN KEY (ressource_id) REFERENCES ressource (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE resultat ADD CONSTRAINT FK_E7DB5DE25C8659A FOREIGN KEY (examen_id) REFERENCES examen (id)');
         $this->addSql('ALTER TABLE resultat ADD CONSTRAINT FK_E7DB5DE2A6CC7B2 FOREIGN KEY (eleve_id) REFERENCES utilisateur (id)');
     }
@@ -54,8 +59,10 @@ final class Version20260222010426 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql('ALTER TABLE chapitre DROP FOREIGN KEY FK_8C62B0257ECF78B0');
         $this->addSql('ALTER TABLE commentaire DROP FOREIGN KEY FK_67F068BC29CCBAD0');
+        $this->addSql('ALTER TABLE cours DROP FOREIGN KEY FK_FDCA8C9CE455FCC0');
         $this->addSql('ALTER TABLE examen DROP FOREIGN KEY FK_514C8FEC7ECF78B0');
         $this->addSql('ALTER TABLE examen DROP FOREIGN KEY FK_514C8FECE455FCC0');
+        $this->addSql('ALTER TABLE reset_password_request DROP FOREIGN KEY FK_7CE748AA76ED395');
         $this->addSql('ALTER TABLE ressource DROP FOREIGN KEY FK_939F4544BCF5E72D');
         $this->addSql('ALTER TABLE ressource DROP FOREIGN KEY FK_939F45441FBEEF7B');
         $this->addSql('ALTER TABLE ressource_favori DROP FOREIGN KEY FK_5C47171FC6CD52A');
@@ -64,6 +71,7 @@ final class Version20260222010426 extends AbstractMigration
         $this->addSql('ALTER TABLE ressource_interaction DROP FOREIGN KEY FK_3EF2DBE4FB88E14F');
         $this->addSql('ALTER TABLE ressource_like DROP FOREIGN KEY FK_5CDC403AFC6CD52A');
         $this->addSql('ALTER TABLE ressource_like DROP FOREIGN KEY FK_5CDC403AFB88E14F');
+        $this->addSql('ALTER TABLE ressource_quiz DROP FOREIGN KEY FK_54ADFA1BFC6CD52A');
         $this->addSql('ALTER TABLE resultat DROP FOREIGN KEY FK_E7DB5DE25C8659A');
         $this->addSql('ALTER TABLE resultat DROP FOREIGN KEY FK_E7DB5DE2A6CC7B2');
         $this->addSql('DROP TABLE categorie');
@@ -72,10 +80,12 @@ final class Version20260222010426 extends AbstractMigration
         $this->addSql('DROP TABLE cours');
         $this->addSql('DROP TABLE examen');
         $this->addSql('DROP TABLE forum');
+        $this->addSql('DROP TABLE reset_password_request');
         $this->addSql('DROP TABLE ressource');
         $this->addSql('DROP TABLE ressource_favori');
         $this->addSql('DROP TABLE ressource_interaction');
         $this->addSql('DROP TABLE ressource_like');
+        $this->addSql('DROP TABLE ressource_quiz');
         $this->addSql('DROP TABLE resultat');
         $this->addSql('DROP TABLE utilisateur');
         $this->addSql('DROP TABLE messenger_messages');
