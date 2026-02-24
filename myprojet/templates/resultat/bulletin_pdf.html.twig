@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Bulletin - {{ eleve.nom }}</title>
+    <style>
+        body {
+            font-family: DejaVu Sans, sans-serif;
+            font-size: 12px;
+            color: #222;
+        }
+        .header {
+            margin-bottom: 14px;
+            border-bottom: 2px solid #2f3d4a;
+            padding-bottom: 12px;
+        }
+        .title {
+            font-size: 22px;
+            font-weight: bold;
+            margin: 0;
+            color: #1f2d3a;
+        }
+        .meta {
+            margin-top: 5px;
+            color: #555;
+        }
+        .identity {
+            margin-top: 10px;
+            background: #f8fafc;
+            border: 1px solid #dde4ea;
+            padding: 8px 10px;
+        }
+        .identity p {
+            margin: 3px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background: #f3f3f3;
+        }
+        .right {
+            text-align: right;
+        }
+        .summary {
+            margin-top: 16px;
+            border: 1px solid #e3e3e3;
+            padding: 10px 12px;
+            background: #fbfbfb;
+        }
+        .summary p {
+            margin: 5px 0;
+        }
+        .empty {
+            margin-top: 12px;
+            color: #a00;
+            font-weight: bold;
+        }
+        .footer {
+            margin-top: 24px;
+            display: table;
+            width: 100%;
+            font-size: 11px;
+        }
+        .footer-cell {
+            display: table-cell;
+            width: 50%;
+            vertical-align: top;
+        }
+        .signature {
+            margin-top: 30px;
+            border-top: 1px solid #444;
+            width: 200px;
+            padding-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <p class="title">Bulletin de notes</p>
+        <div class="meta">Document officiel de suivi des evaluations</div>
+        <div class="meta">Date de generation: {{ generation_date|date('d/m/Y H:i') }}</div>
+    </div>
+
+    <div class="identity">
+        <p><strong>Eleve:</strong> {{ eleve.nom }}</p>
+        <p><strong>Email:</strong> {{ eleve.email ?: '-' }}</p>
+        <p><strong>ID eleve:</strong> {{ eleve.id }}</p>
+    </div>
+
+    {% if resultats is empty %}
+        <p class="empty">Aucun resultat disponible pour cet eleve.</p>
+    {% else %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Examen</th>
+                    <th>Cours</th>
+                    <th>Type</th>
+                    <th>Date examen</th>
+                    <th class="right">Note</th>
+                    <th>Appreciation</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for resultat in resultats %}
+                    <tr>
+                        <td>{{ resultat.examen ? resultat.examen.titre : '-' }}</td>
+                        <td>{{ (resultat.examen and resultat.examen.cours) ? resultat.examen.cours.titre : '-' }}</td>
+                        <td>{{ resultat.examen ? resultat.examen.type|upper : '-' }}</td>
+                        <td>{{ (resultat.examen and resultat.examen.dateExamen) ? resultat.examen.dateExamen|date('d/m/Y') : '-' }}</td>
+                        <td class="right">{{ resultat.note }}</td>
+                        <td>{{ resultat.appreciation ?: '-' }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="summary">
+            <p><strong>Nombre d'evaluations:</strong> {{ resultats|length }}</p>
+            <p><strong>Moyenne generale:</strong> {% if moyenne is null %}-{% else %}{{ moyenne|number_format(2, '.', ' ') }}/20{% endif %}</p>
+            <p><strong>Meilleure note:</strong> {% if note_max is null %}-{% else %}{{ note_max|number_format(2, '.', ' ') }}/20{% endif %}</p>
+            <p><strong>Note la plus faible:</strong> {% if note_min is null %}-{% else %}{{ note_min|number_format(2, '.', ' ') }}/20{% endif %}</p>
+            <p><strong>Taux de reussite (>=10/20):</strong> {% if taux_reussite is null %}-{% else %}{{ taux_reussite|number_format(0, '.', ' ') }}%{% endif %}</p>
+            <p><strong>Appreciation generale:</strong> {{ appreciation }}</p>
+        </div>
+
+        <div class="footer">
+            <div class="footer-cell">
+                <p><strong>Observation:</strong></p>
+                <p>Ce bulletin est genere automatiquement par la plateforme de gestion des evaluations.</p>
+            </div>
+            <div class="footer-cell">
+                <p class="signature">Signature enseignant</p>
+            </div>
+        </div>
+    {% endif %}
+</body>
+</html>

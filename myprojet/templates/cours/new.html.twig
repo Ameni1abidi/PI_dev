@@ -1,0 +1,108 @@
+{% extends 'enseignant/dashboard_base.html.twig' %}
+
+{% block title %}Ajouter un Cours{% endblock %}
+
+{% block body %}
+<div style="padding:20px; font-family:'Manrope', sans-serif; max-width:700px; margin:auto;">
+
+    <!-- Lien vers la liste -->
+    <div style="margin-bottom:20px; display:flex; justify-content:flex-end;">
+        <a href="{{ path('app_cours_index') }}"
+           style="
+               display:inline-block;
+               padding:10px 20px;
+               background-color:#ff4081;
+               color:white;
+               text-decoration:none;
+               border-radius:50px;
+               font-weight:700;
+               font-size:1rem;
+               box-shadow:0 3px 8px rgba(0,0,0,0.2);
+               transition:0.3s;
+           ">
+            Liste des Cours
+        </a>
+    </div>
+
+    <div style="background-color:#ffffff; border-radius:10px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+        <h2 style="margin-bottom:20px; font-weight:700; font-size:1.5rem; color:#333;">
+            Ajouter un Cours
+        </h2>
+
+        {{ form_start(form) }}
+
+        {{ form_errors(form) }}
+
+        <!-- TITRE -->
+        <div style="margin-bottom:15px;">
+            {{ form_label(form.titre, null, {'label_attr': {'style': 'font-weight:600;'}}) }}
+            {{ form_widget(form.titre, {'attr': {
+                'class': 'form-control',
+                'style':'width:100%; padding:8px; border-radius:6px; border:1px solid #ccc;'
+            }}) }}
+            <div style="color:red; font-size:0.85rem;">
+                {{ form_errors(form.titre) }}
+            </div>
+        </div>
+
+        <!-- DESCRIPTION -->
+        <div style="margin-bottom:15px;">
+            {{ form_label(form.description, null, {'label_attr': {'style': 'font-weight:600;'}}) }}
+            {{ form_widget(form.description, {'attr': {
+                'class': 'form-control',
+                'style':'width:100%; padding:8px; border-radius:6px; border:1px solid #ccc;'
+            }}) }}
+            <div style="color:red; font-size:0.85rem;">
+                {{ form_errors(form.description) }}
+            </div>
+        </div>
+
+        <!-- NIVEAU -->
+        <div style="margin-bottom:15px;">
+            {{ form_label(form.niveau, null, {'label_attr': {'style': 'font-weight:600;'}}) }}
+            {{ form_widget(form.niveau, {'attr': {
+                'class': 'form-control',
+                'style':'width:100%; padding:8px; border-radius:6px; border:1px solid #ccc;'
+            }}) }}
+            <div style="color:red; font-size:0.85rem;">
+                {{ form_errors(form.niveau) }}
+            </div>
+        </div>
+
+        <!-- DATE CREATION -->
+        <div style="margin-bottom:20px;">
+            {{ form_label(form.dateCreation, null, {'label_attr': {'style': 'font-weight:600;'}}) }}
+            {{ form_widget(form.dateCreation, {'attr': {
+                'class': 'form-control',
+                'style':'width:100%; padding:8px; border-radius:6px; border:1px solid #ccc;'
+            }}) }}
+            <div style="color:red; font-size:0.85rem;">
+                {{ form_errors(form.dateCreation) }}
+            </div>
+        </div>
+
+        <button type="submit"
+                style="padding:8px 20px; background-color:#28a745; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:600;">
+            Enregistrer
+        </button>
+
+        {{ form_end(form) }}
+
+    </div>
+</div>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

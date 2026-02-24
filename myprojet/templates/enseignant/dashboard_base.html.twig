@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}EduFlex - Espace Enseignant{% endblock %}</title>
+    {% block stylesheets %}
+      <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+      <link rel="stylesheet" href="{{ asset('enseignant/css/enseignant.css') }}">
+    {% endblock %}
+</head>
+
+<body>
+<div class="teacher-shell">
+
+    <!-- SIDEBAR -->
+    <aside class="teacher-sidebar">
+        <div class="teacher-brand">
+            <div class="teacher-brand-mark">EF</div>
+            <div>
+                <div class="teacher-brand-name">EduFlex</div>
+                <div class="teacher-brand-sub">Espace enseignant</div>
+            </div>
+        </div>
+
+        <div class="teacher-profile">
+            <div class="teacher-avatar">ML</div>
+            <div>
+                <div class="teacher-name">Mme Legrand</div>
+                <div class="teacher-role">Enseignante</div>
+            </div>
+        </div>
+
+        <nav class="teacher-nav">
+            <a href="{{ path('app_enseignant_dashboard') }}">
+                <span>DB</span> Tableau de bord
+            </a>
+            {% if app.request.attributes.get('_route') == 'app_enseignant_dashboard' %}
+              <a href="#forums">
+                <span>FO</span>
+                Forum
+              </a>
+            {% else %}
+              <a href="{{ path('app_forum_index_context', {'context': 'enseignant'}) }}">
+                <span>FO</span>
+                Forum
+              </a>
+            {% endif %}
+            <a href="{{ path('app_enseignant_classes') }}">
+                <span>CL</span> Mes classes
+            </a>
+            <a href="{{ path('app_cours_index') }}">
+                <span>C</span> Cours
+            </a>
+           
+            <a href="{{ path('app_ressource_index') }}">
+                <span>R</span> Ressource
+            </a>
+            <a href="{{ path('app_examen_index') }}">
+                <span>EX</span> Examens
+            </a>
+            <a href="{{ path('app_enseignant_evaluations') }}">
+                <span>EV</span> Evaluations
+            </a>
+            <a href="{{ path('app_resultat_index') }}">
+                <span>RS</span> Resultats
+            </a>
+            <a href="{{ path('app_forum_index_context', {'context': 'enseignant'}) }}">
+                <span>MS</span> Messages
+            </a>
+        </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="teacher-main">
+
+        <header class="teacher-topbar">
+            <div style="display:flex; flex-direction:column;">
+                <img src="{{ asset('images/cours.jpg') }}"
+                     alt="Cours"
+                     style="height:80px; border-radius:5px; margin-bottom:5px;">
+                <div class="teacher-sub">
+                    Bienvenue dans votre espace
+                </div>
+            </div>
+        </header>
+
+        <div class="teacher-content">
+            {% block body %}{% endblock %}
+        </div>
+
+    </main>
+
+</div>
+{% block javascripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Gestion{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('enseignant/css/enseignant.css') }}">
+    <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    {% block stylesheets %}{% endblock %}
+  </head>
+  <body>
+    <div class="teacher-shell">
+      <aside class="teacher-sidebar">
+        <div class="teacher-brand">
+          <div class="teacher-brand-mark">EF</div>
+          <div>
+            <div class="teacher-brand-name">EduFlex</div>
+            <div class="teacher-brand-sub">Espace enseignant</div>
+          </div>
+        </div>
+
+        <div class="teacher-profile">
+          {% set teacherName = app.user ? app.user.nom : 'Enseignant' %}
+          {% set teacherParts = teacherName|split(' ') %}
+          {% set teacherInitials = '' %}
+          {% for part in teacherParts %}
+            {% if part|length > 0 and teacherInitials|length < 2 %}
+              {% set teacherInitials = teacherInitials ~ part|slice(0, 1)|upper %}
+            {% endif %}
+          {% endfor %}
+          <div class="teacher-avatar">{{ teacherInitials ?: 'EN' }}</div>
+          <div>
+            <div class="teacher-name">{{ teacherName }}</div>
+            <div class="teacher-role">Enseignante</div>
+          </div>
+        </div>
+
+        <nav class="teacher-nav">
+          <a href="{{ path('app_enseignant_dashboard') }}">
+            <span>DB</span>
+            Tableau de bord
+          </a>
+          <a href="{{ path('app_forum_index_context', {'context': 'enseignant'}) }}">
+            <span>FO</span>
+            Forum
+          </a>
+          <a href="{{ path('app_enseignant_classes') }}">
+            <span>CL</span>
+            Mes classes
+          </a>
+          <a href="{{ path('app_cours_index') }}">
+            <span>C</span>
+            Cours
+          </a>
+          <a href="{{ path('app_ressource_index') }}">
+            <span>R</span>
+            Ressources
+          </a>
+          <a href="{{ path('app_examen_index') }}">
+            <span>EX</span>
+            Examens
+          </a>
+          <a href="{{ path('app_devoir_ia_index') }}">
+            <span>IA</span>
+            Devoirs
+          </a>
+          <a href="{{ path('app_enseignant_evaluations') }}">
+            <span>EV</span>
+            Evaluations
+          </a>
+          <a href="{{ path('app_resultat_index_readonly') }}">
+            <span>RS</span>
+            Resultats
+          </a>
+          <a href="{{ path('app_logout') }}">
+            <span>LO</span>
+            Logout
+          </a>
+        </nav>
+      </aside>
+
+      <main class="teacher-main">
+        <div class="container mt-5 pt-5">
+          <div class="card shadow p-4">
+            {% block crud_content %}{% endblock %}
+            {% block body %}{% endblock %}
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="{{ asset('vendor/bootstrap/js/bootstrap.min.js') }}"></script>
+    {% block javascripts %}{% endblock %}
+  </body>
+</html>

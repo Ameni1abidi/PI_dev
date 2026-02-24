@@ -1,0 +1,56 @@
+{% extends 'student/dashCours.html.twig' %}
+
+{% block title %}Resultat Devoir{% endblock %}
+
+{% block body %}
+<div style="padding:16px; background:linear-gradient(135deg,#fdfbfb,#ebedee); border-radius:16px; font-family:Manrope, sans-serif; line-height:1.55;">
+  <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:12px; margin-bottom:16px;">
+    <h2 style="margin:0; font-weight:800; font-size:1.5rem; color:#111827;">Resultat detaille</h2>
+    <div style="display:flex; gap:8px;">
+      <a href="{{ path('app_student_devoir_ia_show', {'id': devoir.id}) }}" style="text-decoration:none; padding:8px 12px; border-radius:999px; background:#eef2ff; color:#2f3a8f; font-weight:700;">Retour devoir</a>
+      <a href="{{ path('app_student_devoir_ia_retry', {'id': devoir.id}) }}" style="text-decoration:none; padding:8px 12px; border-radius:999px; background:#e0f2fe; color:#075985; font-weight:700;">Refaire</a>
+    </div>
+  </div>
+
+  <div style="background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:12px; margin-bottom:14px;">
+    <div style="font-size:1.1rem; font-weight:800; color:#0f172a;">{{ devoir.titre }}</div>
+    <div style="color:#64748b; margin-top:4px;">Soumis le {{ submission.dateSoumission ? submission.dateSoumission|date('d/m/Y H:i') : '-' }}</div>
+    <div style="margin-top:8px; font-size:1.1rem; color:#0f172a;"><strong>Note:</strong> {{ evaluation.note|number_format(2, '.', '') }} / 20</div>
+    <div style="color:#475569;">{{ evaluation.feedback }}</div>
+  </div>
+
+  {% set questions = payload.questions is defined and payload.questions is iterable ? payload.questions : [] %}
+  {% for q in questions %}
+    {% set idx = loop.index0 %}
+    {% set detail = evaluation.details[idx] is defined ? evaluation.details[idx] : null %}
+    <article style="background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:12px; margin-bottom:10px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:6px;">
+        <strong>Question {{ loop.index }}</strong>
+        <span style="font-size:0.78rem; color:#6b7280; background:#f3f4f6; border-radius:999px; padding:4px 8px;">{{ q.type|default('')|replace({'_':' '})|upper }}</span>
+      </div>
+      <div style="margin-bottom:8px; color:#111827;">{{ q.question|default('') }}</div>
+
+      {% if q.options is defined and q.options is iterable and q.options|length > 0 %}
+        <ul style="margin:0 0 8px 18px; color:#334155;">
+          {% for option in q.options %}
+            <li>{{ option }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      {% if detail %}
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:8px; font-size:0.92rem;">
+          <div><strong>Votre reponse:</strong> {{ detail.given ?: '-' }}</div>
+          <div><strong>Reponse attendue:</strong> {{ detail.expected ?: '-' }}</div>
+          <div><strong>Score:</strong> {{ detail.score|number_format(2, '.', '') }} / {{ detail.max|number_format(0, '.', '') }}</div>
+          {% if detail.explanation %}
+            <div><strong>Explication:</strong> {{ detail.explanation }}</div>
+          {% endif %}
+        </div>
+      {% endif %}
+    </article>
+  {% else %}
+    <div style="background:#fff; border-radius:12px; padding:14px; color:#6b7280;">Aucune question disponible.</div>
+  {% endfor %}
+</div>
+{% endblock %}

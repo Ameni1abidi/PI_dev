@@ -1,0 +1,32 @@
+{% extends 'enseignant/dashboard_base.html.twig' %}
+
+{% block title %}Détails du Cours{% endblock %}
+
+{% block body %}
+<div style="padding:20px; font-family:'Manrope', sans-serif; max-width:700px; margin:auto;">
+
+    {# 🔹 Bouton retour vers la liste des cours #}
+    <div style="margin-bottom:20px; display:flex; justify-content:flex-end;">
+        <a href="{{ path('app_cours_index') }}"
+           style="display:inline-block; padding:10px 20px; background-color:#ff4081; color:white; text-decoration:none; border-radius:50px; font-weight:700; box-shadow:0 3px 8px rgba(0,0,0,0.2);">
+            Liste des Cours
+        </a>
+    </div>
+
+    <div style="background-color:#ffffff; border-radius:10px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+        <h2 style="margin-bottom:10px;">{{ cours.titre }}</h2>
+        <p>{{ cours.description }}</p>
+        <p><strong>Niveau :</strong> {{ cours.niveau }}</p>
+        <p><strong>Créé le :</strong> {{ cours.dateCreation ? cours.dateCreation|date('d/m/Y') : 'N/A' }}</p>
+        <p><strong>Nombre de chapitres :</strong> {{ cours.chapitres|length }}</p>
+
+        {# 🔹 Bouton pour aller à la liste des chapitres de ce cours #}
+        <a href="{{ path('app_chapitre_index', {'coursId': cours.id}) }}"
+           style="display:inline-block; margin-top:15px; padding:8px 18px; background-color:#28a745; color:white; text-decoration:none; border-radius:5px; font-weight:600;">
+            Voir les chapitres
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+

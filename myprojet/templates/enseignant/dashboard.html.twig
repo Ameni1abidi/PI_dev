@@ -1,0 +1,701 @@
+﻿{% extends 'scholar_base.html.twig' %}
+
+{% block title %}Dashboard Enseignant - EduFlex{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <style>
+    .teacher-main {
+      padding-top: 30px;
+    }
+
+    .teacher-pill {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      margin-right: 8px;
+    }
+
+    .teacher-pill-primary {
+      background: rgba(122, 106, 216, 0.16);
+      color: #6a5acd;
+    }
+
+    .teacher-pill-secondary {
+      background: rgba(140, 110, 220, 0.16);
+      color: #7a55d8;
+    }
+
+    .teacher-readonly-block {
+      margin: 26px 0;
+      padding: 22px;
+      border-radius: 24px;
+      background: #ffffff;
+      border: 1px solid #ece8ff;
+      box-shadow: 0 12px 28px rgba(45, 34, 120, 0.08);
+    }
+
+    .teacher-readonly-title {
+      margin: 0 0 16px 0;
+      font-size: 22px;
+      font-weight: 700;
+      color: #1f2937;
+    }
+
+    .teacher-readonly-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .teacher-readonly-item {
+      padding: 14px 16px;
+      border: 1px solid #efeafb;
+      border-radius: 14px;
+      background: #faf9ff;
+      margin-bottom: 10px;
+    }
+
+    .teacher-readonly-item strong {
+      display: block;
+      margin-bottom: 4px;
+      color: #111827;
+    }
+
+    .teacher-readonly-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .teacher-meta {
+      color: #6b7280;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .teacher-meta-date {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      background: rgba(122, 106, 216, 0.14);
+      color: #5a4bc4;
+      font-weight: 600;
+    }
+
+    /* Statistics Cards */
+    .teacher-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin: 30px 0;
+    }
+
+    .teacher-stat-card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 8px 24px rgba(45, 34, 120, 0.08);
+      border: 1px solid #ece8ff;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .teacher-stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(45, 34, 120, 0.12);
+    }
+
+    .teacher-stat-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      font-size: 24px;
+    }
+
+    .teacher-stat-icon.primary {
+      background: rgba(122, 106, 216, 0.14);
+      color: #6a5acd;
+    }
+
+    .teacher-stat-icon.success {
+      background: rgba(16, 185, 129, 0.14);
+      color: #10b981;
+    }
+
+    .teacher-stat-icon.warning {
+      background: rgba(245, 158, 11, 0.14);
+      color: #f59e0b;
+    }
+
+    .teacher-stat-icon.info {
+      background: rgba(59, 130, 246, 0.14);
+      color: #3b82f6;
+    }
+
+    .teacher-stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 4px;
+    }
+
+    .teacher-stat-label {
+      font-size: 14px;
+      color: #6b7280;
+      font-weight: 500;
+    }
+
+    /* Results Table */
+    .teacher-results-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .teacher-results-table th,
+    .teacher-results-table td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid #efeafb;
+    }
+
+    .teacher-results-table th {
+      background: #faf9ff;
+      font-weight: 600;
+      color: #374151;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .teacher-results-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .teacher-results-table tr:hover td {
+      background: #faf9ff;
+    }
+
+    .teacher-grade {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .teacher-grade.excellent {
+      background: rgba(16, 185, 129, 0.14);
+      color: #10b981;
+    }
+
+    .teacher-grade.good {
+      background: rgba(59, 130, 246, 0.14);
+      color: #3b82f6;
+    }
+
+    .teacher-grade.average {
+      background: rgba(245, 158, 11, 0.14);
+      color: #f59e0b;
+    }
+
+    .teacher-grade.poor {
+      background: rgba(239, 68, 68, 0.14);
+      color: #ef4444;
+    }
+
+    /* Activity Timeline */
+    .teacher-timeline {
+      position: relative;
+      padding-left: 30px;
+    }
+
+    .teacher-timeline::before {
+      content: '';
+      position: absolute;
+      left: 8px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, #7a6ad8, #a78bfa);
+    }
+
+    .teacher-timeline-item {
+      position: relative;
+      padding-bottom: 24px;
+    }
+
+    .teacher-timeline-item:last-child {
+      padding-bottom: 0;
+    }
+
+    .teacher-timeline-dot {
+      position: absolute;
+      left: -26px;
+      top: 4px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #7a6ad8;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(122, 106, 216, 0.3);
+    }
+
+    .teacher-timeline-dot.primary {
+      background: #6a5acd;
+    }
+
+    .teacher-timeline-dot.success {
+      background: #10b981;
+    }
+
+    .teacher-timeline-dot.info {
+      background: #3b82f6;
+    }
+
+    .teacher-timeline-content {
+      background: #faf9ff;
+      border: 1px solid #efeafb;
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+
+    .teacher-timeline-title {
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+
+    .teacher-timeline-time {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    @media (max-width: 767px) {
+      .teacher-readonly-block {
+        padding: 16px;
+        border-radius: 18px;
+      }
+
+      .teacher-readonly-title {
+        font-size: 19px;
+      }
+
+.teacher-readonly-item {
+        padding: 12px;
+      }
+
+      .teacher-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+
+      .teacher-stat-card {
+        padding: 16px;
+      }
+
+      .teacher-stat-value {
+        font-size: 24px;
+      }
+
+      .teacher-results-table th,
+      .teacher-results-table td {
+        padding: 10px 8px;
+        font-size: 13px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .teacher-stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+{% endblock %}
+
+{% block body %}
+  <div id="js-preloader" class="js-preloader">
+    <div class="preloader-inner">
+      <span class="dot"></span>
+      <div class="dots">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <header class="header-area header-sticky">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <nav class="main-nav">
+            <a href="{{ path('app_cours_index') }}" class="logo">
+              <h1>Eduflex</h1>
+            </a>
+            <div class="search-input">
+              <form id="search" action="#">
+                <input type="text" placeholder="Type Something" id="searchText" name="searchKeyword" onkeypress="handle" />
+                <i class="fa fa-search"></i>
+              </form>
+            </div>
+            <ul class="nav">
+              <li><a href="{{ path('app_cours_index') }}">Tableau de bord</a></li>
+              <li><a href="{{ path('app_enseignant_classes') }}">Mes classes</a></li>
+              <li><a href="#courses">Cours</a></li>
+              <li><a href="#evaluations">Evaluations</a></li>
+              <li><a href="{{ path('app_devoir_ia_index') }}">Devoirs</a></li>
+              <li><a href="#forums">Forums</a></li>
+              <li><a href="{{ logout_path() }}">Logout</a></li>
+            </ul>
+            <a class="menu-trigger">
+              <span>Menu</span>
+            </a>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="main-banner" id="top">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="owl-carousel owl-banner">
+            <div class="item item-1">
+              <div class="header-text">
+                <span class="category">Espace Enseignant</span>
+                <h2>Consultez vos cours et evaluations facilement</h2>
+                <p>Accedez rapidement a vos classes, examens, chapitres et resultats depuis votre dashboard enseignant.</p>
+                <div class="buttons">
+                  <div class="main-button">
+                    <a href="{{ path('app_resultat_index_readonly') }}">Voir les resultats</a>
+                  </div>
+                  <div class="icon-button">
+                    <a href="{{ path('app_enseignant_classes') }}"><i class="fa fa-users"></i> Mes classes</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="item item-2">
+              <div class="header-text">
+                <span class="category">Suivi Pedagogique</span>
+                <h2>Suivez les notes et les progressions</h2>
+                <p>Consultez les resultats et mettez a jour vos activites pedagogiques en quelques clics.</p>
+                <div class="buttons">
+                  <div class="main-button">
+                    <a href="{{ path('app_resultat_index_readonly') }}">Voir les resultats</a>
+                  </div>
+                  <div class="icon-button">
+                    <a href="{{ path('app_enseignant_classes') }}"><i class="fa fa-users"></i> Mes classes</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="item item-3">
+              <div class="header-text">
+                <span class="category">Communication</span>
+                <h2>Echangez avec votre communaute</h2>
+                <p>Partagez vos annonces et repondez aux discussions depuis le forum enseignant.</p>
+                <div class="buttons">
+                  <div class="main-button">
+                    <a href="{{ path('app_forum_index_context', {'context': 'enseignant'}) }}">Acceder au forum</a>
+                  </div>
+                  <div class="icon-button">
+                    <a href="{{ path('app_enseignant_evaluations') }}"><i class="fa fa-check"></i> Evaluations</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+</div>
+  </div>
+
+  {# Statistics Section #}
+  <section class="section">
+    <div class="container">
+      <div class="teacher-stats-grid">
+        <div class="teacher-stat-card">
+          <div class="teacher-stat-icon primary">
+            <i class="fa fa-book"></i>
+          </div>
+          <div class="teacher-stat-value">{{ stats.total_cours }}</div>
+          <div class="teacher-stat-label">Total Cours</div>
+        </div>
+        <div class="teacher-stat-card">
+          <div class="teacher-stat-icon success">
+            <i class="fa fa-clipboard"></i>
+          </div>
+          <div class="teacher-stat-value">{{ stats.total_evaluations }}</div>
+          <div class="teacher-stat-label">Evaluations</div>
+        </div>
+        <div class="teacher-stat-card">
+          <div class="teacher-stat-icon warning">
+            <i class="fa fa-comments"></i>
+          </div>
+          <div class="teacher-stat-value">{{ stats.total_forums }}</div>
+          <div class="teacher-stat-label">Forums</div>
+        </div>
+        <div class="teacher-stat-card">
+          <div class="teacher-stat-icon info">
+            <i class="fa fa-users"></i>
+          </div>
+          <div class="teacher-stat-value">{{ stats.classes_count }}</div>
+          <div class="teacher-stat-label">Classes</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="services section teacher-main">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-md-6">
+          <div class="service-item">
+            <div class="icon">
+              <img src="{{ asset('images/service-01.png') }}" alt="classes">
+            </div>
+            <div class="main-content">
+              <h4>Mes classes</h4>
+              <p>Consultez vos classes et l'organisation pedagogique.</p>
+              <div class="main-button">
+                <a href="{{ path('app_enseignant_classes') }}">Acceder</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <div class="service-item">
+            <div class="icon">
+              <img src="{{ asset('images/service-02.png') }}" alt="cours">
+            </div>
+            <div class="main-content">
+              <h4>Cours</h4>
+              <p>Consultez vos cours y</p>
+              <div class="main-button">
+                <a href="#courses">Acceder</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <div class="service-item">
+            <div class="icon">
+              <img src="{{ asset('images/service-03.png') }}" alt="evaluations">
+            </div>
+            <div class="main-content">
+                <h4>Evaluations</h4>
+                <p>Consultez le suivi des evaluations et des resultats.</p>
+                <div class="main-button">
+                  <a href="{{ path('app_resultat_index_readonly') }}">Consulter</a>
+                </div>
+                <div class="main-button" style="margin-top:10px;">
+                  <a href="{{ path('app_devoir_ia_new') }}">Creer devoir IA</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+
+  <section class="section courses" id="courses">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12 text-center">
+          <div class="section-heading">
+            <h6>Mes Cours</h6>
+            <h2>Gestion Rapide</h2>
+          </div>
+        </div>
+      </div>
+      <div class="row event_box">
+        {% for cour in cours %}
+          <div class="col-lg-4 col-md-6 align-self-center mb-30 event_outer">
+            <div class="events_item">
+              <div class="down-content">
+                <span class="author">{{ cour.niveau }}</span>
+                <h4>{{ cour.titre }}</h4>
+                <p style="margin-bottom: 14px;">Cree le {{ cour.dateCreation ? cour.dateCreation|date('d/m/Y') : 'N/A' }}</p>
+                <span class="teacher-pill teacher-pill-primary">Lecture seule</span>
+              </div>
+            </div>
+          </div>
+        {% else %}
+          <div class="col-lg-12">
+            <div class="events_item">
+              <div class="down-content">
+                <h4>Aucun cours disponible</h4>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+</div>
+  </section>
+
+  {# Recent Results Section #}
+  <section class="section" id="results">
+    <div class="container">
+      <div class="teacher-readonly-block">
+        <h3 class="teacher-readonly-title">Resultats Recents</h3>
+        <table class="teacher-results-table">
+          <thead>
+            <tr>
+              <th>Etudiant</th>
+              <th>Examen</th>
+              <th>Note</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for result in recent_results %}
+              <tr>
+                <td>
+                  <strong>{{ result.etudiant ? result.etudiant.nom : 'N/A' }}</strong>
+                </td>
+                <td>{{ result.examen ? result.examen.titre : 'N/A' }}</td>
+                <td>
+                  {% set gradeClass = 'average' %}
+                  {% if result.note >= 16 %}
+                    {% set gradeClass = 'excellent' %}
+                  {% elseif result.note >= 14 %}
+                    {% set gradeClass = 'good' %}
+                  {% elseif result.note >= 10 %}
+                    {% set gradeClass = 'average' %}
+                  {% else %}
+                    {% set gradeClass = 'poor' %}
+                  {% endif %}
+                  <span class="teacher-grade {{ gradeClass }}">{{ result.note }}/20</span>
+                </td>
+                <td>{{ (result.examen and result.examen.dateExamen) ? result.examen.dateExamen|date('d/m/Y') : 'N/A' }}</td>
+              </tr>
+            {% else %}
+              <tr>
+                <td colspan="4" style="text-align: center; color: #6b7280; padding: 30px;">
+                  Aucun resultat disponible.
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  {# Activity Timeline Section #}
+  <section class="section" id="activity">
+    <div class="container">
+      <div class="teacher-readonly-block">
+        <h3 class="teacher-readonly-title">Activites Recentes</h3>
+        <div class="teacher-timeline">
+          {% for activity in activities %}
+            <div class="teacher-timeline-item">
+              <div class="teacher-timeline-dot {{ activity.color }}"></div>
+              <div class="teacher-timeline-content">
+                <div class="teacher-timeline-title">
+                  <i class="fa {{ activity.icon }}"></i> {{ activity.title }}
+                </div>
+                <div class="teacher-timeline-time">
+                  {{ activity.date ? activity.date|date('d/m/Y H:i') : 'N/A' }}
+                </div>
+              </div>
+            </div>
+          {% else %}
+            <div class="teacher-timeline-item">
+              <div class="teacher-timeline-content" style="text-align: center; color: #6b7280;">
+                Aucune activite recente.
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="evaluations">
+    <div class="container">
+      <div class="teacher-readonly-block">
+        <h3 class="teacher-readonly-title">Mes Evaluations </h3>
+        <ul class="teacher-readonly-list">
+          {% for evaluation in evaluations %}
+            <li class="teacher-readonly-item">
+              <div>
+                <strong>{{ evaluation.titre }}</strong>
+                <div class="teacher-meta">
+                  {{ evaluation.type|upper }} • {{ evaluation.cours ? evaluation.cours.titre : 'Sans cours' }}
+                </div>
+              </div>
+              <span class="teacher-meta-date">{{ evaluation.dateExamen ? evaluation.dateExamen|date('d/m/Y') : 'N/A' }}</span>
+            </li>
+          {% else %}
+            <li class="teacher-readonly-item">
+              <span>Aucune evaluation trouvee.</span>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="forums">
+    <div class="container">
+      <div class="teacher-readonly-block">
+        <h3 class="teacher-readonly-title">Forums existants</h3>
+        <ul class="teacher-readonly-list">
+          {% for forum in forums %}
+            <li class="teacher-readonly-item">
+              <div>
+                <strong>{{ forum.titre }}</strong>
+                <div class="teacher-meta">
+                  {{ forum.type }} • {{ forum.dateCreation ? forum.dateCreation|date('d/m/Y H:i') : 'N/A' }}
+                </div>
+                <div class="teacher-meta">
+                  {{ forum.contenu|slice(0, 120) }}{% if forum.contenu|length > 120 %}...{% endif %}
+                </div>
+              </div>
+            </li>
+          {% else %}
+            <li class="teacher-readonly-item">
+              <span>Aucun forum trouve.</span>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script>
+    function handle(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+      }
+    }
+  </script>
+  <script>
+    (function () {
+      function hidePreloader() {
+        var preloader = document.getElementById('js-preloader');
+        if (preloader) {
+          preloader.classList.add('loaded');
+        }
+      }
+      window.addEventListener('load', hidePreloader);
+      setTimeout(hidePreloader, 1500);
+    })();
+  </script>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends 'student/dashCours.html.twig' %}
+
+{% block title %}Nouvelle tentative{% endblock %}
+
+{% block body %}
+<div style="padding:18px; background:linear-gradient(135deg,#fdfbfb,#ebedee); border-radius:16px; font-family:Manrope, sans-serif; line-height:1.55;">
+  <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:12px; margin-bottom:14px;">
+    <div>
+      <h2 style="margin:0; font-weight:800; font-size:1.55rem; color:#111827;">Nouvelle tentative</h2>
+      <div style="margin-top:3px; color:#64748b; font-size:0.92rem;">{{ devoir.titre }}{% if attempts_count > 0 %} - tentative {{ attempts_count + 1 }}{% endif %}</div>
+    </div>
+    <a href="{{ path('app_student_devoir_ia_show', {'id': devoir.id}) }}" style="text-decoration:none; padding:8px 12px; border-radius:999px; background:#eef2ff; color:#2f3a8f; font-weight:700;">Retour au resume</a>
+  </div>
+
+  {% if payload.instructions is defined and payload.instructions %}
+    <section style="background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:12px; margin-bottom:14px; color:#374151;">
+      <strong>Consignes:</strong> {{ payload.instructions }}
+    </section>
+  {% endif %}
+
+  {% set questions = payload.questions is defined and payload.questions is iterable ? payload.questions : [] %}
+  {% if questions is empty %}
+    <div style="background:#fff; border-radius:12px; padding:14px; color:#6b7280;">Aucune question disponible.</div>
+  {% else %}
+    <form method="post" style="display:block;">
+      <input type="hidden" name="_token" value="{{ csrf_token('submit_devoir_ia_' ~ devoir.id) }}">
+
+      {% for q in questions %}
+        {% set type = q.type|default('') %}
+        {% set idx = loop.index0 %}
+        {% set current = attribute(saved_answers, idx)|default('') %}
+
+        <article style="background:#fff; border-radius:14px; border:1px solid #e5e7eb; padding:14px; margin-bottom:12px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; gap:10px;">
+            <strong>Question {{ loop.index }}</strong>
+            <span style="font-size:0.78rem; color:#6b7280; background:#f3f4f6; border-radius:999px; padding:4px 8px;">{{ type|replace({'_':' '})|upper }}</span>
+          </div>
+          <div style="margin-bottom:8px; color:#111827;">{{ q.question|default('') }}</div>
+
+          {% if (type == 'qcm' or type == 'vrai_faux') and q.options is defined and q.options is iterable and q.options|length > 0 %}
+            <div style="display:grid; gap:8px;">
+              {% for option in q.options %}
+                <label style="display:flex; gap:8px; align-items:flex-start; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:8px;">
+                  <input type="radio" name="answers[{{ idx }}]" value="{{ option }}" {{ current == option ? 'checked' : '' }}>
+                  <span>{{ option }}</span>
+                </label>
+              {% endfor %}
+            </div>
+          {% else %}
+            <textarea name="answers[{{ idx }}]" rows="4" style="width:100%; border:1px solid #cbd5e1; border-radius:10px; padding:10px;" placeholder="Votre reponse...">{{ current }}</textarea>
+          {% endif %}
+        </article>
+      {% endfor %}
+
+      <button type="submit" style="padding:10px 16px; border:none; border-radius:10px; background:#2563eb; color:#fff; font-weight:700; cursor:pointer;">
+        Soumettre cette tentative
+      </button>
+    </form>
+  {% endif %}
+</div>
+{% endblock %}

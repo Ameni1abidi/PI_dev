@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Chapitre{% endblock %}
+
+{% block body %}
+    <h1>Chapitre</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ chapitre.id }}</td>
+            </tr>
+            <tr>
+                <th>Titre</th>
+                <td>{{ chapitre.titre }}</td>
+            </tr>
+            <tr>
+                <th>Contenu</th>
+                <td>
+                    {% if chapitre.typeContenu == 'texte' %}
+                        {{ chapitre.contenuTexte ?: 'Aucun contenu texte.' }}
+                    {% elseif chapitre.typeContenu == 'video' %}
+                        {% if chapitre.videoUrl %}
+                            <a href="{{ chapitre.videoUrl }}" target="_blank" rel="noopener">Voir la video</a>
+                        {% else %}
+                            Aucun lien video.
+                        {% endif %}
+                    {% elseif chapitre.typeContenu in ['fichier', 'devoir', 'exercice_corrige'] %}
+                        {% if chapitre.contenuFichier %}
+                            <a href="{{ asset('uploads/chapitres/' ~ chapitre.contenuFichier) }}" target="_blank" rel="noopener">
+                                Ouvrir le fichier
+                            </a>
+                        {% else %}
+                            Aucun fichier.
+                        {% endif %}
+                    {% else %}
+                        Aucun contenu.
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Ordre</th>
+                <td>{{ chapitre.ordre }}</td>
+            </tr>
+            <tr>
+                <th>DureeEstimee</th>
+                <td>{{ chapitre.dureeEstimee }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_chapitre_index', {'coursId': chapitre.cours.id}) }}">Voir Chapitres</a>
+
+    <a href="{{ path('app_chapitre_edit', {'id': chapitre.id}) }}">edit</a>
+
+    {{ include('chapitre/_delete_form.html.twig') }}
+{% endblock %}

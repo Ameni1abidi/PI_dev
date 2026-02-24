@@ -1,0 +1,47 @@
+{% extends 'crud_base.html.twig' %}
+
+{% block title %}Evaluations{% endblock %}
+
+{% block body %}
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">Evaluations </h1>
+    <a class="btn btn-primary" href="{{ path('app_resultat_new') }}">Ajouter une evaluation</a>
+  </div>
+
+  {% if resultats is empty %}
+    <div class="alert alert-info">Aucune evaluation.</div>
+  {% else %}
+    <div class="table-responsive">
+      <table class="table table-striped table-hover">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Note</th>
+            <th>Appreciation</th>
+            <th>Eleve</th>
+            <th>Examen</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for resultat in resultats %}
+            <tr>
+              <td>{{ resultat.id }}</td>
+              <td>{{ resultat.note }}</td>
+              <td>{{ resultat.appreciation }}</td>
+              <td>{{ resultat.etudiant ? resultat.etudiant.nom : '' }}</td>
+              <td>{{ resultat.examen ? resultat.examen.titre : '' }}</td>
+              <td class="text-end">
+                <a class="btn btn-sm btn-outline-secondary" href="{{ path('app_resultat_show', {'id': resultat.id}) }}">Voir</a>
+                <a class="btn btn-sm btn-outline-primary" href="{{ path('app_resultat_edit', {'id': resultat.id}) }}">Editer</a>
+                {% if resultat.etudiant %}
+                  <a class="btn btn-sm btn-outline-danger" href="{{ path('app_resultat_bulletin_pdf', {'id': resultat.etudiant.id}) }}" target="_blank">Bulletin PDF</a>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
+{% endblock %}

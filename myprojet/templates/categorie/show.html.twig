@@ -1,0 +1,33 @@
+{% extends 'crud_base.html.twig' %}
+
+{% block title %}Categorie{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="admin-page-header">
+        <h1 class="admin-title">Catégorie</h1>
+        <div class="admin-actions">
+            <a class="btn btn-outline" href="{{ path('app_categorie_index') }}">Retour</a>
+            <a class="btn btn-primary" href="{{ path('app_categorie_edit', {'id': categorie.id}) }}">Modifier</a>
+        </div>
+    </div>
+
+    <table class="admin-table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ categorie.id }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ categorie.nom }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    {{ include('categorie/_delete_form.html.twig') }}
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'crud_base.html.twig' %}
+
+{% block title %}Modifier résultat{% endblock %}
+
+{% block body %}
+  <h1 class="h3 mb-4">Modifier le résultat</h1>
+  {% include 'resultat/_form.html.twig' with {'form': form, 'button_label': 'Mettre à jour'} %}
+
+  <div class="d-flex align-items-center gap-2 mt-3">
+    <a class="btn btn-link" href="{{ path('app_resultat_index') }}">Retour à la liste</a>
+    {{ include('resultat/_delete_form.html.twig', {resultat: resultat}) }}
+  </div>
+{% endblock %}

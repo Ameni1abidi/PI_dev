@@ -1,0 +1,18 @@
+{% extends 'crud_base.html.twig' %}
+
+{% block title %}Resultat{% endblock %}
+
+{% block body %}
+  <h1 class="h3 mb-4">Resultat #{{ resultat.id }}</h1>
+  <table class="table table-bordered bg-white">
+    <tbody>
+      <tr><th>Note</th><td>{{ resultat.note }}</td></tr>
+      <tr><th>Appreciation</th><td>{{ resultat.appreciation }}</td></tr>
+      <tr><th>Eleve</th><td>{{ resultat.etudiant ? resultat.etudiant.nom ~ ' (#' ~ resultat.etudiant.id ~ ')' : '' }}</td></tr>
+      <tr><th>Examen</th><td>{{ resultat.examen ? resultat.examen.titre : '' }}</td></tr>
+    </tbody>
+  </table>
+  <div class="d-flex align-items-center gap-2">
+    <a class="btn btn-link" href="{{ path('app_resultat_index_readonly') }}">Retour a la liste</a>
+  </div>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'student/dashCours.html.twig' %}
+
+{% block title %}Mes devoirs{% endblock %}
+
+{% block body %}
+<div style="padding:18px; font-family:'Manrope', sans-serif; background:linear-gradient(135deg,#fdfbfb,#ebedee); border-radius:16px;">
+  <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:14px;">
+    <div>
+      <h2 style="margin:0; font-weight:800; font-size:1.6rem; color:#1f2937;">Mes devoirs</h2>
+      <div style="margin-top:4px; color:#64748b; font-size:0.92rem;">Choisissez un devoir pour le passer ou revoir vos tentatives.</div>
+    </div>
+    <span style="background:#fff; border:1px solid #e5e7eb; border-radius:999px; padding:6px 10px; font-size:0.85rem; color:#475569;">{{ devoirs|length }} devoir(s)</span>
+  </div>
+
+  {% if devoirs is empty %}
+    <div style="background:#fff; border-radius:14px; padding:18px; color:#6b7280; box-shadow:0 10px 24px rgba(20,24,40,0.06); border:1px solid #e5e7eb;">
+      Aucun devoir disponible pour le moment.
+    </div>
+  {% else %}
+    <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:14px;">
+      {% for devoir in devoirs %}
+        <article style="background:#fff; border-radius:14px; padding:14px; box-shadow:0 10px 20px rgba(20,24,40,0.07); border:1px solid #e5e7eb;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:8px;">
+            <h3 style="margin:0; font-size:1.05rem; color:#111827;">{{ devoir.titre }}</h3>
+            <span style="font-size:0.78rem; color:#374151; background:#f3f4f6; border-radius:999px; padding:4px 8px;">{{ devoir.niveauDifficulte|upper }}</span>
+          </div>
+
+          <div style="font-size:0.9rem; color:#4b5563; margin-bottom:4px;"><strong>Cours:</strong> {{ devoir.cours ? devoir.cours.titre : '-' }}</div>
+          <div style="font-size:0.9rem; color:#4b5563; margin-bottom:4px;"><strong>Echeance:</strong> {{ devoir.dateEcheance ? devoir.dateEcheance|date('d/m/Y') : 'Non definie' }}</div>
+          <div style="font-size:0.9rem; color:#4b5563; margin-bottom:10px;"><strong>Duree estimee:</strong> {{ devoir.duree }} min</div>
+
+          <div style="display:flex; gap:8px;">
+            <a href="{{ path('app_student_devoir_ia_show', {'id': devoir.id}) }}" style="text-decoration:none; padding:8px 12px; border-radius:10px; background:#dbeafe; color:#1e3a8a; border:1px solid #bfdbfe; font-weight:700; font-size:0.86rem;">
+              Commencer
+            </a>
+            <a href="{{ path('app_student_devoir_ia_retry', {'id': devoir.id}) }}" style="text-decoration:none; padding:8px 12px; border-radius:10px; background:#e0f2fe; color:#075985; border:1px solid #bae6fd; font-weight:700; font-size:0.86rem;">
+              Refaire
+            </a>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

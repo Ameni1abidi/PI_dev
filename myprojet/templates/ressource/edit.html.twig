@@ -1,0 +1,21 @@
+{% extends 'crud_base.html.twig' %}
+
+{% block title %}Edit Ressource{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="admin-page-header">
+        <h1 class="admin-title">Modifier la ressource</h1>
+        <div class="admin-actions">
+            <a class="btn btn-outline" href="{{ path('app_ressource_index') }}">Retour</a>
+        </div>
+    </div>
+
+    {{ include('ressource/_form.html.twig', {'button_label': 'Update'}) }}
+
+    {{ include('ressource/_delete_form.html.twig') }}
+{% endblock %}

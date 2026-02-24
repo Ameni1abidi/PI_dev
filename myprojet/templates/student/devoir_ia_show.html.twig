@@ -1,0 +1,68 @@
+{% extends 'student/dashCours.html.twig' %}
+
+{% block title %}Devoir{% endblock %}
+
+{% block body %}
+<div style="padding:18px; background:linear-gradient(135deg,#fdfbfb,#ebedee); border-radius:16px; font-family:Manrope, sans-serif; line-height:1.55;">
+  {% for message in app.flashes('success') %}
+    <div style="background:#dcfce7; border:1px solid #86efac; color:#166534; border-radius:10px; padding:10px 12px; margin-bottom:12px;">{{ message }}</div>
+  {% endfor %}
+
+  <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:12px; margin-bottom:14px;">
+    <div>
+      <h2 style="margin:0; font-weight:800; font-size:1.55rem; color:#111827;">{{ devoir.titre }}</h2>
+      <div style="margin-top:3px; color:#64748b; font-size:0.92rem;">Resume du devoir</div>
+    </div>
+    <a href="{{ path('app_student_devoirs_ia') }}" style="text-decoration:none; padding:8px 12px; border-radius:999px; background:#eef2ff; color:#2f3a8f; font-weight:700;">Retour</a>
+  </div>
+
+  <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;">
+    <span style="background:#fff; border:1px solid #e5e7eb; border-radius:999px; padding:6px 10px; font-size:0.85rem;">Cours: {{ devoir.cours ? devoir.cours.titre : '-' }}</span>
+    <span style="background:#fff; border:1px solid #e5e7eb; border-radius:999px; padding:6px 10px; font-size:0.85rem;">Niveau: {{ devoir.niveauDifficulte|upper }}</span>
+    <span style="background:#fff; border:1px solid #e5e7eb; border-radius:999px; padding:6px 10px; font-size:0.85rem;">Duree: {{ devoir.duree }} min</span>
+    {% if attempts is defined and attempts|length > 0 %}
+      <span style="background:#ecfeff; border:1px solid #67e8f9; border-radius:999px; padding:6px 10px; font-size:0.85rem;">Derniere tentative: {{ attempts[0].dateSoumission ? attempts[0].dateSoumission|date('d/m/Y H:i') : '-' }}</span>
+    {% endif %}
+  </div>
+
+  {% if payload.instructions is defined and payload.instructions %}
+    <section style="background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:12px; margin-bottom:14px; color:#374151;">
+      <strong>Consignes:</strong> {{ payload.instructions }}
+    </section>
+  {% endif %}
+
+  {% if evaluation %}
+    <section style="background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:12px; margin-bottom:14px;">
+      <div style="font-size:1.1rem; font-weight:800; color:#0f172a;">Note: {{ evaluation.note|number_format(2, '.', '') }} / 20</div>
+      <div style="color:#475569;">{{ evaluation.feedback }}</div>
+      <div style="margin-top:8px;">
+        <a href="{{ path('app_student_devoir_ia_result_show', {'id': devoir.id, 'submissionId': attempts[0].id}) }}" style="text-decoration:none; color:#1d4ed8; font-weight:700;">Voir le resultat detaille</a>
+      </div>
+    </section>
+  {% endif %}
+
+  <section style="background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:12px; margin-bottom:14px;">
+    <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;">
+      <strong>Historique des tentatives</strong>
+      <a href="{{ path('app_student_devoir_ia_retry', {'id': devoir.id}) }}" style="text-decoration:none; padding:6px 10px; border-radius:999px; border:1px solid #bae6fd; background:#e0f2fe; color:#075985; font-weight:700;">Refaire</a>
+    </div>
+
+    {% if attempts is defined and attempts|length > 0 %}
+      <div style="display:grid; gap:8px;">
+        {% for attempt in attempts %}
+          <a href="{{ path('app_student_devoir_ia_result_show', {'id': devoir.id, 'submissionId': attempt.id}) }}" style="text-decoration:none; border:1px solid #e2e8f0; border-radius:10px; padding:8px 10px; display:flex; justify-content:space-between; align-items:center; color:#1f2937;">
+            <span>Tentative {{ loop.index }} - {{ attempt.dateSoumission ? attempt.dateSoumission|date('d/m/Y H:i') : '-' }}</span>
+            <strong>{{ attempt.note|number_format(2, '.', '') }} / 20</strong>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div style="color:#64748b; font-size:0.92rem;">Aucune tentative pour le moment.</div>
+    {% endif %}
+  </section>
+
+  {% if attempts is not defined or attempts|length == 0 %}
+    <a href="{{ path('app_student_devoir_ia_retry', {'id': devoir.id}) }}" style="text-decoration:none; display:inline-block; padding:10px 14px; border-radius:10px; background:#2563eb; color:#fff; font-weight:700;">Commencer une tentative</a>
+  {% endif %}
+</div>
+{% endblock %}

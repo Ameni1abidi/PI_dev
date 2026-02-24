@@ -1,0 +1,46 @@
+{% extends 'admin_base.html.twig' %}
+
+{% block title %}Utilisateur index{% endblock %}
+
+{% block body %}
+  <section class="panel full">
+    <div class="admin-page-header">
+      <h1 class="admin-title">Utilisateurs</h1>
+      <div class="admin-actions">
+        <a class="btn btn-primary" href="{{ path('app_utilisateur_new') }}">Nouveau</a>
+      </div>
+    </div>
+
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Nom</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for utilisateur in utilisateurs %}
+        <tr>
+          <td>{{ utilisateur.id }}</td>
+          <td>{{ utilisateur.nom }}</td>
+          <td>{{ utilisateur.email }}</td>
+          <td>{{ utilisateur.role }}</td>
+          <td>
+            <div class="admin-actions">
+              <a class="btn btn-outline small" href="{{ path('app_utilisateur_show', {'id': utilisateur.id}) }}">Voir</a>
+              <a class="btn btn-primary small" href="{{ path('app_utilisateur_edit', {'id': utilisateur.id}) }}">Modifier</a>
+            </div>
+          </td>
+        </tr>
+      {% else %}
+        <tr>
+          <td colspan="5">Aucun enregistrement</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </section>
+{% endblock %}

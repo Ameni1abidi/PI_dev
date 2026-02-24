@@ -1,0 +1,16 @@
+{% extends 'admin_base.html.twig' %}
+
+{% block title %}New Utilisateur{% endblock %}
+
+{% block body %}
+  <section class="panel full">
+    <div class="admin-page-header">
+      <h1 class="admin-title">Créer un utilisateur</h1>
+      <div class="admin-actions">
+        <a class="btn btn-outline" href="{{ path('app_utilisateur_index') }}">Retour</a>
+      </div>
+    </div>
+
+    {{ include('utilisateur/_form.html.twig') }}
+  </section>
+{% endblock %}
