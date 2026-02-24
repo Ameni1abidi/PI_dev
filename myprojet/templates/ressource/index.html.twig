@@ -67,6 +67,7 @@
     <div class="admin-page-header">
         <h1 class="admin-title">
             Ressources
+            <a class="btn btn-outline small" href="{{ path('app_categorie_index') }}" style="margin-left:8px;">Categories</a>
             {% if categorie_nom is defined and categorie_nom != '' %} - Categorie: {{ categorie_nom }}{% endif %}
             {% if chapitre_titre is defined and chapitre_titre != '' %} - Chapitre: {{ chapitre_titre }}{% endif %}
         </h1>
