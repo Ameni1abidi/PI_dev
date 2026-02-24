@@ -32,6 +32,9 @@
               <td>{{ resultat.examen ? resultat.examen.titre : '' }}</td>
               <td class="text-end">
                 <a class="btn btn-sm btn-outline-secondary" href="{{ path('app_resultat_show', {'id': resultat.id}) }}">Voir</a>
+                {% if resultat.etudiant %}
+                  <a class="btn btn-sm btn-outline-danger" href="{{ path('app_resultat_bulletin_pdf', {'id': resultat.etudiant.id}) }}" target="_blank">Bulletin PDF</a>
+                {% endif %}
               </td>
             </tr>
           {% endfor %}

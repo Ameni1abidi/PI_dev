@@ -35,6 +35,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Email(message: "Veuillez saisir une adresse email valide")]
     private ?string $email = null;
 
+    #[ORM\Column(length: 30, nullable: true)]
+    private ?string $telephone = null;
+
     #[ORM\Column(length: 200)]
     private ?string $role = null;
 
@@ -44,9 +47,17 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'etudiant', targetEntity: Resultat::class)]
     private Collection $resultats;
 
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'enfants')]
+    #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?self $parent = null;
+
+    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class)]
+    private Collection $enfants;
+
     public function __construct()
     {
     $this->resultats = new ArrayCollection();
+    $this->enfants = new ArrayCollection();
     }
 
 
@@ -81,6 +92,17 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getTelephone(): ?string
+    {
+        return $this->telephone;
+    }
+
+    public function setTelephone(?string $telephone): self
+    {
+        $this->telephone = $telephone;
+        return $this;
+    }
+
     public function getPassword(): string
     {
         return (string) $this->password;
@@ -105,7 +127,20 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRoles(): array
     {
-        return [$this->role ?? 'ROLE_USER'];
+        $role = $this->role ?? 'ROLE_USER';
+        $roles = [$role];
+
+        // Keep backward compatibility between ROLE_STUDENT and ROLE_ETUDIANT.
+        if ($role === 'ROLE_STUDENT') {
+            $roles[] = 'ROLE_ETUDIANT';
+        }
+        if ($role === 'ROLE_ETUDIANT') {
+            $roles[] = 'ROLE_STUDENT';
+        }
+
+        $roles[] = 'ROLE_USER';
+
+        return array_values(array_unique($roles));
     }
     public function getResultats(): Collection
 {
@@ -150,6 +185,44 @@ public function removeResultat(Resultat $resultat): self
     public function setIsVerified(bool $isVerified): self
     {
         $this->isVerified = $isVerified;
+        return $this;
+    }
+
+    public function getParent(): ?self
+    {
+        return $this->parent;
+    }
+
+    public function setParent(?self $parent): self
+    {
+        $this->parent = $parent;
+
+        return $this;
+    }
+
+    public function getEnfants(): Collection
+    {
+        return $this->enfants;
+    }
+
+    public function addEnfant(self $enfant): self
+    {
+        if (!$this->enfants->contains($enfant)) {
+            $this->enfants->add($enfant);
+            $enfant->setParent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEnfant(self $enfant): self
+    {
+        if ($this->enfants->removeElement($enfant)) {
+            if ($enfant->getParent() === $this) {
+                $enfant->setParent(null);
+            }
+        }
+
         return $this;
     }
 }

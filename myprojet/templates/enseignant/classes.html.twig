@@ -19,9 +19,17 @@
         </div>
 
         <div class="teacher-profile">
-          <div class="teacher-avatar">ML</div>
+          {% set teacherName = app.user ? app.user.nom : 'Enseignant' %}
+          {% set teacherParts = teacherName|split(' ') %}
+          {% set teacherInitials = '' %}
+          {% for part in teacherParts %}
+            {% if part|length > 0 and teacherInitials|length < 2 %}
+              {% set teacherInitials = teacherInitials ~ part|slice(0, 1)|upper %}
+            {% endif %}
+          {% endfor %}
+          <div class="teacher-avatar">{{ teacherInitials ?: 'EN' }}</div>
           <div>
-            <div class="teacher-name">Mme Legrand</div>
+            <div class="teacher-name">{{ teacherName }}</div>
             <div class="teacher-role">Enseignante</div>
           </div>
         </div>
@@ -62,7 +70,7 @@
           </div>
           <div class="teacher-actions">
             <a class="teacher-btn teacher-btn-primary" href="{{ path('app_enseignant_dashboard') }}">Retour dashboard</a>
-            <div class="teacher-avatar teacher-avatar-small">ML</div>
+            <div class="teacher-avatar teacher-avatar-small">{{ teacherInitials ?: 'EN' }}</div>
           </div>
         </header>
 

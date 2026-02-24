@@ -44,7 +44,8 @@ security:
     access_control:
          - { path: ^/admin, roles: ROLE_ADMIN }
          - { path: ^/profile, roles: ROLE_USER }
-         - { path: ^/eleve/dashborad, roles: ROLE_STUDENT }
+         - { path: ^/eleve, roles: [ROLE_ETUDIANT, ROLE_STUDENT] }
+         - { path: ^/cours/eleve, roles: [ROLE_ETUDIANT, ROLE_STUDENT] }
          - { path: ^/enseignant/dashboard, roles: ROLE_PROF }
          - { path: ^/parent/dashboard, roles: ROLE_PARENT }
 

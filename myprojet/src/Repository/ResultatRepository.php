@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Resultat;
-use App\Entity\Utilisateur;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\DBAL\ArrayParameterType;
@@ -29,31 +28,72 @@ class ResultatRepository extends ServiceEntityRepository
         }
 
         return $this->createQueryBuilder('r')
-            ->andWhere('r.eleveId IN (:ids)')
+            ->andWhere('IDENTITY(r.etudiant) IN (:ids)')
             ->setParameter('ids', $eleveIds, ArrayParameterType::INTEGER)
             ->orderBy('r.id', 'DESC')
             ->getQuery()
             ->getResult();
     }
 
-    public function findAverageNoteForStudentAndCours(Utilisateur $student, int $coursId): ?float
+    /**
+     * @return string[]
+     */
+    public function findEtudiantEmailsByExamenId(int $examenId): array
     {
-        $avgNote = $this->createQueryBuilder('r')
-            ->select('AVG(r.note) AS avgNote')
-            ->join('r.examen', 'e')
-            ->andWhere('(r.etudiant = :student OR r.eleveId = :studentId)')
-            ->andWhere('e.coursId = :coursId')
-            ->setParameter('student', $student)
-            ->setParameter('studentId', $student->getId())
-            ->setParameter('coursId', $coursId)
+        $rows = $this->createQueryBuilder('r')
+            ->select('u.email')
+            ->innerJoin('r.etudiant', 'u')
+            ->andWhere('IDENTITY(r.examen) = :examenId')
+            ->setParameter('examenId', $examenId)
             ->getQuery()
-            ->getSingleScalarResult();
+            ->getArrayResult();
 
-        if (null === $avgNote) {
-            return null;
-        }
-
-        return round((float) $avgNote, 2);
+        return array_values(array_filter(array_unique(array_map(
+            static fn (array $row): string => (string) ($row['email'] ?? ''),
+            $rows
+        ))));
     }
 
+    /**
+     * @return string[]
+     */
+    public function findEtudiantPhonesByExamenId(int $examenId): array
+    {
+        $rows = $this->createQueryBuilder('r')
+            ->select('u.telephone')
+            ->innerJoin('r.etudiant', 'u')
+            ->andWhere('IDENTITY(r.examen) = :examenId')
+            ->andWhere('u.telephone IS NOT NULL')
+            ->andWhere("u.telephone <> ''")
+            ->setParameter('examenId', $examenId)
+            ->getQuery()
+            ->getArrayResult();
+
+        return array_values(array_filter(array_unique(array_map(
+            static fn (array $row): string => trim((string) ($row['telephone'] ?? '')),
+            $rows
+        ))));
+    }
+
+    /**
+     * @return string[]
+     */
+    public function findLinkedParentPhonesByExamenId(int $examenId): array
+    {
+        $rows = $this->createQueryBuilder('r')
+            ->select('p.telephone')
+            ->innerJoin('r.etudiant', 'u')
+            ->innerJoin('u.parent', 'p')
+            ->andWhere('IDENTITY(r.examen) = :examenId')
+            ->andWhere('p.telephone IS NOT NULL')
+            ->andWhere("p.telephone <> ''")
+            ->setParameter('examenId', $examenId)
+            ->getQuery()
+            ->getArrayResult();
+
+        return array_values(array_filter(array_unique(array_map(
+            static fn (array $row): string => trim((string) ($row['telephone'] ?? '')),
+            $rows
+        ))));
+    }
 }

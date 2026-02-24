@@ -1,0 +1,37 @@
+{% extends 'student/dashCours.html.twig' %}
+
+{% block title %}Detail examen{% endblock %}
+
+{% block body %}
+<div style="padding:25px; font-family:'Manrope', sans-serif; background:linear-gradient(135deg,#fdfbfb,#ebedee); min-height:100vh;">
+  <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:18px;">
+    <h2 style="margin:0; font-weight:800; font-size:1.7rem; color:#2c2c2c;">Detail examen</h2>
+    <a href="{{ path('app_student_examens') }}" style="text-decoration:none; padding:9px 14px; border-radius:999px; background:#eef2ff; color:#2f3a8f; font-weight:700;">Retour aux examens</a>
+  </div>
+
+  <div style="background:#fff; border-radius:16px; padding:14px; box-shadow:0 10px 24px rgba(20,24,40,0.06); overflow:auto;">
+    <table style="width:100%; border-collapse:collapse;">
+      <tbody>
+        <tr><th style="text-align:left; padding:10px; border-bottom:1px solid #e5e7eb; width:220px;">Titre</th><td style="padding:10px; border-bottom:1px solid #e5e7eb;">{{ examen.titre }}</td></tr>
+        <tr><th style="text-align:left; padding:10px; border-bottom:1px solid #e5e7eb;">Type</th><td style="padding:10px; border-bottom:1px solid #e5e7eb;">{{ examen.type|upper }}</td></tr>
+        <tr><th style="text-align:left; padding:10px; border-bottom:1px solid #e5e7eb;">Date</th><td style="padding:10px; border-bottom:1px solid #e5e7eb;">{{ examen.dateExamen ? examen.dateExamen|date('d/m/Y') : '-' }}</td></tr>
+        <tr><th style="text-align:left; padding:10px; border-bottom:1px solid #e5e7eb;">Duree</th><td style="padding:10px; border-bottom:1px solid #e5e7eb;">{{ examen.duree }} min</td></tr>
+        <tr><th style="text-align:left; padding:10px; border-bottom:1px solid #e5e7eb;">Cours</th><td style="padding:10px; border-bottom:1px solid #e5e7eb;">{{ examen.cours ? examen.cours.titre : '-' }}</td></tr>
+        <tr><th style="text-align:left; padding:10px; border-bottom:1px solid #e5e7eb;">Enseignant</th><td style="padding:10px; border-bottom:1px solid #e5e7eb;">{{ examen.enseignant ? examen.enseignant.nom : '-' }}</td></tr>
+        <tr>
+          <th style="text-align:left; padding:10px;">Fichier examen</th>
+          <td style="padding:10px;">
+            {% if examen.contenu %}
+              <a href="{{ asset('uploads/examens/' ~ examen.contenu) }}" target="_blank" rel="noopener" style="text-decoration:none; color:#1d4ed8; font-weight:700;">
+                Ouvrir le fichier
+              </a>
+            {% else %}
+              -
+            {% endif %}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

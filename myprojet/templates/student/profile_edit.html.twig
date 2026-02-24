@@ -1,0 +1,51 @@
+{% extends 'student/dashCours.html.twig' %}
+
+{% block title %}Mon profil{% endblock %}
+
+{% block body %}
+<div style="padding:18px; background:linear-gradient(135deg,#fdfbfb,#ebedee); border-radius:16px; font-family:Manrope, sans-serif;">
+  {% for message in app.flashes('success') %}
+    <div style="background:#dcfce7; border:1px solid #86efac; color:#166534; border-radius:10px; padding:10px 12px; margin-bottom:12px;">{{ message }}</div>
+  {% endfor %}
+
+  <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:16px;">
+    <div>
+      <h2 style="margin:0; font-weight:800; font-size:1.5rem; color:#111827;">Mon profil</h2>
+      <p style="margin:4px 0 0; color:#6b7280; font-size:0.95rem;">Mettez a jour vos informations et, si besoin, votre mot de passe.</p>
+    </div>
+    <a href="{{ path('app_student_dashboard') }}" style="text-decoration:none; padding:8px 12px; border-radius:999px; background:#eef2ff; color:#2f3a8f; font-weight:700;">Retour</a>
+  </div>
+
+  {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+    <section style="background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:14px; margin-bottom:14px;">
+      <h3 style="margin:0 0 10px; font-size:1.05rem; color:#0f172a;">Informations personnelles</h3>
+
+      <label style="display:block; font-weight:700; margin-bottom:6px;">{{ form_label(form.nom) }}</label>
+      {{ form_widget(form.nom, {'attr': {'style': 'width:100%; border:1px solid #cbd5e1; border-radius:10px; padding:10px; margin-bottom:8px;'}}) }}
+      <div style="color:#b91c1c; margin-top:0; margin-bottom:8px;">{{ form_errors(form.nom) }}</div>
+
+      <label style="display:block; font-weight:700; margin-bottom:6px;">{{ form_label(form.email) }}</label>
+      {{ form_widget(form.email, {'attr': {'style': 'width:100%; border:1px solid #cbd5e1; border-radius:10px; padding:10px;'}}) }}
+      <div style="color:#b91c1c; margin-top:6px;">{{ form_errors(form.email) }}</div>
+    </section>
+
+    <section style="background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:14px; margin-bottom:14px;">
+      <h3 style="margin:0 0 8px; font-size:1.05rem; color:#0f172a;">Securite</h3>
+      <p style="margin:0 0 10px; color:#64748b; font-size:0.9rem;">Laissez ces champs vides si vous ne souhaitez pas changer votre mot de passe.</p>
+
+      <label style="display:block; font-weight:700; margin-bottom:6px;">{{ form_label(form.currentPassword) }}</label>
+      {{ form_widget(form.currentPassword, {'attr': {'style': 'width:100%; border:1px solid #cbd5e1; border-radius:10px; padding:10px; margin-bottom:8px;'}}) }}
+      <div style="color:#b91c1c; margin-top:0; margin-bottom:8px;">{{ form_errors(form.currentPassword) }}</div>
+
+      <label style="display:block; font-weight:700; margin-bottom:6px;">{{ form_label(form.plainPassword.first) }}</label>
+      {{ form_widget(form.plainPassword.first, {'attr': {'style': 'width:100%; border:1px solid #cbd5e1; border-radius:10px; padding:10px; margin-bottom:8px;'}}) }}
+
+      <label style="display:block; font-weight:700; margin-bottom:6px;">{{ form_label(form.plainPassword.second) }}</label>
+      {{ form_widget(form.plainPassword.second, {'attr': {'style': 'width:100%; border:1px solid #cbd5e1; border-radius:10px; padding:10px;'}}) }}
+      <div style="color:#b91c1c; margin-top:6px;">{{ form_errors(form.plainPassword) }}</div>
+    </section>
+
+    <button type="submit" style="padding:10px 16px; border:none; border-radius:10px; background:#2563eb; color:#fff; font-weight:700; cursor:pointer;">Enregistrer les modifications</button>
+  {{ form_end(form) }}
+</div>
+{% endblock %}

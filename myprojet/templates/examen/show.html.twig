@@ -3,6 +3,7 @@
 {% block title %}Détail examen{% endblock %}
 
 {% block body %}
+  {% set canSendReminder = examen.dateExamen and ('now'|date('U') <= examen.dateExamen|date('U')) %}
   <h1 class="h3 mb-4">Examen #{{ examen.id }}</h1>
   <table class="table table-bordered bg-white">
     <tbody>
@@ -14,9 +15,87 @@
       <tr><th>Enseignant ID</th><td>{{ examen.enseignantId }}</td></tr>
     </tbody>
   </table>
+
+  <div class="card mb-3">
+    <div class="card-header">Notifications evaluation (Twilio SMS + WhatsApp)</div>
+    <div class="card-body">
+      <p class="text-muted mb-3">Les numeros sont selectionnes automatiquement par le systeme.</p>
+      <div class="d-flex flex-wrap gap-2">
+        <button type="button" class="btn btn-primary" data-notify="created">Notifier creation</button>
+        {% if canSendReminder %}
+          <button type="button" class="btn btn-warning" data-notify="reminder">Notifier rappel</button>
+        {% endif %}
+        <button type="button" class="btn btn-success" data-notify="results">Notifier resultats</button>
+      </div>
+      <div id="notify-output" class="alert alert-secondary mt-3 mb-0" role="alert">
+        Aucune notification envoyee.
+      </div>
+    </div>
+  </div>
+
   <div class="d-flex align-items-center gap-2">
     <a class="btn btn-link" href="{{ path('app_examen_index') }}">Retour à la liste</a>
     <a class="btn btn-outline-primary" href="{{ path('app_examen_edit', {'id': examen.id}) }}">Éditer</a>
     {{ include('examen/_delete_form.html.twig', {examen: examen}) }}
   </div>
 {% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script>
+    (function () {
+      var routes = {
+        created: "{{ path('app_eval_notify_created', {'id': examen.id}) }}",
+        reminder: "{{ path('app_eval_notify_reminder', {'id': examen.id}) }}",
+        results: "{{ path('app_eval_notify_results', {'id': examen.id}) }}"
+      };
+
+      var output = document.getElementById('notify-output');
+      var buttons = document.querySelectorAll('[data-notify]');
+
+      function setOutput(message, level) {
+        output.className = 'alert mt-3 mb-0 alert-' + level;
+        output.textContent = message;
+      }
+
+      buttons.forEach(function (button) {
+        button.addEventListener('click', function () {
+          var type = button.getAttribute('data-notify');
+          var url = routes[type];
+
+          button.disabled = true;
+          setOutput('Envoi en cours...', 'secondary');
+
+          fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({})
+          })
+            .then(function (response) {
+              return response.json().then(function (body) {
+                return { status: response.status, body: body };
+              });
+            })
+            .then(function (result) {
+              var sent = result.body && result.body.result && result.body.result.sent;
+              var baseMessage = result.body && result.body.result && result.body.result.message
+                ? result.body.result.message
+                : 'Reponse recue.';
+              var count = result.body && typeof result.body.recipients_count === 'number'
+                ? result.body.recipients_count
+                : 0;
+              var finalMessage = baseMessage + ' Destinataires: ' + count + '.';
+              setOutput(finalMessage, sent ? 'success' : 'danger');
+            })
+            .catch(function (error) {
+              setOutput('Erreur: ' + String(error), 'danger');
+            })
+            .finally(function () {
+              button.disabled = false;
+            });
+        });
+      });
+    })();
+  </script>
+{% endblock %}
+

@@ -3,132 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduFlex - Espace Eleve</title>
+    <title>{% block title %}EduFlex - Espace Eleve{% endblock %}</title>
+    <link rel="stylesheet" href="{{ asset('css/fontawesome.css') }}">
     <link rel="stylesheet" href="{{ asset('student/css/student.css') }}">
-    <style>
-        .student-topbar-modern {
-            display: flex;
-            align-items: stretch;
-            justify-content: space-between;
-            gap: 18px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
-
-        .student-topbar-hero {
-            flex: 1 1 320px;
-            min-height: 120px;
-            border-radius: 24px;
-            padding: 18px 20px;
-            background: linear-gradient(130deg, #f7fbff 0%, #eaf4ff 45%, #f6ecff 100%);
-            border: 1px solid rgba(70, 95, 130, 0.12);
-            box-shadow: 0 12px 30px rgba(64, 76, 96, 0.12);
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .student-topbar-hero img {
-            height: 84px;
-            width: auto;
-            border-radius: 12px;
-            box-shadow: 0 8px 18px rgba(63, 80, 102, 0.22);
-        }
-
-        .student-topbar-title {
-            margin: 0;
-            font-size: 1.15rem;
-            font-weight: 800;
-            color: #253245;
-        }
-
-        .student-topbar-sub {
-            margin-top: 4px;
-            color: #50627a;
-            font-size: 0.93rem;
-        }
-
-        .weather-card {
-            flex: 0 1 320px;
-            border-radius: 24px;
-            padding: 16px;
-            background: linear-gradient(145deg, #101b2d 0%, #1d3557 55%, #2d4f85 100%);
-            color: #f5f9ff;
-            box-shadow: 0 18px 30px rgba(16, 27, 45, 0.32);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .weather-card::after {
-            content: "";
-            position: absolute;
-            width: 180px;
-            height: 180px;
-            right: -65px;
-            top: -70px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,255,255,0.22), rgba(255,255,255,0));
-        }
-
-        .weather-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .weather-date {
-            font-size: 0.84rem;
-            opacity: 0.9;
-            letter-spacing: 0.5px;
-        }
-
-        .weather-city {
-            margin-top: 3px;
-            font-size: 1rem;
-            font-weight: 700;
-        }
-
-        .weather-temp {
-            font-size: 2rem;
-            font-weight: 900;
-            line-height: 1;
-            margin: 12px 0 6px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .weather-desc {
-            font-size: 0.9rem;
-            opacity: 0.95;
-            position: relative;
-            z-index: 1;
-        }
-
-        .weather-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 14px;
-            background: rgba(255, 255, 255, 0.16);
-            display: grid;
-            place-items: center;
-            font-size: 1.4rem;
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.22);
-        }
-
-        @media (max-width: 640px) {
-            .weather-card {
-                flex-basis: 100%;
-            }
-
-            .student-topbar-hero {
-                flex-basis: 100%;
-            }
-        }
-    </style>
+    {% block stylesheets %}{% endblock %}
 </head>
 <body>
 <div class="student-shell">
@@ -143,83 +21,72 @@
         </div>
 
         <div class="student-profile">
-            <div class="student-avatar">AM</div>
+            {% set fullName = app.user ? app.user.nom : 'Eleve' %}
+            {% set parts = fullName|split(' ') %}
+            {% set initials = '' %}
+            {% for p in parts %}
+                {% if p|length > 0 and initials|length < 2 %}
+                    {% set initials = initials ~ p|slice(0, 1)|upper %}
+                {% endif %}
+            {% endfor %}
+            <div class="student-avatar">{{ initials ?: 'EL' }}</div>
             <div>
-                <div class="student-brand-name">Alex Martin</div>
+                <div class="student-brand-name">{{ fullName }}</div>
                 <div class="student-role">Eleve</div>
             </div>
         </div>
 
         <nav class="student-nav">
-            <a href="{{ path('eleve_cours_index') }}">
-    <span>🏠</span> Tableau de bord
-</a>
-            <a href="{{ path('app_forum_index_context', {'context': 'student'}) }}">
-                <span>F</span> Forum
+            <a class="{{ app.request.attributes.get('_route') == 'app_student_dashboard' ? 'is-active' : '' }}" href="{{ path('app_student_dashboard') }}">
+                <span><i class="fa fa-home"></i></span> Tableau de bord
             </a>
-            <a class="is-active" href="{{ path('eleve_cours_index') }}">
-                <span>📘</span> Mes cours
+            <a class="{{ app.request.attributes.get('_route') starts with 'eleve_cours_' ? 'is-active' : '' }}" href="{{ path('eleve_cours_index') }}">
+                <span><i class="fa fa-book"></i></span> Mes cours
             </a>
-            <a href="#">
-                <span>📝</span> Mes examens
+            <a class="{{ app.request.attributes.get('_route') == 'app_student_examens' ? 'is-active' : '' }}" href="{{ path('app_student_examens') }}">
+                <span><i class="fa fa-file-text-o"></i></span> Mes examens
             </a>
-            <a href="#">
-                <span>💬</span> Messages
+            <a class="{{ app.request.attributes.get('_route') starts with 'app_student_devoir_ia' or app.request.attributes.get('_route') == 'app_student_devoirs_ia' ? 'is-active' : '' }}" href="{{ path('app_student_devoirs_ia') }}">
+                <span><i class="fa fa-magic"></i></span> Devoirs
             </a>
-            <a href="#">
-                <span>📅</span> Planning
+            <a class="{{ app.request.attributes.get('_route') == 'app_student_resultats' ? 'is-active' : '' }}" href="{{ path('app_student_resultats') }}">
+                <span><i class="fa fa-line-chart"></i></span> Mes resultats
+            </a>
+            <a class="{{ app.request.attributes.get('_route') starts with 'app_forum_' ? 'is-active' : '' }}" href="{{ path('app_forum_index_context', {'context': 'student'}) }}">
+                <span><i class="fa fa-comments"></i></span> Forum
+            </a>
+            <a href="{{ path('app_logout') }}">
+                <span><i class="fa fa-sign-out"></i></span> Logout
             </a>
         </nav>
     </aside>
 
-    <main class="teacher-main">
-        <header class="student-topbar-modern">
-            {% set meteoDesc = weather.description|default('Indisponible') %}
-            {% set meteoIcon = '☁' %}
-            {% if meteoDesc == 'Ciel degage' %}
-                {% set meteoIcon = '☀' %}
-            {% elseif meteoDesc in ['Pluie', 'Averses'] %}
-                {% set meteoIcon = '☂' %}
-            {% elseif meteoDesc in ['Orage'] %}
-                {% set meteoIcon = '⚡' %}
-            {% elseif meteoDesc in ['Neige'] %}
-                {% set meteoIcon = '❄' %}
-            {% endif %}
-
-            <div class="student-topbar-hero">
-                <img src="{{ asset('images/cours.jpg') }}" alt="Cours">
-                <div>
-                    <h1 class="student-topbar-title">Bienvenue dans votre espace etudiant</h1>
-                    <div class="student-topbar-sub">Continuez vos chapitres et telechargez votre certificat a la fin.</div>
-                </div>
+    <main class="student-main">
+        <header class="student-topbar">
+            <form class="student-search" method="get" action="{{ path('eleve_cours_index') }}">
+                <span><i class="fa fa-search"></i></span>
+                <input type="search" name="q" placeholder="Rechercher un cours...">
+            </form>
+            <div class="student-top-actions">
+                {% if app.user %}
+                    <a class="student-icon-btn" href="{{ path('app_student_profile_edit') }}" title="Modifier mon profil">
+                        <i class="fa fa-user"></i>
+                    </a>
+                {% else %}
+                    <a class="student-icon-btn" href="{{ path('app_login') }}" title="Se connecter">
+                        <i class="fa fa-user"></i>
+                    </a>
+                {% endif %}
+                <div class="student-pill">Eleve</div>
             </div>
-
-            {% if not (hideWeather|default(false)) %}
-                <div class="weather-card">
-                    <div class="weather-row">
-                        <div>
-                            <div class="weather-date">{{ todayDate|default("now"|date("d/m/Y")) }}</div>
-                            <div class="weather-city">{{ weather.city|default('Tunis') }}</div>
-                        </div>
-                        <div class="weather-icon">{{ meteoIcon }}</div>
-                    </div>
-                    <div class="weather-temp">
-                        {% if weather.temperature is defined and weather.temperature is not null %}
-                            {{ weather.temperature|round }} C
-                        {% else %}
-                            -- C
-                        {% endif %}
-                    </div>
-                    <div class="weather-desc">{{ meteoDesc }}</div>
-                </div>
-            {% endif %}
         </header>
 
-        <div class="teacher-content">
+        <div class="student-content">
             {% block body %}{% endblock %}
         </div>
     </main>
 
 </div>
+{% block javascripts %}{% endblock %}
 </body>
 </html>

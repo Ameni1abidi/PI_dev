@@ -2,7 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Utilisateur;
 use App\Repository\CoursRepository;
+use App\Repository\DevoirIaRepository;
+use App\Repository\ExamenRepository;
+use App\Repository\ForumRepository;
+use App\Repository\ResultatRepository;
+use App\Repository\RessourceRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -10,11 +16,116 @@ use Symfony\Component\Routing\Attribute\Route;
 final class EnseignantController extends AbstractController
 {
     #[Route('/enseignant/dashboard', name: 'app_enseignant_dashboard', methods: ['GET'])]
-    public function dashboard(CoursRepository $coursRepo): Response
-    {
-        $cours = $coursRepo->findAll(); // or filter by connected enseignant
+public function dashboard(
+        CoursRepository $coursRepo,
+        ExamenRepository $examenRepo,
+        DevoirIaRepository $devoirIaRepo,
+        ForumRepository $forumRepo,
+        ResultatRepository $resultatRepo
+    ): Response {
+        $user = $this->getUser();
+
+        if (!$user instanceof Utilisateur) {
+            $this->addFlash('error', 'Vous devez etre connecte pour acceder a cette page.');
+
+            return $this->redirectToRoute('app_login');
+        }
+
+        $enseignantId = $user->getId();
+        $cours = $coursRepo->findByEnseignant($enseignantId);
+
+        $evaluations = $examenRepo->createQueryBuilder('e')
+            ->leftJoin('e.cours', 'c')
+            ->leftJoin('e.enseignant', 'ens')
+            ->leftJoin('c.enseignant', 'cEns')
+            ->andWhere('ens.id = :enseignantId OR cEns.id = :enseignantId')
+            ->setParameter('enseignantId', $enseignantId)
+            ->orderBy('e.dateExamen', 'DESC')
+            ->addOrderBy('e.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+        $devoirsIa = $devoirIaRepo->findForTeacher($enseignantId);
+
+$forums = $forumRepo->findBy([], ['dateCreation' => 'DESC']);
+        $classesCount = count(array_unique(array_map(
+            static fn ($cour) => (string) ($cour->getNiveau() ?? ''),
+            $cours
+        )));
+
+        // Get recent results (last 5) - sorted by examen date
+        $recentResults = $resultatRepo->findBy(
+            [],
+            [],
+            5
+        );
+
+        // Build activity timeline from recent data
+        $activities = [];
+        
+        // Add recent evaluations to activities
+        foreach (array_slice($evaluations, 0, 3) as $evaluation) {
+            $activities[] = [
+                'type' => 'evaluation',
+                'title' => $evaluation->getTitre(),
+                'date' => $evaluation->getDateExamen(),
+                'icon' => 'fa-clipboard',
+                'color' => 'primary'
+            ];
+        }
+        foreach (array_slice($devoirsIa, 0, 2) as $devoirIa) {
+            $activities[] = [
+                'type' => 'devoir_ia',
+                'title' => 'Devoir: ' . $devoirIa->getTitre(),
+                'date' => $devoirIa->getDateCreation(),
+                'icon' => 'fa-magic',
+                'color' => 'primary'
+            ];
+        }
+        
+        // Add recent forums to activities
+        foreach (array_slice($forums, 0, 3) as $forum) {
+            $activities[] = [
+                'type' => 'forum',
+                'title' => $forum->getTitre(),
+                'date' => $forum->getDateCreation(),
+                'icon' => 'fa-comments',
+                'color' => 'success'
+            ];
+        }
+        
+        // Add recent results to activities
+        foreach (array_slice($recentResults, 0, 3) as $resultat) {
+            $activities[] = [
+                'type' => 'resultat',
+                'title' => 'Resultat: ' . ($resultat->getExamen() ? $resultat->getExamen()->getTitre() : 'N/A'),
+                'date' => $resultat->getExamen() ? $resultat->getExamen()->getDateExamen() : null,
+                'icon' => 'fa-chart-line',
+                'color' => 'info'
+            ];
+        }
+        
+        // Sort activities by date descending
+        usort($activities, function($a, $b) {
+            return $b['date'] <=> $a['date'];
+        });
+        
+        // Keep only top 6 activities
+        $activities = array_slice($activities, 0, 6);
+
         return $this->render('enseignant/dashboard.html.twig', [
             'cours' => $cours,
+            'evaluations' => $evaluations,
+            'forums' => $forums,
+            'classes_count' => $classesCount,
+            'user' => $user,
+            'recent_results' => $recentResults,
+            'activities' => $activities,
+            'stats' => [
+                'total_cours' => count($cours),
+                'total_evaluations' => count($evaluations) + count($devoirsIa),
+                'total_forums' => count($forums),
+                'classes_count' => $classesCount
+            ]
         ]);
     }
 
@@ -27,10 +138,13 @@ final class EnseignantController extends AbstractController
     #[Route('/enseignant/classes', name: 'app_enseignant_classes', methods: ['GET'])]
     public function classes(): Response
     {
+        $user = $this->getUser();
+        $teacherName = $user instanceof Utilisateur ? ($user->getNom() ?? 'Enseignant') : 'Enseignant';
+
         $classes = [
-            ['nom' => '3A', 'niveau' => 'College', 'eleves' => 28, 'prof' => 'Mme Legrand'],
-            ['nom' => '2B', 'niveau' => 'College', 'eleves' => 26, 'prof' => 'Mme Legrand'],
-            ['nom' => '1C', 'niveau' => 'College', 'eleves' => 24, 'prof' => 'Mme Legrand'],
+            ['nom' => '3A', 'niveau' => 'College', 'eleves' => 28, 'prof' => $teacherName],
+            ['nom' => '2B', 'niveau' => 'College', 'eleves' => 26, 'prof' => $teacherName],
+            ['nom' => '1C', 'niveau' => 'College', 'eleves' => 24, 'prof' => $teacherName],
         ];
 
         return $this->render('enseignant/classes.html.twig', [
@@ -65,5 +179,4 @@ final class EnseignantController extends AbstractController
             'suivi' => $suivi,
         ]);
     }
-
 }

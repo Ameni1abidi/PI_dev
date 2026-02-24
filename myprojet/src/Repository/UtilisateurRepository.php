@@ -16,6 +16,62 @@ class UtilisateurRepository extends ServiceEntityRepository
         parent::__construct($registry, Utilisateur::class);
     }
 
+    /**
+     * @param string[] $roles
+     * @return string[]
+     */
+    public function findEmailsByRoles(array $roles): array
+    {
+        if ($roles === []) {
+            return [];
+        }
+
+        $rows = $this->createQueryBuilder('u')
+            ->select('u.email')
+            ->andWhere('u.role IN (:roles)')
+            ->setParameter('roles', $roles)
+            ->getQuery()
+            ->getArrayResult();
+
+        return array_values(array_filter(array_unique(array_map(
+            static fn (array $row): string => (string) ($row['email'] ?? ''),
+            $rows
+        ))));
+    }
+
+    /**
+     * @return string[]
+     */
+    public function findEmailsByRole(string $role): array
+    {
+        return $this->findEmailsByRoles([$role]);
+    }
+
+    /**
+     * @param string[] $roles
+     * @return string[]
+     */
+    public function findPhonesByRoles(array $roles): array
+    {
+        if ($roles === []) {
+            return [];
+        }
+
+        $rows = $this->createQueryBuilder('u')
+            ->select('u.telephone')
+            ->andWhere('u.role IN (:roles)')
+            ->andWhere('u.telephone IS NOT NULL')
+            ->andWhere("u.telephone <> ''")
+            ->setParameter('roles', $roles)
+            ->getQuery()
+            ->getArrayResult();
+
+        return array_values(array_filter(array_unique(array_map(
+            static fn (array $row): string => trim((string) ($row['telephone'] ?? '')),
+            $rows
+        ))));
+    }
+
     //    /**
     //     * @return Utilisateur[] Returns an array of Utilisateur objects
     //     */
