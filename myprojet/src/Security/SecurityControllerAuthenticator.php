@@ -2,6 +2,7 @@
 
 namespace App\Security;
 
+use App\Repository\UtilisateurRepository;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,6 +14,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Badge\RememberMeBadge
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Http\SecurityRequestAttributes;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
@@ -23,13 +25,27 @@ class SecurityControllerAuthenticator extends AbstractLoginFormAuthenticator
     public const LOGIN_ROUTE = 'app_login';
 
     public function __construct(
-        private UrlGeneratorInterface $urlGenerator
+        private UrlGeneratorInterface $urlGenerator,
+        private UtilisateurRepository $utilisateurRepository
     ) {}
 
-    // 🔐 AUTHENTIFICATION (EMAIL + PASSWORD)
+    // AUTHENTIFICATION (EMAIL + PASSWORD)
     public function authenticate(Request $request): Passport
     {
-        $email = $request->request->get('email');
+        $email = trim((string) $request->request->get('email', ''));
+        $password = (string) $request->request->get('password', '');
+
+        if ($email === '' && $password === '') {
+            throw new CustomUserMessageAuthenticationException('Email et mot de passe sont obligatoires.');
+        }
+
+        if ($email === '') {
+            throw new CustomUserMessageAuthenticationException('Email obligatoire.');
+        }
+
+        if ($password === '') {
+            throw new CustomUserMessageAuthenticationException('Mot de passe obligatoire.');
+        }
 
         $request->getSession()->set(
             SecurityRequestAttributes::LAST_USERNAME,
@@ -37,8 +53,41 @@ class SecurityControllerAuthenticator extends AbstractLoginFormAuthenticator
         );
 
         return new Passport(
-            new UserBadge($email),
-            new PasswordCredentials($request->request->get('password')),
+            new UserBadge($email, function (string $userIdentifier) {
+                $user = $this->utilisateurRepository->findOneBy([
+                    'email' => $userIdentifier,
+                    'isVerified' => true,
+                ]);
+
+                if ($user) {
+                    return $user;
+                }
+
+                $user = $this->utilisateurRepository->findOneBy(['email' => $userIdentifier]);
+
+                if (!$user) {
+                    throw new CustomUserMessageAuthenticationException('Identifiants invalides.');
+                }
+
+                if (method_exists($user, 'isVerified') && !$user->isVerified()) {
+                    throw new CustomUserMessageAuthenticationException('Veuillez confirmer votre adresse email avant de vous connecter.');
+                }
+
+                if (method_exists($user, 'isBlocked') && $user->isBlocked()) {
+                    throw new CustomUserMessageAuthenticationException('Votre compte est bloque. Contactez l administrateur.');
+                }
+
+                if (method_exists($user, 'isPending') && $user->isPending()) {
+                    throw new CustomUserMessageAuthenticationException('Votre compte est en attente d approbation par un administrateur.');
+                }
+
+                if (method_exists($user, 'isRejected') && $user->isRejected()) {
+                    throw new CustomUserMessageAuthenticationException('Votre compte a ete rejete. Contactez l administrateur.');
+                }
+
+                return $user;
+            }),
+            new PasswordCredentials($password),
             [
                 new CsrfTokenBadge(
                     'authenticate',
@@ -49,7 +98,7 @@ class SecurityControllerAuthenticator extends AbstractLoginFormAuthenticator
         );
     }
 
-    // REDIRECTION SELON LE RÔLE
+    // REDIRECTION SELON LE ROLE
     public function onAuthenticationSuccess(
         Request $request,
         TokenInterface $token,
@@ -58,35 +107,36 @@ class SecurityControllerAuthenticator extends AbstractLoginFormAuthenticator
         $user = $token->getUser();
         $roles = $user->getRoles();
 
-        if (in_array('ROLE_PARENT', $roles)) {
+        if (in_array('ROLE_PARENT', $roles, true)) {
             return new RedirectResponse(
                 $this->urlGenerator->generate('app_parent_dashboard')
             );
         }
 
-        if (in_array('ROLE_ETUDIANT', $roles)) {
+        if (in_array('ROLE_ETUDIANT', $roles, true)) {
             return new RedirectResponse(
                 $this->urlGenerator->generate('app_student_dashboard')
             );
         }
 
-        if (in_array('ROLE_PROF', $roles)) {
+        if (in_array('ROLE_PROF', $roles, true)) {
             return new RedirectResponse(
                 $this->urlGenerator->generate('app_enseignant_dashboard')
             );
         }
-        if (in_array('ROLE_ADMIN', $roles)) {
+
+        if (in_array('ROLE_ADMIN', $roles, true)) {
             return new RedirectResponse(
                 $this->urlGenerator->generate('app_admin')
             );
         }
-        if (in_array('ROLE_USER', $roles)) {
+
+        if (in_array('ROLE_USER', $roles, true)) {
             return new RedirectResponse(
-                $this->urlGenerator->generate('app_home')
+                $this->urlGenerator->generate('app_choose_role')
             );
         }
 
-        // fallback
         return new RedirectResponse(
             $this->urlGenerator->generate('app_home')
         );

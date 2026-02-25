@@ -1,0 +1,90 @@
+{% extends 'scholar_base.html.twig' %}
+
+{% block title %}Nouveau mot de passe{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <style>
+    .auth-wrap {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 32px 16px;
+      background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.18), transparent 40%), #8f79b7;
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 620px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 22px;
+      padding: 28px;
+      color: #fff;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18);
+    }
+
+    .auth-title {
+      margin: 0 0 8px;
+      font-size: 36px;
+      line-height: 1.2;
+    }
+
+    .auth-help {
+      margin: 0 0 16px;
+      color: rgba(255, 255, 255, 0.88);
+    }
+
+    .auth-card input[type="password"] {
+      width: 100%;
+      border: none;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      height: 52px;
+      padding: 0 18px;
+      margin-bottom: 12px;
+    }
+
+    .auth-card label {
+      display: block;
+      margin-bottom: 6px;
+      color: #fff;
+    }
+
+    .auth-card ul {
+      list-style: none;
+      margin: 8px 0 12px;
+      padding: 0;
+    }
+
+    .auth-card ul li {
+      color: #ffe3e3;
+      font-size: 13px;
+    }
+
+    .auth-btn {
+      border: none;
+      border-radius: 999px;
+      background: #fff;
+      color: #8f79b7;
+      font-weight: 700;
+      padding: 10px 22px;
+      margin-top: 8px;
+    }
+  </style>
+{% endblock %}
+
+{% block body %}
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <h1 class="auth-title">Choisissez un nouveau mot de passe</h1>
+      <p class="auth-help">Utilisez un mot de passe fort et unique.</p>
+
+      {{ form_start(resetForm) }}
+        {{ form_row(resetForm.plainPassword) }}
+        <button class="auth-btn">Mettre a jour le mot de passe</button>
+      {{ form_end(resetForm) }}
+    </div>
+  </div>
+{% endblock %}

@@ -9,11 +9,17 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use App\Entity\Resultat;
+use App\Entity\Cours;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    public const STATUS_PENDING = 'PENDING';
+    public const STATUS_APPROVED = 'APPROVED';
+    public const STATUS_REJECTED = 'REJECTED';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -23,7 +29,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank(message: "Le nom est obligatoire")]
     #[Assert\Length(
         min: 3,
-        minMessage: "Le nom doit contenir au moins {{ limit }} caractères"
+        minMessage: "Le nom doit contenir au moins {{ limit }} caracteres"
     )]
     private ?string $nom = null;
 
@@ -31,39 +37,36 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 200)]
-    #[Assert\NotBlank(message: "L’email est obligatoire")]
+    #[Assert\NotBlank(message: "L'email est obligatoire")]
     #[Assert\Email(message: "Veuillez saisir une adresse email valide")]
     private ?string $email = null;
-
-    #[ORM\Column(length: 30, nullable: true)]
-    private ?string $telephone = null;
 
     #[ORM\Column(length: 200)]
     private ?string $role = null;
 
     #[ORM\Column(type: 'boolean')]
     private bool $isVerified = false;
-    
+
+    #[ORM\Column(length: 20)]
+    private string $status = self::STATUS_PENDING;
+
+    #[ORM\Column(type: 'boolean')]
+    private bool $isBlocked = false;
+
+    #[ORM\Column(type: 'datetime_immutable')]
+    private ?\DateTimeImmutable $createdAt = null;
+
     #[ORM\OneToMany(mappedBy: 'etudiant', targetEntity: Resultat::class)]
     private Collection $resultats;
 
-    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'enfants')]
-    #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
-    private ?self $parent = null;
-
-    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class)]
-    private Collection $enfants;
+    #[ORM\OneToMany(mappedBy: 'enseignant', targetEntity: Cours::class)]
+    private Collection $cours;
 
     public function __construct()
     {
-    $this->resultats = new ArrayCollection();
-    $this->enfants = new ArrayCollection();
+        $this->resultats = new ArrayCollection();
+        $this->cours = new ArrayCollection();
     }
-
-
-    /* =========================
-       Getters & Setters
-       ========================= */
 
     public function getId(): ?int
     {
@@ -78,6 +81,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setNom(string $nom): self
     {
         $this->nom = $nom;
+
         return $this;
     }
 
@@ -89,17 +93,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): self
     {
         $this->email = $email;
-        return $this;
-    }
 
-    public function getTelephone(): ?string
-    {
-        return $this->telephone;
-    }
-
-    public function setTelephone(?string $telephone): self
-    {
-        $this->telephone = $telephone;
         return $this;
     }
 
@@ -111,6 +105,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): self
     {
         $this->password = $password;
+
         return $this;
     }
 
@@ -122,50 +117,69 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setRole(string $role): self
     {
         $this->role = $role;
+
         return $this;
     }
 
     public function getRoles(): array
     {
-        $role = $this->role ?? 'ROLE_USER';
-        $roles = [$role];
-
-        // Keep backward compatibility between ROLE_STUDENT and ROLE_ETUDIANT.
-        if ($role === 'ROLE_STUDENT') {
-            $roles[] = 'ROLE_ETUDIANT';
-        }
-        if ($role === 'ROLE_ETUDIANT') {
-            $roles[] = 'ROLE_STUDENT';
-        }
-
-        $roles[] = 'ROLE_USER';
-
-        return array_values(array_unique($roles));
+        return [$this->role ?? 'ROLE_USER'];
     }
+
     public function getResultats(): Collection
-{
-    return $this->resultats;
-}
-
-public function addResultat(Resultat $resultat): self
-{
-    if (!$this->resultats->contains($resultat)) {
-        $this->resultats->add($resultat);
-        $resultat->setEtudiant($this);
+    {
+        return $this->resultats;
     }
-    return $this;
-}
 
-public function removeResultat(Resultat $resultat): self
-{
-    if ($this->resultats->removeElement($resultat)) {
-        if ($resultat->getEtudiant() === $this) {
-            $resultat->setEtudiant(null);
+    public function addResultat(Resultat $resultat): self
+    {
+        if (!$this->resultats->contains($resultat)) {
+            $this->resultats->add($resultat);
+            $resultat->setEtudiant($this);
         }
-    }
-    return $this;
-}
 
+        return $this;
+    }
+
+    public function removeResultat(Resultat $resultat): self
+    {
+        if ($this->resultats->removeElement($resultat)) {
+            if ($resultat->getEtudiant() === $this) {
+                $resultat->setEtudiant(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Cours>
+     */
+    public function getCours(): Collection
+    {
+        return $this->cours;
+    }
+
+    public function addCours(Cours $cours): self
+    {
+        if (!$this->cours->contains($cours)) {
+            $this->cours->add($cours);
+            $cours->setEnseignant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCours(Cours $cours): self
+    {
+        if ($this->cours->removeElement($cours)) {
+            if ($cours->getEnseignant() === $this) {
+                $cours->setEnseignant(null);
+            }
+        }
+
+        return $this;
+    }
 
     public function getUserIdentifier(): string
     {
@@ -174,7 +188,6 @@ public function removeResultat(Resultat $resultat): self
 
     public function eraseCredentials(): void
     {
-        // À utiliser si tu stockes des données sensibles temporaires
     }
 
     public function isVerified(): bool
@@ -185,44 +198,66 @@ public function removeResultat(Resultat $resultat): self
     public function setIsVerified(bool $isVerified): self
     {
         $this->isVerified = $isVerified;
-        return $this;
-    }
-
-    public function getParent(): ?self
-    {
-        return $this->parent;
-    }
-
-    public function setParent(?self $parent): self
-    {
-        $this->parent = $parent;
 
         return $this;
     }
 
-    public function getEnfants(): Collection
+    public function getStatus(): string
     {
-        return $this->enfants;
+        return $this->status;
     }
 
-    public function addEnfant(self $enfant): self
+    public function setStatus(string $status): self
     {
-        if (!$this->enfants->contains($enfant)) {
-            $this->enfants->add($enfant);
-            $enfant->setParent($this);
+        $this->status = strtoupper(trim($status));
+
+        return $this;
+    }
+
+    public function isApproved(): bool
+    {
+        return $this->status === self::STATUS_APPROVED;
+    }
+
+    public function isPending(): bool
+    {
+        return $this->status === self::STATUS_PENDING;
+    }
+
+    public function isRejected(): bool
+    {
+        return $this->status === self::STATUS_REJECTED;
+    }
+
+    public function isBlocked(): bool
+    {
+        return $this->isBlocked;
+    }
+
+    public function setIsBlocked(bool $isBlocked): self
+    {
+        $this->isBlocked = $isBlocked;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function initializeCreatedAt(): void
+    {
+        if ($this->createdAt === null) {
+            $this->createdAt = new \DateTimeImmutable();
         }
-
-        return $this;
-    }
-
-    public function removeEnfant(self $enfant): self
-    {
-        if ($this->enfants->removeElement($enfant)) {
-            if ($enfant->getParent() === $this) {
-                $enfant->setParent(null);
-            }
-        }
-
-        return $this;
     }
 }

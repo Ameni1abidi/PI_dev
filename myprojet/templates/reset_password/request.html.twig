@@ -1,0 +1,35 @@
+{% extends 'scholar_base.html.twig' %}
+
+{% block title %}Reinitialiser votre mot de passe{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <style>
+    .auth-wrap { min-height: 100vh; display: grid; place-items: center; padding: 32px 16px; background: #8f79b7; }
+    .auth-card { width: 100%; max-width: 620px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.2); border-radius: 22px; padding: 28px; color: #fff; }
+    .auth-card h1 { margin: 0 0 10px; font-size: 34px; }
+    .auth-card input[type="email"] { width: 100%; height: 52px; border-radius: 999px; border: none; background: rgba(255,255,255,.2); color: #fff; padding: 0 18px; margin-bottom: 10px; }
+    .auth-btn { border: none; border-radius: 999px; background: #fff; color: #8f79b7; font-weight: 700; padding: 10px 22px; margin-top: 8px; }
+    .auth-note { color: rgba(255,255,255,.88); }
+  </style>
+{% endblock %}
+
+{% block body %}
+  <div class="auth-wrap">
+    <div class="auth-card">
+      {% for flash_error in app.flashes('reset_password_error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+      {% endfor %}
+      <h1>Reinitialiser votre mot de passe</h1>
+
+      {{ form_start(requestForm) }}
+        {{ form_row(requestForm.email) }}
+        <div class="auth-note">
+          <small>Entrez votre adresse email pour recevoir un lien de reinitialisation.</small>
+        </div>
+
+        <button class="auth-btn">Envoyer le lien de reinitialisation</button>
+      {{ form_end(requestForm) }}
+    </div>
+  </div>
+{% endblock %}

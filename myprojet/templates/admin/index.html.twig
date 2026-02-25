@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -14,24 +14,25 @@
           <img class="brand-logo" src="{{ asset('images/eduflex-logo.png') }}" alt="EduFlex">
           <div class="brand-text">
             <div class="brand-name">EduFlex</div>
-            
           </div>
         </div>
 
         <nav class="nav">
-          <a class="nav-link is-active" href="{{ path('app_admin') }}"><span class="nav-icon">🏠</span>Dashboard Admin</a>
+          <a class="nav-link is-active" href="{{ path('app_admin') }}"><span class="nav-icon">D</span>Dashboard Admin</a>
+          <a class="nav-link" href="{{ path('app_admin_copilot') }}"><span class="nav-icon">AI</span>Copilote IA</a>
           <a class="nav-link" href="{{ path('app_forum_index_context', {'context': 'admin'}) }}"><span class="nav-icon">F</span>Forum</a>
-          <a class="nav-link" href="{{ path('app_utilisateur_index') }}"><span class="nav-icon">👥</span>Utilisateurs</a>
-          <a class="nav-link" href="#"><span class="nav-icon">🏫</span>Classes</a>
-          <a class="nav-link" href="#"><span class="nav-icon">📚</span>Matières</a>
-          <a class="nav-link" href="#"><span class="nav-icon">🔐</span>Droits d’accès</a>
-          <a class="nav-link" href="#"><span class="nav-icon">📈</span>Statistiques</a>
-          <a class="nav-link" href="#"><span class="nav-icon">⚙️</span>Paramètres</a>
+          <a class="nav-link" href="{{ path('app_utilisateur_index') }}"><span class="nav-icon">U</span>Utilisateurs</a>
+          <a class="nav-link" href="{{ path('app_admin_classes') }}"><span class="nav-icon">C</span>Classes</a>
+          <a class="nav-link" href="{{ path('app_categorie_index') }}"><span class="nav-icon">M</span>Matieres</a>
+          <a class="nav-link" href="{{ path('app_admin_access') }}"><span class="nav-icon">A</span>Droits d'acces</a>
+          <a class="nav-link" href="{{ path('app_admin_stats') }}"><span class="nav-icon">S</span>Statistiques</a>
+          <a class="nav-link" href="{{ path('app_admin_settings') }}"><span class="nav-icon">P</span>Parametres</a>
+          <a class="nav-link" href="{{ path('app_logout') }}"><span class="nav-icon">L</span>Logout</a>
         </nav>
 
         <div class="sidebar-card">
           <div class="sidebar-card-title">Actions rapides</div>
-          <button class="btn btn-primary" type="button">Créer un cours</button>
+          <a class="btn btn-primary" href="{{ path('app_cours_new') }}">Creer un cours</a>
           <a class="btn btn-outline" href="{{ path('app_utilisateur_new') }}">Ajouter un utilisateur</a>
         </div>
       </aside>
@@ -40,38 +41,41 @@
         <header class="topbar">
           <div>
             <div class="topbar-title">Dashboard Admin</div>
-            <div class="topbar-sub">Bienvenue sur EduFlex, Admin</div>
+            <div class="topbar-sub">Bienvenue sur EduFlex, Administration</div>
           </div>
           <div class="topbar-actions">
-            <button class="chip" type="button">Nouveau rapport</button>
-            <div class="avatar">AM</div>
+            <a class="chip" href="{{ path('app_admin_stats') }}">Nouveau rapport</a>
+            <a class="chip" href="{{ path('app_logout') }}">Logout</a>
+            <div class="avatar">{{ admin_initials }}</div>
           </div>
         </header>
 
         <section class="stats-grid">
           <div class="stat-card">
-            <div class="stat-icon">🎓</div>
+            <div class="stat-icon">U</div>
             <div class="stat-label">Total Usagers</div>
-            <div class="stat-value">1,250</div>
-            <div class="stat-meta up">+4.2% ce mois</div>
+            <div class="stat-value">{{ stats.total_users|number_format(0, ',', ' ') }}</div>
+            <div class="stat-meta up">{{ stats.verified_users|number_format(0, ',', ' ') }} comptes verifies</div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon">🏫</div>
+            <div class="stat-icon">C</div>
             <div class="stat-label">Classes</div>
-            <div class="stat-value">45</div>
-            <div class="stat-meta up">+2 nouvelles</div>
+            <div class="stat-value">{{ stats.total_classes|number_format(0, ',', ' ') }}</div>
+            <div class="stat-meta up">+{{ stats.new_classes_month|number_format(0, ',', ' ') }} ce mois</div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon">🌍</div>
-            <div class="stat-label">Activités</div>
-            <div class="stat-value">8</div>
-            <div class="stat-meta up">+1 cette semaine</div>
+            <div class="stat-icon">A</div>
+            <div class="stat-label">Activites</div>
+            <div class="stat-value">{{ stats.total_activities|number_format(0, ',', ' ') }}</div>
+            <div class="stat-meta up">+{{ stats.activities_week|number_format(0, ',', ' ') }} cette semaine</div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon">🧾</div>
+            <div class="stat-icon">M</div>
             <div class="stat-label">Messages</div>
-            <div class="stat-value">123</div>
-            <div class="stat-meta down">-6% vs. semaine</div>
+            <div class="stat-value">{{ stats.total_messages|number_format(0, ',', ' ') }}</div>
+            <div class="stat-meta {{ stats.messages_change_percent >= 0 ? 'up' : 'down' }}">
+              {{ stats.messages_change_percent >= 0 ? '+' : '' }}{{ stats.messages_change_percent }}% vs. semaine
+            </div>
           </div>
         </section>
 
@@ -88,7 +92,7 @@
             </div>
             <div class="chart-legend">
               <span class="legend-item"><span class="dot dot-green"></span>Engagement</span>
-              <span class="legend-item"><span class="dot dot-purple"></span>Présence</span>
+              <span class="legend-item"><span class="dot dot-purple"></span>Presence</span>
               <span class="legend-item"><span class="dot dot-sage"></span>Messages</span>
             </div>
           </div>
@@ -96,69 +100,111 @@
           <div class="panel">
             <div class="panel-header">
               <h2>Gestion des utilisateurs</h2>
-              <span class="panel-sub">Répartition</span>
+              <span class="panel-sub">Repartition</span>
             </div>
             <div class="list">
               <div class="list-item">
-                <div class="list-title">Étudiants</div>
-                <div class="list-metric">450</div>
+                <div class="list-title">Etudiants</div>
+                <div class="list-metric">{{ users_by_role.etudiants|number_format(0, ',', ' ') }}</div>
               </div>
               <div class="list-item">
                 <div class="list-title">Enseignants</div>
-                <div class="list-metric">90</div>
+                <div class="list-metric">{{ users_by_role.enseignants|number_format(0, ',', ' ') }}</div>
               </div>
               <div class="list-item">
                 <div class="list-title">Parents</div>
-                <div class="list-metric">150</div>
+                <div class="list-metric">{{ users_by_role.parents|number_format(0, ',', ' ') }}</div>
+              </div>
+              <div class="list-item">
+                <div class="list-title">Administrateurs</div>
+                <div class="list-metric">{{ users_by_role.admins|number_format(0, ',', ' ') }}</div>
               </div>
             </div>
           </div>
         </section>
 
+        <section class="panel full copilot-panel">
+          <div class="panel-header">
+            <h2>Copilote Admin IA</h2>
+            <span class="panel-sub">Questions rapides sur les utilisateurs</span>
+          </div>
+          {% for message in app.flashes('error') %}
+            <div class="copilot-alert">{{ message }}</div>
+          {% endfor %}
+          <form method="post" action="{{ path('app_admin') }}" class="copilot-form">
+            <input type="hidden" name="_token" value="{{ csrf_token('admin_copilot') }}">
+            <label class="copilot-label" for="copilot-question">Votre question</label>
+            <div class="copilot-row">
+              <input
+                id="copilot-question"
+                name="question"
+                type="text"
+                value="{{ copilot_question|default('') }}"
+                placeholder="Ex: combien de nouveaux comptes cette semaine ?"
+                class="copilot-input"
+                required
+              >
+              <button type="submit" class="btn btn-primary">Demander</button>
+            </div>
+            <div class="copilot-examples">
+              <button class="btn btn-outline small" type="submit" name="question" value="combien de nouveaux comptes cette semaine ?">Nouveaux comptes semaine</button>
+              <button class="btn btn-outline small" type="submit" name="question" value="liste comptes non verifies">Comptes non verifies</button>
+              <button class="btn btn-outline small" type="submit" name="question" value="repartition des roles utilisateurs">Repartition des roles</button>
+            </div>
+          </form>
+          {% if copilot_result is not empty %}
+            <div class="copilot-answer">
+              <h3>Reponse</h3>
+              <p>{{ copilot_result.answer }}</p>
+              <div class="copilot-links">
+                {% for link in copilot_result.links %}
+                  <a class="btn btn-outline small" href="{{ path(link.route) }}">{{ link.label }}</a>
+                {% endfor %}
+              </div>
+            </div>
+          {% endif %}
+        </section>
+
         <section class="content-grid">
           <div class="panel">
             <div class="panel-header">
-              <h2>Activité récente</h2>
-              <span class="panel-sub">Dernières 24 heures</span>
+              <h2>Activite recente</h2>
+              <span class="panel-sub">Dernieres 24 heures</span>
             </div>
             <div class="list">
-              <div class="list-item">
-                <div>
-                  <div class="list-title">Julita Marehand</div>
-                  <div class="list-meta">a créé 3 cours</div>
+              {% for activity in recent_activities %}
+                <div class="list-item">
+                  <div>
+                    <div class="list-title">{{ activity.title }}</div>
+                    <div class="list-meta">{{ activity.meta }}</div>
+                  </div>
+                  <span class="pill success">{{ activity.date|date('d/m H:i') }}</span>
                 </div>
-                <span class="pill success">Aujourd’hui</span>
-              </div>
-              <div class="list-item">
-                <div>
-                  <div class="list-title">Pierre Durand</div>
-                  <div class="list-meta">a mis à jour les classes</div>
+              {% else %}
+                <div class="list-item">
+                  <div>
+                    <div class="list-title">Aucune activite recente</div>
+                    <div class="list-meta">Les nouvelles activites apparaitront ici.</div>
+                  </div>
+                  <span class="pill warning">N/A</span>
                 </div>
-                <span class="pill warning">Il y a 3h</span>
-              </div>
-              <div class="list-item">
-                <div>
-                  <div class="list-title">Chloé Dupont</div>
-                  <div class="list-meta">a envoyé un message</div>
-                </div>
-                <span class="pill success">Il y a 5h</span>
-              </div>
+              {% endfor %}
             </div>
           </div>
 
           <div class="panel">
             <div class="panel-header">
-              <h2>État des serveurs</h2>
+              <h2>Etat des serveurs</h2>
               <span class="panel-sub">Monitoring</span>
             </div>
             <div class="list">
               <div class="list-item">
-                <div class="list-title">Base de données 1</div>
-                <span class="pill success">Opérationnel</span>
+                <div class="list-title">Base de donnees 1</div>
+                <span class="pill success">Operationnel</span>
               </div>
               <div class="list-item">
                 <div class="list-title">API Principale</div>
-                <span class="pill success">Opérationnel</span>
+                <span class="pill success">Operationnel</span>
               </div>
               <div class="list-item">
                 <div class="list-title">Stockage</div>
@@ -174,34 +220,23 @@
             <span class="panel-sub">Top 4</span>
           </div>
           <div class="cards-row">
-            <div class="mini-card">
-              <div class="mini-avatar">CM2</div>
-              <div>
-                <div class="mini-title">CM2 A</div>
-                <div class="mini-meta">23 élèves</div>
+            {% for classe in popular_classes %}
+              <div class="mini-card">
+                <div class="mini-avatar">{{ classe.code }}</div>
+                <div>
+                  <div class="mini-title">{{ classe.title }}</div>
+                  <div class="mini-meta">{{ classe.meta }}</div>
+                </div>
               </div>
-            </div>
-            <div class="mini-card">
-              <div class="mini-avatar">6E</div>
-              <div>
-                <div class="mini-title">6ème B</div>
-                <div class="mini-meta">20 élèves</div>
+            {% else %}
+              <div class="mini-card">
+                <div class="mini-avatar">N/A</div>
+                <div>
+                  <div class="mini-title">Aucune classe</div>
+                  <div class="mini-meta">Creez un cours pour alimenter ce bloc</div>
+                </div>
               </div>
-            </div>
-            <div class="mini-card">
-              <div class="mini-avatar">5E</div>
-              <div>
-                <div class="mini-title">5ème C</div>
-                <div class="mini-meta">19 élèves</div>
-              </div>
-            </div>
-            <div class="mini-card">
-              <div class="mini-avatar">9E</div>
-              <div>
-                <div class="mini-title">9ème C</div>
-                <div class="mini-meta">23 élèves</div>
-              </div>
-            </div>
+            {% endfor %}
           </div>
         </section>
       </main>

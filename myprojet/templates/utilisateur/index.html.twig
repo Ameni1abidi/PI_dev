@@ -11,6 +11,10 @@
       </div>
     </div>
 
+    {% for message in app.flashes('success') %}
+      <div class="pill success" style="margin-bottom: 12px;">{{ message }}</div>
+    {% endfor %}
+
     <table class="admin-table">
       <thead>
         <tr>
@@ -18,6 +22,8 @@
           <th>Nom</th>
           <th>Email</th>
           <th>Role</th>
+          <th>Statut</th>
+          <th>Blocage</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -29,15 +35,57 @@
           <td>{{ utilisateur.email }}</td>
           <td>{{ utilisateur.role }}</td>
           <td>
+            {% if utilisateur.status == 'APPROVED' %}
+              <span class="pill success">APPROVED</span>
+            {% elseif utilisateur.status == 'REJECTED' %}
+              <span class="pill danger">REJECTED</span>
+            {% else %}
+              <span class="pill warning">PENDING</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if utilisateur.isBlocked %}
+              <span class="pill danger">BLOCKED</span>
+            {% else %}
+              <span class="pill success">ACTIVE</span>
+            {% endif %}
+          </td>
+          <td>
             <div class="admin-actions">
               <a class="btn btn-outline small" href="{{ path('app_utilisateur_show', {'id': utilisateur.id}) }}">Voir</a>
               <a class="btn btn-primary small" href="{{ path('app_utilisateur_edit', {'id': utilisateur.id}) }}">Modifier</a>
+
+              {% if utilisateur.status != 'APPROVED' %}
+                <form method="post" action="{{ path('app_utilisateur_approve', {'id': utilisateur.id}) }}">
+                  <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ utilisateur.id) }}">
+                  <button class="btn btn-outline small" type="submit">Approuver</button>
+                </form>
+              {% endif %}
+
+              {% if utilisateur.status != 'REJECTED' %}
+                <form method="post" action="{{ path('app_utilisateur_reject', {'id': utilisateur.id}) }}">
+                  <input type="hidden" name="_token" value="{{ csrf_token('reject' ~ utilisateur.id) }}">
+                  <button class="btn btn-outline small" type="submit">Rejeter</button>
+                </form>
+              {% endif %}
+
+              {% if utilisateur.isBlocked %}
+                <form method="post" action="{{ path('app_utilisateur_unblock', {'id': utilisateur.id}) }}">
+                  <input type="hidden" name="_token" value="{{ csrf_token('unblock' ~ utilisateur.id) }}">
+                  <button class="btn btn-primary small" type="submit">Debloquer</button>
+                </form>
+              {% else %}
+                <form method="post" action="{{ path('app_utilisateur_block', {'id': utilisateur.id}) }}">
+                  <input type="hidden" name="_token" value="{{ csrf_token('block' ~ utilisateur.id) }}">
+                  <button class="btn btn-danger small" type="submit">Bloquer</button>
+                </form>
+              {% endif %}
             </div>
           </td>
         </tr>
       {% else %}
         <tr>
-          <td colspan="5">Aucun enregistrement</td>
+          <td colspan="7">Aucun enregistrement</td>
         </tr>
       {% endfor %}
       </tbody>

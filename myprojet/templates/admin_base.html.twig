@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -19,19 +19,19 @@
         </div>
 
         <nav class="nav">
-          <a class="nav-link" href="{{ path('app_admin') }}"><span class="nav-icon">🏠</span>Dashboard Admin</a>
+          <a class="nav-link" href="{{ path('app_admin') }}"><span class="nav-icon">D</span>Dashboard Admin</a>
           <a class="nav-link" href="{{ path('app_forum_index_context', {'context': 'admin'}) }}"><span class="nav-icon">F</span>Forum</a>
-          <a class="nav-link is-active" href="{{ path('app_utilisateur_index') }}"><span class="nav-icon">👥</span>Utilisateurs</a>
-          <a class="nav-link" href="#"><span class="nav-icon">🏫</span>Classes</a>
-          <a class="nav-link" href="#"><span class="nav-icon">📚</span>Matières</a>
-          <a class="nav-link" href="#"><span class="nav-icon">🔐</span>Droits d’accès</a>
-          <a class="nav-link" href="#"><span class="nav-icon">📈</span>Statistiques</a>
-          <a class="nav-link" href="#"><span class="nav-icon">⚙️</span>Paramètres</a>
+          <a class="nav-link is-active" href="{{ path('app_utilisateur_index') }}"><span class="nav-icon">U</span>Utilisateurs</a>
+          <a class="nav-link" href="{{ path('app_admin_classes') }}"><span class="nav-icon">C</span>Classes</a>
+          <a class="nav-link" href="{{ path('app_categorie_index') }}"><span class="nav-icon">M</span>Matieres</a>
+          <a class="nav-link" href="{{ path('app_admin_access') }}"><span class="nav-icon">A</span>Droits d'acces</a>
+          <a class="nav-link" href="{{ path('app_admin_stats') }}"><span class="nav-icon">S</span>Statistiques</a>
+          <a class="nav-link" href="{{ path('app_admin_settings') }}"><span class="nav-icon">P</span>Parametres</a>
         </nav>
 
         <div class="sidebar-card">
           <div class="sidebar-card-title">Actions rapides</div>
-          <button class="btn btn-primary" type="button">Créer un cours</button>
+          <a class="btn btn-primary" href="{{ path('app_cours_new') }}">Creer un cours</a>
           <a class="btn btn-outline" href="{{ path('app_utilisateur_new') }}">Ajouter un utilisateur</a>
         </div>
       </aside>
@@ -43,7 +43,7 @@
             <div class="topbar-sub">Bienvenue sur EduFlex, Admin</div>
           </div>
           <div class="topbar-actions">
-            <button class="chip" type="button">Nouveau rapport</button>
+            <a class="chip" href="{{ path('app_admin_stats') }}">Nouveau rapport</a>
             <a class="chip" href="{{ logout_path() }}">Deconnexion</a>
             <div class="avatar">AM</div>
           </div>
