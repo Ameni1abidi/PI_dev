@@ -33,5 +33,9 @@
         </tbody>
     </table>
 
+    <div style="margin-top:14px;">
+        {{ knp_pagination_render(commentaires) }}
+    </div>
+
     <a href="{{ path('app_commentaire_new') }}">Create new</a>
 {% endblock %}

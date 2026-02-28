@@ -188,6 +188,34 @@ public function delete(Request $request, Cours $cour, EntityManagerInterface $en
         ]);
     }
 
+    #[Route('/eleve/chapitre/{id}/favoris', name: 'eleve_chapitre_favoris', methods: ['GET'])]
+    public function chapitreFavoris(
+        Chapitre $chapitre,
+        RessourceRepository $ressourceRepository,
+        RessourceFavoriRepository $ressourceFavoriRepository
+    ): Response {
+        $user = $this->getUser();
+        if (!$user instanceof Utilisateur) {
+            throw $this->createAccessDeniedException('Utilisateur non valide.');
+        }
+
+        $chapitreId = (int) $chapitre->getId();
+        $favoriIds = $ressourceFavoriRepository->findFavoriRessourceIdsByUtilisateurAndChapitre($user, $chapitreId);
+        $favoriIdLookup = array_fill_keys($favoriIds, true);
+
+        $ressources = $ressourceRepository->findByChapitreId($chapitreId);
+        $favoriRessources = array_values(array_filter(
+            $ressources,
+            static fn ($ressource): bool => $ressource->getId() !== null && isset($favoriIdLookup[(int) $ressource->getId()])
+        ));
+
+        return $this->render('student/chapitre_favoris.html.twig', [
+            'chapitre' => $chapitre,
+            'cours' => $chapitre->getCours(),
+            'favori_ressources' => $favoriRessources,
+        ]);
+    }
+
     #[Route('/eleve/chapitre/{id}/ressources/{ressourceId}/quiz', name: 'eleve_ressource_quiz_submit', requirements: ['id' => '\d+', 'ressourceId' => '\d+'], methods: ['POST'])]
     public function submitRessourceQuiz(
         Request $request,

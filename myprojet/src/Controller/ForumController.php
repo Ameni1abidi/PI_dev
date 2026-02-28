@@ -9,6 +9,7 @@ use App\Repository\ForumRepository;
 use App\Service\OllamaService;
 use App\Service\ProfanityFilterService;
 use App\Service\TranslationService;
+use Knp\Component\Pager\PaginatorInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -20,7 +21,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 final class ForumController extends AbstractController
 {
     #[Route('/forum', name: 'app_forum_index', methods: ['GET', 'POST'])]
-    #[Route('/{context}/forum', name: 'app_forum_index_context', requirements: ['context' => 'admin|parent|student|enseignant'], methods: ['GET', 'POST'])]
+    #[Route('/{context}/forum', name: 'app_forum_index_context', requirements: ['context' => 'admin|parent|student|eleve|enseignant'], methods: ['GET', 'POST'])]
     public function index(
         ForumRepository $forumRepository,
         Request $request,
@@ -28,6 +29,7 @@ final class ForumController extends AbstractController
         ValidatorInterface $validator,
         ProfanityFilterService $profanityFilterService,
         OllamaService $ollamaService,
+        PaginatorInterface $paginator,
         ?string $context = null
     ): Response {
         if ($request->isMethod('POST')) {
@@ -78,9 +80,16 @@ final class ForumController extends AbstractController
 
         $routes = $this->getForumRoutes($context);
         $baseTemplate = $this->getForumBaseTemplate($context);
+        $queryBuilder = $forumRepository->createQueryBuilder('f')
+            ->orderBy('f.dateCreation', 'DESC');
+        $forumsPagination = $paginator->paginate(
+            $queryBuilder,
+            max(1, $request->query->getInt('page', 1)),
+            2
+        );
 
         return $this->render($baseTemplate ? 'forum/index_shell.html.twig' : 'forum/index.html.twig', [
-            'forums' => $forumRepository->findAll(),
+            'forums' => $forumsPagination,
             'forum_routes' => $routes,
             'forum_route_params' => $this->getForumRouteParams($context),
             'base_template' => $baseTemplate,
@@ -88,7 +97,7 @@ final class ForumController extends AbstractController
     }
 
     #[Route('/forum/new', name: 'app_forum_new', methods: ['GET', 'POST'])]
-    #[Route('/{context}/forum/new', name: 'app_forum_new_context', requirements: ['context' => 'admin|parent|student|enseignant'], methods: ['GET', 'POST'])]
+    #[Route('/{context}/forum/new', name: 'app_forum_new_context', requirements: ['context' => 'admin|parent|student|eleve|enseignant'], methods: ['GET', 'POST'])]
     public function new(
         Request $request,
         EntityManagerInterface $entityManager,
@@ -141,7 +150,7 @@ final class ForumController extends AbstractController
     }
 
     #[Route('/forum/{id}/edit', name: 'app_forum_edit', methods: ['GET', 'POST'])]
-    #[Route('/{context}/forum/{id}/edit', name: 'app_forum_edit_context', requirements: ['context' => 'admin|parent|student|enseignant'], methods: ['GET', 'POST'])]
+    #[Route('/{context}/forum/{id}/edit', name: 'app_forum_edit_context', requirements: ['context' => 'admin|parent|student|eleve|enseignant'], methods: ['GET', 'POST'])]
     public function edit(Request $request, Forum $forum, EntityManagerInterface $entityManager, ?string $context = null): Response
     {
         $form = $this->createForm(ForumType::class, $forum);
@@ -165,7 +174,7 @@ final class ForumController extends AbstractController
     }
 
     #[Route('/forum/{id}/delete', name: 'app_forum_delete', methods: ['POST'])]
-    #[Route('/{context}/forum/{id}/delete', name: 'app_forum_delete_context', requirements: ['context' => 'admin|parent|student|enseignant'], methods: ['POST'])]
+    #[Route('/{context}/forum/{id}/delete', name: 'app_forum_delete_context', requirements: ['context' => 'admin|parent|student|eleve|enseignant'], methods: ['POST'])]
     public function delete(Forum $forum, EntityManagerInterface $entityManager, ?string $context = null): Response
     {
         $entityManager->remove($forum);
@@ -176,7 +185,7 @@ final class ForumController extends AbstractController
     }
 
     #[Route('/forum/commentaire/{id}/delete', name: 'app_commentaire_delete', methods: ['POST'])]
-    #[Route('/{context}/forum/commentaire/{id}/delete', name: 'app_commentaire_delete_context', requirements: ['context' => 'admin|parent|student|enseignant'], methods: ['POST'])]
+    #[Route('/{context}/forum/commentaire/{id}/delete', name: 'app_commentaire_delete_context', requirements: ['context' => 'admin|parent|student|eleve|enseignant'], methods: ['POST'])]
     public function deleteCommentaire(Commentaire $commentaire, EntityManagerInterface $entityManager, ?string $context = null): Response
     {
         if ($this->isBotComment($commentaire)) {
@@ -193,7 +202,7 @@ final class ForumController extends AbstractController
     }
 
     #[Route('/forum/commentaire/{id}/edit', name: 'app_commentaire_edit', methods: ['GET', 'POST'])]
-    #[Route('/{context}/forum/commentaire/{id}/edit', name: 'app_commentaire_edit_context', requirements: ['context' => 'admin|parent|student|enseignant'], methods: ['GET', 'POST'])]
+    #[Route('/{context}/forum/commentaire/{id}/edit', name: 'app_commentaire_edit_context', requirements: ['context' => 'admin|parent|student|eleve|enseignant'], methods: ['GET', 'POST'])]
     public function editCommentaire(
         Request $request,
         Commentaire $commentaire,
@@ -269,7 +278,7 @@ final class ForumController extends AbstractController
     }
 
     #[Route('/forum/commentaire/{id}/translate', name: 'app_commentaire_translate', methods: ['POST'])]
-    #[Route('/{context}/forum/commentaire/{id}/translate', name: 'app_commentaire_translate_context', requirements: ['context' => 'admin|parent|student|enseignant'], methods: ['POST'])]
+    #[Route('/{context}/forum/commentaire/{id}/translate', name: 'app_commentaire_translate_context', requirements: ['context' => 'admin|parent|student|eleve|enseignant'], methods: ['POST'])]
     public function translateCommentaire(
         Request $request,
         Commentaire $commentaire,
@@ -331,6 +340,7 @@ final class ForumController extends AbstractController
             'admin' => 'admin_base.html.twig',
             'parent' => 'parent/base.html.twig',
             'student' => 'student/base.html.twig',
+            'eleve' => 'student/base.html.twig',
             'enseignant' => 'crud_base.html.twig',
             default => null,
         };

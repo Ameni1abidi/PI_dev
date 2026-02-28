@@ -59,6 +59,10 @@
             <span>RS</span>
             Resultats
           </a>
+          <a href="{{ path('app_weather_context', {'context': 'enseignant'}) }}">
+            <span>WT</span>
+            Meteo
+          </a>
         </nav>
       </aside>
 
@@ -85,7 +89,7 @@
                 <div class="teacher-item">
                   <div>
                     <div class="item-title">{{ evaluation.matiere }} - Classe {{ evaluation.classe }}</div>
-                    <div class="item-meta">{{ evaluation.date }} • Statut: {{ evaluation.statut }}</div>
+                    <div class="item-meta">{{ evaluation.date }} - Statut: {{ evaluation.statut }}</div>
                   </div>
                   <span class="pill warning">{{ evaluation.statut }}</span>
                 </div>

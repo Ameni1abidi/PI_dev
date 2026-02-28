@@ -22,10 +22,16 @@
           <div style="font-size:0.86rem; color:#5b6475; margin-bottom:12px;">Duree estimee: {{ chap.dureeEstimee }} min</div>
 
           {% if ressourcesCount > 0 %}
-            <a href="{{ path('eleve_chapitre_ressources', {'id': chap.id}) }}"
-               style="display:inline-block; text-decoration:none; padding:10px 14px; border-radius:12px; background:#dbeafe; color:#1e3a8a; border:1px solid #bfdbfe; font-weight:700; font-size:0.9rem;">
-              Voir les ressources ({{ ressourcesCount }})
-            </a>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <a href="{{ path('eleve_chapitre_ressources', {'id': chap.id}) }}"
+                 style="display:inline-block; text-decoration:none; padding:10px 14px; border-radius:12px; background:#dbeafe; color:#1e3a8a; border:1px solid #bfdbfe; font-weight:700; font-size:0.9rem;">
+                Voir les ressources ({{ ressourcesCount }})
+              </a>
+              <a href="{{ path('eleve_chapitre_favoris', {'id': chap.id}) }}"
+                 style="display:inline-block; text-decoration:none; padding:10px 14px; border-radius:12px; background:#fef3c7; color:#92400e; border:1px solid #fde68a; font-weight:700; font-size:0.9rem;">
+                Mes favoris
+              </a>
+            </div>
           {% else %}
             <div style="display:inline-block; padding:10px 14px; border-radius:12px; background:#f3f4f6; color:#6b7280; font-weight:700; font-size:0.86rem;">
               Aucune ressource pour ce chapitre

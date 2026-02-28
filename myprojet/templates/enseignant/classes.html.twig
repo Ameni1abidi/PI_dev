@@ -51,6 +51,10 @@
             <span>RS</span>
             Resultats
           </a>
+          <a href="{{ path('app_weather_context', {'context': 'enseignant'}) }}">
+            <span>WT</span>
+            Meteo
+          </a>
         </nav>
       </aside>
 
@@ -58,7 +62,7 @@
         <header class="teacher-topbar">
           <div>
             <div class="teacher-title">Mes classes</div>
-            <div class="teacher-sub">Liste des classes attribuées</div>
+            <div class="teacher-sub">Liste des classes attribuees</div>
           </div>
           <div class="teacher-actions">
             <a class="teacher-btn teacher-btn-primary" href="{{ path('app_enseignant_dashboard') }}">Retour dashboard</a>
@@ -77,7 +81,7 @@
                 <div class="teacher-item">
                   <div>
                     <div class="item-title">Classe {{ classe.nom }}</div>
-                    <div class="item-meta">Niveau {{ classe.niveau }} • {{ classe.eleves }} élèves</div>
+                    <div class="item-meta">Niveau {{ classe.niveau }} - {{ classe.eleves }} eleves</div>
                   </div>
                   <span class="pill success">{{ classe.prof }}</span>
                 </div>
@@ -85,7 +89,7 @@
                 <div class="teacher-item">
                   <div>
                     <div class="item-title">Aucune classe</div>
-                    <div class="item-meta">Aucune classe assignée pour le moment.</div>
+                    <div class="item-meta">Aucune classe assignee pour le moment.</div>
                   </div>
                   <span class="pill warning">Info</span>
                 </div>

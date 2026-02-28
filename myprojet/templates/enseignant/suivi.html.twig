@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="fr">
   <head>
     <meta charset="utf-8">
@@ -55,6 +55,10 @@
             <span>MS</span>
             Messages
           </a>
+          <a href="{{ path('app_weather_context', {'context': 'enseignant'}) }}">
+            <span>WT</span>
+            Meteo
+          </a>
         </nav>
       </aside>
 
@@ -81,7 +85,7 @@
                 <div class="teacher-item">
                   <div>
                     <div class="item-title">Classe {{ row.classe }}</div>
-                    <div class="item-meta">Absences: {{ row.absences }} • Notes: {{ row.notes }} • Progression: {{ row.progression }}</div>
+                    <div class="item-meta">Absences: {{ row.absences }} - Notes: {{ row.notes }} - Progression: {{ row.progression }}</div>
                   </div>
                   <span class="pill success">OK</span>
                 </div>
