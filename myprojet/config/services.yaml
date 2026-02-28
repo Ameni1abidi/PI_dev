@@ -37,21 +37,19 @@ services:
         arguments:
             $blockedWords: '%app.profanity_words%'
 
-<<<<<<< HEAD
     App\Service\EvaluationNotificationService:
         arguments:
             $twilioAccountSid: '%app.twilio_account_sid%'
             $twilioAuthToken: '%app.twilio_auth_token%'
             $twilioFromNumber: '%app.twilio_from_number%'
             $twilioWhatsAppFrom: '%app.twilio_whatsapp_from%'
-=======
+
     App\Service\CloudinaryStorageService:
         arguments:
             $cloudUrl: '%env(string:CLOUDINARY_URL)%'
             $cloudName: '%env(string:CLOUDINARY_CLOUD_NAME)%'
             $apiKey: '%env(string:CLOUDINARY_API_KEY)%'
             $apiSecret: '%env(string:CLOUDINARY_API_SECRET)%'
->>>>>>> f5d2b07 (icon)
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
