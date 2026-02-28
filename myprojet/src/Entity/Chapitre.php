@@ -33,6 +33,7 @@ class Chapitre
     #[Assert\NotBlank(message: 'Le type de contenu est obligatoire.')]
     #[Assert\Choice(
         choices: ['texte', 'fichier', 'video', 'devoir', 'exercice_corrige'],
+        choices: ['texte', 'fichier',],
         message: 'Type de contenu invalide.'
     )]
     private ?string $typeContenu = null;
@@ -58,6 +59,7 @@ class Chapitre
         ]
     )]
     private ?string $videoUrl = null;
+   
 
     #[ORM\Column]
     #[Assert\NotNull(message: 'La durée estimée est obligatoire.')]
@@ -76,6 +78,7 @@ class Chapitre
     {
         $this->ressources = new ArrayCollection();
     }
+    
 
     public function getId(): ?int
     {
@@ -197,4 +200,18 @@ public function removeRessource(Ressource $ressource): static
 
     return $this;
 }
+#[ORM\Column(type: "text", nullable: true)]
+private ?string $resume = null;
+
+public function getResume(): ?string
+{
+    return $this->resume;
+}
+
+public function setResume(?string $resume): self
+{
+    $this->resume = $resume;
+    return $this;
+}
+
 }

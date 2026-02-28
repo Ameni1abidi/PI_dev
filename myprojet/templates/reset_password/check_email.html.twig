@@ -1,11 +1,25 @@
-{% extends 'base.html.twig' %}
+{% extends 'scholar_base.html.twig' %}
 
 {% block title %}Email de reinitialisation envoye{% endblock %}
 
+{% block stylesheets %}
+  {{ parent() }}
+  <style>
+    .auth-wrap { min-height: 100vh; display: grid; place-items: center; padding: 32px 16px; background: #8f79b7; }
+    .auth-card { width: 100%; max-width: 620px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.2); border-radius: 22px; padding: 28px; color: #fff; }
+    .auth-card p { color: rgba(255,255,255,.92); line-height: 1.7; margin: 0 0 12px; }
+    .auth-card a { color: #ffd45f; font-weight: 700; }
+  </style>
+{% endblock %}
+
 {% block body %}
-    <p>
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <p>
         Si un compte correspond a votre email, un lien de reinitialisation vient d etre envoye.
         Ce lien expire dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
-    </p>
-    <p>Si vous ne recevez rien, verifiez vos spams ou <a href="{{ path('app_forgot_password_request') }}">reessayez</a>.</p>
+      </p>
+      <p>Si vous ne recevez rien, verifiez vos spams ou <a href="{{ path('app_forgot_password_request') }}">reessayez</a>.</p>
+    </div>
+  </div>
 {% endblock %}

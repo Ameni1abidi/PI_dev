@@ -1,0 +1,40 @@
+{% extends 'admin_base.html.twig' %}
+
+{% block title %}Classes{% endblock %}
+
+{% block body %}
+  <section class="panel full">
+    <div class="panel-header">
+      <h2>Classes</h2>
+      <span class="panel-sub">{{ cours|length }} cours</span>
+    </div>
+
+    {% if cours is empty %}
+      <div class="list">
+        <div class="list-item">
+          <div>
+            <div class="list-title">Aucune classe disponible</div>
+            <div class="list-meta">Ajoutez un cours pour commencer.</div>
+          </div>
+          <span class="pill warning">Vide</span>
+        </div>
+      </div>
+    {% else %}
+      <div class="list">
+        {% for item in cours %}
+          <div class="list-item">
+            <div>
+              <div class="list-title">{{ item.titre }}</div>
+              <div class="list-meta">
+                Niveau: {{ item.niveau }} |
+                Creation: {{ item.dateCreation ? item.dateCreation|date('Y-m-d') : 'N/A' }}
+              </div>
+            </div>
+            <span class="pill success">{{ item.chapitres|length }} chapitres</span>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </section>
+{% endblock %}
+

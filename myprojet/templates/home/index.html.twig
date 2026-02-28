@@ -141,6 +141,7 @@
                       <li class="scroll-to-section"><a href="#events">Events</a></li>
                       <li><a href="{{ path('app_register') }}">Inscription</a></li>
                       <li><a href="{{ path('app_login') }}">Connexion</a></li>
+                      <li><a href="{{ path('app_login') }}">Login</a></li>
                   </ul>   
                     <a class='menu-trigger'>
                         <span>Menu</span>
@@ -747,6 +748,7 @@
                     <fieldset>
                       {{ form_widget(registrationForm.plainPassword.second, { attr: { placeholder: 'Confirmer le mot de passe...', class: 'auth-input js-register-password' } }) }}
                       {{ form_errors(registrationForm.plainPassword.second) }}
+                      {{ form_widget(registrationForm.plainPassword, { attr: { placeholder: 'Mot de passe...', class: 'auth-input' } }) }}
                       {{ form_errors(registrationForm.plainPassword) }}
                     </fieldset>
                   </div>
@@ -784,6 +786,8 @@
                       <div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div>
                     </div>
                   {% endif %}
+                    {{ form_errors(registrationForm.agreeTerms) }}
+                  </div>
                   <div class="col-lg-12">
                     <fieldset>
                       <button type="submit" id="form-submit" class="orange-button">S'inscrire</button>
@@ -832,6 +836,7 @@
                     <fieldset>
                       <label class="auth-check-wrap">
                         <input class="auth-check" type="checkbox" name="_remember_me"> Se souvenir de moi
+                        <input class="auth-check" type="checkbox" name="_remember_me"> Remember me
                       </label>
                       <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
                     </fieldset>
@@ -844,6 +849,7 @@
                   <div class="col-lg-12">
                     <fieldset>
                       <a href="{{ path('connect_google_start') }}" class="orange-button" style="display:inline-block;text-align:center;">Continuer avec Google</a>
+                      <button type="submit" id="form-submit" class="orange-button">Sign in</button>
                     </fieldset>
                   </div>
                   <div class="col-lg-12">

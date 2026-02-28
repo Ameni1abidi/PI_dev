@@ -5,6 +5,7 @@ namespace App\Controller;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -47,6 +48,10 @@ class SecurityController extends AbstractController
             'error' => $globalError,
             'login_email_error' => $loginEmailError,
             'login_password_error' => $loginPasswordError,
+
+        return $this->render('home/index.html.twig', [
+            'last_username' => $lastUsername,
+            'error' => $error,
             'focus_login' => true,
         ]);
     }
@@ -116,4 +121,5 @@ class SecurityController extends AbstractController
             default => 'app_home',
         };
     }
+}
 }

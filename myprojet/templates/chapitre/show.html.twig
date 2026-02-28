@@ -38,6 +38,7 @@
                         Aucun contenu.
                     {% endif %}
                 </td>
+                <td>{{ chapitre.contenu }}</td>
             </tr>
             <tr>
                 <th>Ordre</th>
@@ -51,6 +52,7 @@
     </table>
 
     <a href="{{ path('app_chapitre_index', {'coursId': chapitre.cours.id}) }}">Voir Chapitres</a>
+    <a href="{{ path('app_chapitre_index', {'coursId': cour.id}) }}">Voir Chapitres</a>
 
     <a href="{{ path('app_chapitre_edit', {'id': chapitre.id}) }}">edit</a>
 

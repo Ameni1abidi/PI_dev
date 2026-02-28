@@ -146,3 +146,7 @@
         );
     })();
 </script>
+{{ form_start(form, {'attr': {'class': 'admin-form'}}) }}
+    {{ form_widget(form) }}
+    <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
+{{ form_end(form) }}

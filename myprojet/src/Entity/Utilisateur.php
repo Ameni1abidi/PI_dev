@@ -8,12 +8,23 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use App\Entity\Resultat;
+use App\Entity\Cours;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    public const STATUS_PENDING = 'PENDING';
+    public const STATUS_APPROVED = 'APPROVED';
+    public const STATUS_REJECTED = 'REJECTED';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -43,6 +54,12 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'boolean')]
     private bool $isVerified = false;
+
+    #[ORM\Column(length: 20)]
+    private string $status = self::STATUS_PENDING;
+
+    #[ORM\Column(type: 'boolean')]
+    private bool $isBlocked = false;
 
     #[ORM\Column(type: 'datetime_immutable')]
     private ?\DateTimeImmutable $createdAt = null;
@@ -74,6 +91,8 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: RessourceInteraction::class)]
     private Collection $ressourceInteractions;
+    #[ORM\OneToMany(mappedBy: 'enseignant', targetEntity: Cours::class)]
+    private Collection $cours;
 
     public function __construct()
     {
@@ -82,6 +101,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         $this->ressourceLikes = new ArrayCollection();
         $this->ressourceFavoris = new ArrayCollection();
         $this->ressourceInteractions = new ArrayCollection();
+        $this->cours = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -164,6 +184,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         $roles[] = 'ROLE_USER';
 
         return array_values(array_unique($roles));
+        return [$this->role ?? 'ROLE_USER'];
     }
 
     public function getResultats(): Collection
@@ -202,6 +223,19 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         if (!$this->ressourceLikes->contains($ressourceLike)) {
             $this->ressourceLikes->add($ressourceLike);
             $ressourceLike->setUtilisateur($this);
+    /**
+     * @return Collection<int, Cours>
+     */
+    public function getCours(): Collection
+    {
+        return $this->cours;
+    }
+
+    public function addCours(Cours $cours): self
+    {
+        if (!$this->cours->contains($cours)) {
+            $this->cours->add($cours);
+            $cours->setEnseignant($this);
         }
 
         return $this;
@@ -264,6 +298,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->ressourceInteractions->removeElement($ressourceInteraction)) {
             if ($ressourceInteraction->getUtilisateur() === $this) {
                 $ressourceInteraction->setUtilisateur(null);
+    public function removeCours(Cours $cours): self
+    {
+        if ($this->cours->removeElement($cours)) {
+            if ($cours->getEnseignant() === $this) {
+                $cours->setEnseignant(null);
             }
         }
 
@@ -299,6 +338,14 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setParent(?self $parent): self
     {
         $this->parent = $parent;
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): self
+    {
+        $this->status = strtoupper(trim($status));
 
         return $this;
     }
@@ -325,6 +372,29 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
                 $enfant->setParent(null);
             }
         }
+    public function isApproved(): bool
+    {
+        return $this->status === self::STATUS_APPROVED;
+    }
+
+    public function isPending(): bool
+    {
+        return $this->status === self::STATUS_PENDING;
+    }
+
+    public function isRejected(): bool
+    {
+        return $this->status === self::STATUS_REJECTED;
+    }
+
+    public function isBlocked(): bool
+    {
+        return $this->isBlocked;
+    }
+
+    public function setIsBlocked(bool $isBlocked): self
+    {
+        $this->isBlocked = $isBlocked;
 
         return $this;
     }

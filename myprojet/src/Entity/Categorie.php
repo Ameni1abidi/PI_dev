@@ -11,6 +11,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CategorieRepository::class)]
 #[UniqueEntity(fields: ['nom'], message: 'Cette categorie existe deja.')]
+use Symfony\Component\Validator\Constraints as Assert;
+
+#[ORM\Entity(repositoryClass: CategorieRepository::class)]
 class Categorie
 {
     #[ORM\Id]
@@ -29,6 +32,12 @@ class Categorie
     #[Assert\Choice(
         choices: ['video', 'audio', 'lien', 'image', 'pdf'],
         message: 'La categorie doit etre video, audio, lien, image ou pdf.'
+    #[Assert\NotBlank(message: "Le nom de la catégorie est obligatoire.")]
+    #[Assert\Length(
+        min: 2,
+        max: 100,
+        minMessage: "Le nom doit avoir au moins {{ limit }} caractères.",
+        maxMessage: "Le nom ne peut pas dépasser {{ limit }} caractères."
     )]
     private ?string $nom = null;
 
@@ -54,6 +63,7 @@ class Categorie
     {
         $this->nom = strtolower(trim($nom));
 
+        $this->nom = $nom;
         return $this;
     }
 

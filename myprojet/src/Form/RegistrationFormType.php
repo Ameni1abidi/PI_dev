@@ -60,6 +60,10 @@ class RegistrationFormType extends AbstractType
                     'label' => 'Confirmer le mot de passe',
                     'attr' => ['autocomplete' => 'new-password'],
                 ],
+            ->add('plainPassword', PasswordType::class, [
+                'label' => 'Mot de passe',
+                'mapped' => false,
+                'attr' => ['autocomplete' => 'new-password'],
                 'constraints' => [
                     new NotBlank(message: 'Veuillez entrer un mot de passe'),
                     new Length(

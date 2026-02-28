@@ -67,13 +67,32 @@ final class GoogleAuthController extends AbstractController
             $user->setNom($displayName);
             $user->setRole('ROLE_USER');
             $user->setIsVerified(true);
+            $user->setStatus(Utilisateur::STATUS_PENDING);
+            $user->setIsBlocked(false);
             $user->setPassword($userPasswordHasher->hashPassword($user, bin2hex(random_bytes(24))));
 
             $entityManager->persist($user);
             $entityManager->flush();
+            $this->addFlash('success', 'Compte Google cree. Votre compte est en attente d approbation administrateur.');
+            return $this->redirectToRoute('app_login');
         } elseif (!$user->isVerified()) {
             $user->setIsVerified(true);
             $entityManager->flush();
+        }
+
+        if ($user->isBlocked()) {
+            $this->addFlash('error', 'Votre compte est bloque. Contactez l administrateur.');
+            return $this->redirectToRoute('app_login');
+        }
+
+        if ($user->isRejected()) {
+            $this->addFlash('error', 'Votre compte a ete rejete. Contactez l administrateur.');
+            return $this->redirectToRoute('app_login');
+        }
+
+        if ($user->isPending()) {
+            $this->addFlash('error', 'Votre compte est en attente d approbation par un administrateur.');
+            return $this->redirectToRoute('app_login');
         }
 
         $response = $security->login($user, SecurityControllerAuthenticator::class, 'main');

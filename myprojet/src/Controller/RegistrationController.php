@@ -89,6 +89,8 @@ class RegistrationController extends AbstractController
             $plainPassword = $form->get('plainPassword')->getData();
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
             $user->setIsVerified(false);
+            $user->setStatus(Utilisateur::STATUS_PENDING);
+            $user->setIsBlocked(false);
 
             $entityManager->persist($user);
             $entityManager->flush();

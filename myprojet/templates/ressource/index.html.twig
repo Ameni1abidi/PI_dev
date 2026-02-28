@@ -92,6 +92,12 @@
     {% endif %}
 
     <div class="admin-table-scroll">
+        <h1 class="admin-title">Ressources</h1>
+        <div class="admin-actions">
+            <a class="btn btn-primary" href="{{ path('app_ressource_new') }}">Créer</a>
+        </div>
+    </div>
+
     <table class="admin-table">
         <thead>
             <tr>
@@ -106,6 +112,7 @@
                 <th>Favoris</th>
                 <th>Score</th>
                 <th>Badge</th>
+                <th>Type</th>
                 <th>Contenu</th>
                 <th>Actions</th>
             </tr>
@@ -154,11 +161,17 @@
                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ ressource.id) }}">
                         <button class="btn btn-danger small" type="submit">Supprimer</button>
                     </form>
+                <td>{{ ressource.type }}</td>
+                <td>{{ ressource.contenu }}</td>
+                <td>
+                    <a class="btn btn-outline small" href="{{ path('app_ressource_show', {'id': ressource.id}) }}">Voir</a>
+                    <a class="btn btn-primary small" href="{{ path('app_ressource_edit', {'id': ressource.id}) }}">Modifier</a>
                 </td>
             </tr>
         {% else %}
             <tr>
                 <td colspan="13">Aucune ressource trouvee.</td>
+                <td colspan="5">Aucune ressource trouvée.</td>
             </tr>
         {% endfor %}
         </tbody>

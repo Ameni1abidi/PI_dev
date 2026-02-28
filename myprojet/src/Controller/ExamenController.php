@@ -7,6 +7,7 @@ use App\Form\ExamenType;
 use App\Repository\ExamenRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,11 +17,14 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 #[Route('/examen')]
 final class ExamenController extends AbstractController
 {
+    private const ALLOWED_FILE_EXTENSIONS = ['pdf', 'doc', 'docx', 'txt'];
+
     #[Route('/', name: 'app_examen_index', methods: ['GET'])]
     public function index(ExamenRepository $examenRepository): Response
     {
         return $this->render('examen/index.html.twig', [
             'examens' => $examenRepository->findAll(),
+            'examens' => $examenRepository->findAllWithExistingRelations(),
         ]);
     }
 
@@ -38,6 +42,15 @@ final class ExamenController extends AbstractController
                 $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = $slugger->slug($originalFilename);
                 $extension = $this->resolveUploadedExtension($uploadedFile);
+                if (!$this->isAllowedUploadedExtension($extension)) {
+                    $form->get('contenuFile')->addError(new FormError('Formats autorises: PDF, DOC, DOCX, TXT.'));
+
+                    return $this->render('examen/new.html.twig', [
+                        'examen' => $examen,
+                        'form' => $form,
+                    ]);
+                }
+
                 $newFilename = $safeFilename . '-' . uniqid() . '.' . $extension;
                 $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads/examens';
                 if (!is_dir($uploadDir)) {
@@ -87,6 +100,15 @@ final class ExamenController extends AbstractController
                 $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = $slugger->slug($originalFilename);
                 $extension = $this->resolveUploadedExtension($uploadedFile);
+                if (!$this->isAllowedUploadedExtension($extension)) {
+                    $form->get('contenuFile')->addError(new FormError('Formats autorises: PDF, DOC, DOCX, TXT.'));
+
+                    return $this->render('examen/edit.html.twig', [
+                        'examen' => $examen,
+                        'form' => $form,
+                    ]);
+                }
+
                 $newFilename = $safeFilename . '-' . uniqid() . '.' . $extension;
                 $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads/examens';
                 if (!is_dir($uploadDir)) {
@@ -128,5 +150,10 @@ final class ExamenController extends AbstractController
         $extension = strtolower((string) pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_EXTENSION));
 
         return $extension !== '' ? $extension : 'bin';
+    }
+
+    private function isAllowedUploadedExtension(string $extension): bool
+    {
+        return in_array(strtolower($extension), self::ALLOWED_FILE_EXTENSIONS, true);
     }
 }

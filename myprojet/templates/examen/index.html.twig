@@ -6,6 +6,7 @@
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0">Examens</h1>
     <a class="btn btn-primary" href="{{ path('app_examen_new') }}">Creer un examen</a>
+    <a class="btn btn-primary" href="{{ path('app_examen_new') }}">Créer un examen</a>
   </div>
 
   {% if examens is empty %}
@@ -23,6 +24,11 @@
             <th>Duree</th>
             <th>Cours</th>
             <th>Enseignant</th>
+            <th>Type</th>
+            <th>Date</th>
+            <th>Durée</th>
+            <th>Cours ID</th>
+            <th>Enseignant ID</th>
             <th class="text-end">Actions</th>
           </tr>
         </thead>
@@ -44,6 +50,14 @@
               <td class="text-end">
                 <a class="btn btn-sm btn-outline-secondary" href="{{ path('app_examen_show', {'id': examen.id}) }}">Voir</a>
                 <a class="btn btn-sm btn-outline-primary" href="{{ path('app_examen_edit', {'id': examen.id}) }}">Editer</a>
+              <td>{{ examen.type }}</td>
+              <td>{{ examen.dateExamen ? examen.dateExamen|date('Y-m-d') : '' }}</td>
+              <td>{{ examen.duree }}</td>
+              <td>{{ examen.coursId }}</td>
+              <td>{{ examen.enseignantId }}</td>
+              <td class="text-end">
+                <a class="btn btn-sm btn-outline-secondary" href="{{ path('app_examen_show', {'id': examen.id}) }}">Voir</a>
+                <a class="btn btn-sm btn-outline-primary" href="{{ path('app_examen_edit', {'id': examen.id}) }}">Éditer</a>
               </td>
             </tr>
           {% endfor %}

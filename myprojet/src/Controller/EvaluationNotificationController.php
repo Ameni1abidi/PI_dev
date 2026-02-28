@@ -93,6 +93,7 @@ final class EvaluationNotificationController extends AbstractController
         $phones = array_values(array_unique(array_merge($etudiantPhones, $parentPhones)));
         if ($phones === []) {
             $phones = $utilisateurRepository->findPhonesByRoles(['ROLE_ETUDIANT', 'ROLE_STUDENT', 'ROLE_PARENT']);
+            $phones = $utilisateurRepository->findPhonesByRoles(['ROLE_ETUDIANT', 'ROLE_STUDENT']);
         }
 
         $result = $this->notificationService->sendEvaluationNotification(
@@ -130,6 +131,9 @@ final class EvaluationNotificationController extends AbstractController
         ) {
             return $this->json([
                 'message' => 'Acces reserve aux enseignants ou administrateurs.',
+        if (!in_array('ROLE_PROF', $roles, true) && !in_array('ROLE_ENSEIGNANT', $roles, true)) {
+            return $this->json([
+                'message' => 'Acces reserve aux enseignants.',
             ], 403);
         }
 

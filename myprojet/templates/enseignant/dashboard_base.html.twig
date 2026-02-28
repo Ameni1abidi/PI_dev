@@ -7,6 +7,131 @@
       <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
       <link rel="stylesheet" href="{{ asset('enseignant/css/enseignant.css') }}">
     {% endblock %}
+    <title>EduFlex - Espace Enseignant</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('enseignant/css/enseignant.css') }}">
+    <style>
+        .teacher-topbar-modern {
+            display: flex;
+            align-items: stretch;
+            justify-content: space-between;
+            gap: 18px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .teacher-topbar-hero {
+            flex: 1 1 320px;
+            min-height: 120px;
+            border-radius: 24px;
+            padding: 18px 20px;
+            background: linear-gradient(130deg, #f7fbff 0%, #eaf4ff 45%, #f6ecff 100%);
+            border: 1px solid rgba(70, 95, 130, 0.12);
+            box-shadow: 0 12px 30px rgba(64, 76, 96, 0.12);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .teacher-topbar-hero img {
+            height: 84px;
+            width: auto;
+            border-radius: 12px;
+            box-shadow: 0 8px 18px rgba(63, 80, 102, 0.22);
+        }
+
+        .teacher-topbar-title {
+            margin: 0;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #253245;
+        }
+
+        .teacher-topbar-sub {
+            margin-top: 4px;
+            color: #50627a;
+            font-size: 0.93rem;
+        }
+
+        .teacher-weather-card {
+            flex: 0 1 320px;
+            border-radius: 24px;
+            padding: 16px;
+            background: linear-gradient(145deg, #101b2d 0%, #1d3557 55%, #2d4f85 100%);
+            color: #f5f9ff;
+            box-shadow: 0 18px 30px rgba(16, 27, 45, 0.32);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .teacher-weather-card::after {
+            content: "";
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            right: -65px;
+            top: -70px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.22), rgba(255,255,255,0));
+        }
+
+        .teacher-weather-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .teacher-weather-date {
+            font-size: 0.84rem;
+            opacity: 0.9;
+            letter-spacing: 0.5px;
+        }
+
+        .teacher-weather-city {
+            margin-top: 3px;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .teacher-weather-temp {
+            font-size: 2rem;
+            font-weight: 900;
+            line-height: 1;
+            margin: 12px 0 6px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .teacher-weather-desc {
+            font-size: 0.9rem;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+
+        .teacher-weather-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.16);
+            display: grid;
+            place-items: center;
+            font-size: 1.4rem;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+        }
+
+        @media (max-width: 640px) {
+            .teacher-weather-card,
+            .teacher-topbar-hero {
+                flex-basis: 100%;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -46,6 +171,11 @@
               </a>
             {% endif %}
             <a href="{{ path('app_enseignant_classes') }}">
+             <a href="{{ path('app_forum_index_context', {'context': 'enseignant'}) }}">
+            <span>FO</span>
+            Forum
+          </a>
+            <a href="#">
                 <span>CL</span> Mes classes
             </a>
             <a href="{{ path('app_cours_index') }}">
@@ -59,12 +189,14 @@
                 <span>EX</span> Examens
             </a>
             <a href="{{ path('app_enseignant_evaluations') }}">
+            <a href="#">
                 <span>EV</span> Evaluations
             </a>
             <a href="{{ path('app_resultat_index') }}">
                 <span>RS</span> Resultats
             </a>
             <a href="{{ path('app_forum_index_context', {'context': 'enseignant'}) }}">
+            <a href="#">
                 <span>MS</span> Messages
             </a>
         </nav>
@@ -82,6 +214,46 @@
                     Bienvenue dans votre espace
                 </div>
             </div>
+        <header class="teacher-topbar-modern">
+            {% set meteoDesc = weather.description|default('Indisponible') %}
+            {% set meteoIcon = '☁' %}
+            {% if meteoDesc == 'Ciel degage' %}
+                {% set meteoIcon = '☀' %}
+            {% elseif meteoDesc in ['Pluie', 'Averses'] %}
+                {% set meteoIcon = '☂' %}
+            {% elseif meteoDesc in ['Orage'] %}
+                {% set meteoIcon = '⚡' %}
+            {% elseif meteoDesc in ['Neige'] %}
+                {% set meteoIcon = '❄' %}
+            {% endif %}
+
+            <div class="teacher-topbar-hero">
+                <img src="{{ asset('images/cours.jpg') }}" alt="Cours">
+                <div>
+                    <h1 class="teacher-topbar-title">Bienvenue dans votre espace enseignant</h1>
+                    <div class="teacher-topbar-sub">Suivez vos cours, vos chapitres et les stats en temps reel.</div>
+                </div>
+            </div>
+
+            {% if not (hideWeather|default(false)) %}
+                <div class="teacher-weather-card">
+                    <div class="teacher-weather-row">
+                        <div>
+                            <div class="teacher-weather-date">{{ todayDate|default("now"|date("d/m/Y")) }}</div>
+                            <div class="teacher-weather-city">{{ weather.city|default('Tunis') }}</div>
+                        </div>
+                        <div class="teacher-weather-icon">{{ meteoIcon }}</div>
+                    </div>
+                    <div class="teacher-weather-temp">
+                        {% if weather.temperature is defined and weather.temperature is not null %}
+                            {{ weather.temperature|round }} C
+                        {% else %}
+                            -- C
+                        {% endif %}
+                    </div>
+                    <div class="teacher-weather-desc">{{ meteoDesc }}</div>
+                </div>
+            {% endif %}
         </header>
 
         <div class="teacher-content">
