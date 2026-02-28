@@ -33,7 +33,6 @@ class Chapitre
     #[Assert\NotBlank(message: 'Le type de contenu est obligatoire.')]
     #[Assert\Choice(
         choices: ['texte', 'fichier', 'video', 'devoir', 'exercice_corrige'],
-        choices: ['texte', 'fichier',],
         message: 'Type de contenu invalide.'
     )]
     private ?string $typeContenu = null;

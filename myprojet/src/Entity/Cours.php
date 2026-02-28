@@ -59,10 +59,6 @@ private Collection $chapitres;
     #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: 'cours')]
     #[ORM\JoinColumn(nullable: true)]
     private ?Utilisateur $enseignant = null;
- #[ORM\ManyToMany(targetEntity: Student::class, inversedBy: 'cours')]
-    #[ORM\JoinTable(name: 'cours_student')]
-    private Collection $etudiants;
-
     public function __construct()
     {
         $this->chapitres = new ArrayCollection();

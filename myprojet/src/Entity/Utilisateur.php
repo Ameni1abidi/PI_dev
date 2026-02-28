@@ -8,13 +8,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\ArrayCollection;
-use App\Entity\Resultat;
-use App\Entity\Cours;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
@@ -31,11 +24,8 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 200)]
-    #[Assert\NotBlank(message: "Le nom est obligatoire")]
-    #[Assert\Length(
-        min: 3,
-        minMessage: "Le nom doit contenir au moins {{ limit }} caracteres"
-    )]
+    #[Assert\NotBlank(message: 'Le nom est obligatoire')]
+    #[Assert\Length(min: 3, minMessage: 'Le nom doit contenir au moins {{ limit }} caracteres')]
     private ?string $nom = null;
 
     #[ORM\Column(type: 'string', length: 255)]
@@ -43,7 +33,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 200)]
     #[Assert\NotBlank(message: "L'email est obligatoire")]
-    #[Assert\Email(message: "Veuillez saisir une adresse email valide")]
+    #[Assert\Email(message: 'Veuillez saisir une adresse email valide')]
     private ?string $email = null;
 
     #[ORM\Column(length: 30, nullable: true)]
@@ -91,6 +81,10 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: RessourceInteraction::class)]
     private Collection $ressourceInteractions;
+
+    /**
+     * @var Collection<int, Cours>
+     */
     #[ORM\OneToMany(mappedBy: 'enseignant', targetEntity: Cours::class)]
     private Collection $cours;
 
@@ -141,6 +135,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setTelephone(?string $telephone): self
     {
         $this->telephone = $telephone;
+
         return $this;
     }
 
@@ -173,7 +168,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         $role = $this->role ?? 'ROLE_USER';
         $roles = [$role];
 
-        // Keep backward compatibility between ROLE_STUDENT and ROLE_ETUDIANT.
         if ($role === 'ROLE_STUDENT') {
             $roles[] = 'ROLE_ETUDIANT';
         }
@@ -184,9 +178,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         $roles[] = 'ROLE_USER';
 
         return array_values(array_unique($roles));
-        return [$this->role ?? 'ROLE_USER'];
     }
 
+    /**
+     * @return Collection<int, Resultat>
+     */
     public function getResultats(): Collection
     {
         return $this->resultats;
@@ -213,6 +209,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @return Collection<int, RessourceLike>
+     */
     public function getRessourceLikes(): Collection
     {
         return $this->ressourceLikes;
@@ -223,19 +222,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         if (!$this->ressourceLikes->contains($ressourceLike)) {
             $this->ressourceLikes->add($ressourceLike);
             $ressourceLike->setUtilisateur($this);
-    /**
-     * @return Collection<int, Cours>
-     */
-    public function getCours(): Collection
-    {
-        return $this->cours;
-    }
-
-    public function addCours(Cours $cours): self
-    {
-        if (!$this->cours->contains($cours)) {
-            $this->cours->add($cours);
-            $cours->setEnseignant($this);
         }
 
         return $this;
@@ -252,6 +238,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @return Collection<int, RessourceFavori>
+     */
     public function getRessourceFavoris(): Collection
     {
         return $this->ressourceFavoris;
@@ -278,6 +267,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @return Collection<int, RessourceInteraction>
+     */
     public function getRessourceInteractions(): Collection
     {
         return $this->ressourceInteractions;
@@ -298,6 +290,30 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->ressourceInteractions->removeElement($ressourceInteraction)) {
             if ($ressourceInteraction->getUtilisateur() === $this) {
                 $ressourceInteraction->setUtilisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Cours>
+     */
+    public function getCours(): Collection
+    {
+        return $this->cours;
+    }
+
+    public function addCours(Cours $cours): self
+    {
+        if (!$this->cours->contains($cours)) {
+            $this->cours->add($cours);
+            $cours->setEnseignant($this);
+        }
+
+        return $this;
+    }
+
     public function removeCours(Cours $cours): self
     {
         if ($this->cours->removeElement($cours)) {
@@ -338,6 +354,10 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setParent(?self $parent): self
     {
         $this->parent = $parent;
+
+        return $this;
+    }
+
     public function getStatus(): string
     {
         return $this->status;
@@ -350,6 +370,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @return Collection<int, self>
+     */
     public function getEnfants(): Collection
     {
         return $this->enfants;
@@ -372,6 +395,10 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
                 $enfant->setParent(null);
             }
         }
+
+        return $this;
+    }
+
     public function isApproved(): bool
     {
         return $this->status === self::STATUS_APPROVED;

@@ -34,14 +34,6 @@
     {{ form_label(form.enseignant) }}
     {{ form_widget(form.enseignant, {'attr': {'class': 'form-select'}}) }}
     {{ form_errors(form.enseignant) }}
-    {{ form_label(form.coursId) }}
-    {{ form_widget(form.coursId, {'attr': {'class': 'form-control'}}) }}
-    {{ form_errors(form.coursId) }}
-  </div>
-  <div class="mb-3">
-    {{ form_label(form.enseignantId) }}
-    {{ form_widget(form.enseignantId, {'attr': {'class': 'form-control'}}) }}
-    {{ form_errors(form.enseignantId) }}
   </div>
   <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
 {{ form_end(form) }}

@@ -12,8 +12,6 @@ use App\Repository\RessourceLikeRepository;
 use App\Repository\RessourceQuizRepository;
 use App\Repository\RessourceRepository;
 use App\Service\RessourceQuizGeneratorService;
-use App\Form\CoursType;
-use App\Repository\CoursRepository;
 use App\Repository\StudentChapitreProgressRepository;
 use App\Repository\StudentRepository;
 use App\Repository\UtilisateurRepository;
@@ -36,43 +34,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 final class CoursController extends AbstractController
 {
     private ?bool $hasRessourceQuizTable = null;
-
-    #[Route('/cours', name: 'app_cours_index')]
-    public function index(Request $request, CoursRepository $coursRepo): Response
-    {
-    
-        $keyword = $request->query->get('search'); 
-
-        if ($keyword) {
-            $cours = $coursRepo->findByTitre($keyword);
-        } else {
-            $cours = $coursRepo->findAll();
-        }
-
-        return $this->render('cours/index.html.twig', [
-            'cours' => $cours,
-        ]);
-    }
-
-    #[Route('/new', name: 'app_cours_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $cour = new Cours();
-        $form = $this->createForm(CoursType::class, $cour);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($cour);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_cours_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('cours/new.html.twig', [
-            'cour' => $cour,
-            'form' => $form,
-        ]);
-    }
 
     public function __construct(private readonly WeatherService $weatherService)
     {
@@ -298,11 +259,6 @@ public function new(
         return $this->render('cours/edit.html.twig', [
             'cour' => $cour,
             'form' => $form,
-        ]);
-    }
-
-    #[Route('/{id}', name: 'app_cours_delete', methods: ['POST'])]
-            ...$this->buildTeacherLayoutData(),
         ]);
     }
 
@@ -548,6 +504,9 @@ public function delete(Request $request, Cours $cour, EntityManagerInterface $en
             'total' => $total,
             'note' => $note,
             'corrections' => $corrections,
+        ];
+    }
+
     private function buildTeacherLayoutData(): array
     {
         return [

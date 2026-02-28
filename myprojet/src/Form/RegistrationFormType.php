@@ -52,6 +52,13 @@ class RegistrationFormType extends AbstractType
                 'type' => PasswordType::class,
                 'mapped' => false,
                 'invalid_message' => 'Les deux mots de passe doivent etre identiques.',
+                'constraints' => [
+                    new NotBlank(message: 'Veuillez entrer un mot de passe'),
+                    new Length(
+                        min: 6,
+                        minMessage: 'Votre mot de passe doit contenir au moins {{ limit }} caracteres'
+                    ),
+                ],
                 'first_options' => [
                     'label' => 'Mot de passe',
                     'attr' => ['autocomplete' => 'new-password'],
@@ -59,17 +66,6 @@ class RegistrationFormType extends AbstractType
                 'second_options' => [
                     'label' => 'Confirmer le mot de passe',
                     'attr' => ['autocomplete' => 'new-password'],
-                ],
-            ->add('plainPassword', PasswordType::class, [
-                'label' => 'Mot de passe',
-                'mapped' => false,
-                'attr' => ['autocomplete' => 'new-password'],
-                'constraints' => [
-                    new NotBlank(message: 'Veuillez entrer un mot de passe'),
-                    new Length(
-                        min: 6,
-                        minMessage: 'Votre mot de passe doit contenir au moins {{ limit }} caracteres'
-                    ),
                 ],
             ])
             ->add('agreeTerms', CheckboxType::class, [

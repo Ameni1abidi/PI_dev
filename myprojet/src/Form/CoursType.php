@@ -6,7 +6,6 @@ use App\Entity\Cours;
 use App\Entity\Utilisateur;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -17,36 +16,35 @@ class CoursType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-       $builder
-    ->add('titre', TextType::class, [
-        'required' => false,
-    ])
-    ->add('description', TextType::class, [
-        'required' => false,
-    ])
-    ->add('niveau', TextType::class, [
-     ->add('badge', ChoiceType::class, [
-        'choices' => [
-            'Nouveau' => 'nouveau',
-            'Populaire' => 'populaire',
-            'À la une' => 'a_la_une'
-        ],
-        'required' => false,
-        'placeholder' => 'Choisir un badge'
-    ])
-     ->add('niveau', TextType::class, [
-        'required' => false,
-    ])
-    ->add('dateCreation', DateType::class, [
-        'widget' => 'single_text',
-        'required' => false,
-    ])
-    ->add('enseignant', EntityType::class, [
-        'class' => Utilisateur::class,
-        'choice_label' => 'nom',
-        'required' => false,
-        'placeholder' => 'Sélectionner un enseignant',
-    ]);
+        $builder
+            ->add('titre', TextType::class, [
+                'required' => false,
+            ])
+            ->add('description', TextType::class, [
+                'required' => false,
+            ])
+            ->add('badge', ChoiceType::class, [
+                'choices' => [
+                    'Nouveau' => 'nouveau',
+                    'Populaire' => 'populaire',
+                    'A la une' => 'a_la_une',
+                ],
+                'required' => false,
+                'placeholder' => 'Choisir un badge',
+            ])
+            ->add('niveau', TextType::class, [
+                'required' => false,
+            ])
+            ->add('dateCreation', DateType::class, [
+                'widget' => 'single_text',
+                'required' => false,
+            ])
+            ->add('enseignant', EntityType::class, [
+                'class' => Utilisateur::class,
+                'choice_label' => 'nom',
+                'required' => false,
+                'placeholder' => 'Selectionner un enseignant',
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

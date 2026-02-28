@@ -6,12 +6,21 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class CloudinaryStorageService
 {
+    private readonly string $cloudUrl;
+    private readonly string $cloudName;
+    private readonly string $apiKey;
+    private readonly string $apiSecret;
+
     public function __construct(
-        private readonly string $cloudUrl,
-        private readonly string $cloudName,
-        private readonly string $apiKey,
-        private readonly string $apiSecret
+        ?string $cloudUrl = '',
+        ?string $cloudName = '',
+        ?string $apiKey = '',
+        ?string $apiSecret = ''
     ) {
+        $this->cloudUrl = (string) ($cloudUrl ?? '');
+        $this->cloudName = (string) ($cloudName ?? '');
+        $this->apiKey = (string) ($apiKey ?? '');
+        $this->apiSecret = (string) ($apiSecret ?? '');
     }
 
     /**

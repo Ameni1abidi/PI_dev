@@ -16,11 +16,6 @@ use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Entity\Ressource;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RessourceType extends AbstractType
 {
@@ -51,9 +46,7 @@ class RessourceType extends AbstractType
                 'mapped' => false,
                 'required' => false,
                 'constraints' => [
-                    new Assert\File(
-                        maxSize: '100M'
-                    ),
+                    new Assert\File(maxSize: '100M'),
                 ],
             ])
             ->add('audioUrl', UrlType::class, [
@@ -71,9 +64,7 @@ class RessourceType extends AbstractType
                 'mapped' => false,
                 'required' => false,
                 'constraints' => [
-                    new Assert\File(
-                        maxSize: '50M'
-                    ),
+                    new Assert\File(maxSize: '50M'),
                 ],
             ])
             ->add('lienUrl', UrlType::class, [
@@ -91,9 +82,7 @@ class RessourceType extends AbstractType
                 'mapped' => false,
                 'required' => false,
                 'constraints' => [
-                    new Assert\File(
-                        maxSize: '5M'
-                    ),
+                    new Assert\File(maxSize: '5M'),
                 ],
             ])
             ->add('documentFile', FileType::class, [
@@ -101,9 +90,7 @@ class RessourceType extends AbstractType
                 'required' => false,
                 'label' => 'Document PDF',
                 'constraints' => [
-                    new Assert\File(
-                        maxSize: '20M'
-                    ),
+                    new Assert\File(maxSize: '20M'),
                 ],
             ])
             ->add('categorie', EntityType::class, [
@@ -142,14 +129,6 @@ class RessourceType extends AbstractType
                 'placeholder' => 'Choisir un chapitre',
                 'required' => true,
             ]);
-            ->add('titre')
-            ->add('type')
-            ->add('contenu')
-            ->add('categorie', EntityType::class, [
-                'class' => categorie::class,
-                'choice_label' => 'id',
-            ])
-        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -6,8 +6,6 @@ use App\Repository\ResultatRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Entity\Utilisateur;
-
 
 #[ORM\Entity(repositoryClass: ResultatRepository::class)]
 class Resultat
@@ -36,34 +34,7 @@ class Resultat
     #[Assert\NotNull(message: 'L eleve est obligatoire.')]
     private ?Utilisateur $etudiant = null;
 
-    #[Assert\Range(
-        min: 0,
-        max: 20,
-        notInRangeMessage: 'La note doit être comprise entre {{ min }} et {{ max }}.'
-    )]
-    private ?string $note = null;
-
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Assert\Length(
-        max: 1000,
-        maxMessage: 'L’appréciation ne doit pas dépasser {{ limit }} caractères.'
-    )]
-    private ?string $appreciation = null;
-
-    #[ORM\Column]
-    #[Assert\NotNull(message: 'L’élève est obligatoire.')]
-    #[Assert\Positive(message: 'L’élève doit être un identifiant positif.')]
-    private ?int $eleveId = null;
-
-    #[ORM\ManyToOne(inversedBy: 'resultats')]
-    #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotNull(message: 'L’examen est obligatoire.')]
-    private ?Examen $examen = null;
-
-    #[ORM\ManyToOne(inversedBy: 'resultats')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $etudiant = null;
-
+    private ?int $legacyEleveId = null;
 
     public function getId(): ?int
     {
@@ -96,12 +67,12 @@ class Resultat
 
     public function getEleveId(): ?int
     {
-        return $this->eleveId;
+        return $this->etudiant?->getId() ?? $this->legacyEleveId;
     }
 
     public function setEleveId(int $eleveId): static
     {
-        $this->eleveId = $eleveId;
+        $this->legacyEleveId = $eleveId;
 
         return $this;
     }
@@ -129,16 +100,4 @@ class Resultat
 
         return $this;
     }
-    public function getEtudiant(): ?Utilisateur
-    {
-    return $this->etudiant;
-    }
-
-    public function setEtudiant(?Utilisateur $etudiant): self
-{
-    $this->etudiant = $etudiant;
-    $this->eleveId = $etudiant ? $etudiant->getId() : null;
-    return $this;
-}
-
 }

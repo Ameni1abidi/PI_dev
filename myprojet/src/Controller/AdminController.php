@@ -10,8 +10,6 @@ use App\Service\AdminCopilotService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -157,10 +155,6 @@ final class AdminController extends AbstractController
         }
 
         return (int) round((($current - $previous) / $previous) * 100);
-    #[Route('/admin', name: 'app_admin', methods: ['GET'])]
-    public function index(): Response
-    {
-        return $this->render('admin/index.html.twig');
     }
 
     #[Route('/admin/statistiques', name: 'app_admin_stats', methods: ['GET'])]

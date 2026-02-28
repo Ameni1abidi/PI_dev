@@ -46,3 +46,9 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    App\Service\CloudinaryStorageService:
+        arguments:
+            $cloudUrl: '%env(default::CLOUDINARY_URL)%'
+            $cloudName: '%env(default::CLOUDINARY_CLOUD_NAME)%'
+            $apiKey: '%env(default::CLOUDINARY_API_KEY)%'
+            $apiSecret: '%env(default::CLOUDINARY_API_SECRET)%'

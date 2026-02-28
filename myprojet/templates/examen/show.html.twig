@@ -1,11 +1,12 @@
 {% extends 'crud_base.html.twig' %}
 
 {% block title %}Detail examen{% endblock %}
-{% block title %}Détail examen{% endblock %}
 
 {% block body %}
   {% set canSendReminder = examen.dateExamen and ('now'|date('U') <= examen.dateExamen|date('U')) %}
+
   <h1 class="h3 mb-4">Examen #{{ examen.id }}</h1>
+
   <table class="table table-bordered bg-white">
     <tbody>
       <tr><th>Titre</th><td>{{ examen.titre }}</td></tr>
@@ -22,11 +23,6 @@
       <tr><th>Duree</th><td>{{ examen.duree }}</td></tr>
       <tr><th>Cours</th><td>{{ examen.cours ? examen.cours.titre ~ ' (#' ~ examen.cours.id ~ ')' : '' }}</td></tr>
       <tr><th>Enseignant</th><td>{{ examen.enseignant ? examen.enseignant.nom ~ ' (#' ~ examen.enseignant.id ~ ')' : '' }}</td></tr>
-      <tr><th>Type</th><td>{{ examen.type }}</td></tr>
-      <tr><th>Date</th><td>{{ examen.dateExamen ? examen.dateExamen|date('Y-m-d') : '' }}</td></tr>
-      <tr><th>Durée</th><td>{{ examen.duree }}</td></tr>
-      <tr><th>Cours ID</th><td>{{ examen.coursId }}</td></tr>
-      <tr><th>Enseignant ID</th><td>{{ examen.enseignantId }}</td></tr>
     </tbody>
   </table>
 
@@ -50,8 +46,6 @@
   <div class="d-flex align-items-center gap-2">
     <a class="btn btn-link" href="{{ path('app_examen_index') }}">Retour a la liste</a>
     <a class="btn btn-outline-primary" href="{{ path('app_examen_edit', {'id': examen.id}) }}">Editer</a>
-    <a class="btn btn-link" href="{{ path('app_examen_index') }}">Retour à la liste</a>
-    <a class="btn btn-outline-primary" href="{{ path('app_examen_edit', {'id': examen.id}) }}">Éditer</a>
     {{ include('examen/_delete_form.html.twig', {examen: examen}) }}
   </div>
 {% endblock %}
@@ -97,14 +91,12 @@
               var baseMessage = result.body && result.body.result && result.body.result.message
                 ? result.body.result.message
                 : (result.body && result.body.message ? result.body.message : 'Reponse recue.');
-                : 'Reponse recue.';
               var count = result.body && typeof result.body.recipients_count === 'number'
                 ? result.body.recipients_count
                 : 0;
               var finalMessage = baseMessage + ' Destinataires: ' + count + '.';
               var isSuccess = typeof sent === 'boolean' ? sent : (result.status >= 200 && result.status < 300);
               setOutput(finalMessage, isSuccess ? 'success' : 'danger');
-              setOutput(finalMessage, sent ? 'success' : 'danger');
             })
             .catch(function (error) {
               setOutput('Erreur: ' + String(error), 'danger');
@@ -117,4 +109,3 @@
     })();
   </script>
 {% endblock %}
-
