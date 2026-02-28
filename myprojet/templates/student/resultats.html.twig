@@ -5,6 +5,13 @@
 {% block body %}
 <div style="padding:25px; font-family:'Manrope', sans-serif; background:linear-gradient(135deg,#fdfbfb,#ebedee); min-height:100vh;">
   <h2 style="margin-bottom:20px; font-weight:800; font-size:1.7rem; color:#2c2c2c;">Mes resultats</h2>
+  {% if app.user %}
+    <div style="margin-bottom:16px;">
+      <a href="{{ path('app_resultat_bulletin_pdf', {'id': app.user.id}) }}" target="_blank" style="display:inline-block; text-decoration:none; padding:8px 14px; border-radius:10px; background:#dc2626; color:#ffffff; font-weight:700; font-size:0.86rem;">
+        Bulletin PDF
+      </a>
+    </div>
+  {% endif %}
 
   {% if resultats is empty %}
     <div style="background:#fff; border-radius:16px; padding:20px; color:#6b7280; box-shadow:0 10px 24px rgba(20,24,40,0.06);">

@@ -88,12 +88,13 @@
               var sent = result.body && result.body.result && result.body.result.sent;
               var baseMessage = result.body && result.body.result && result.body.result.message
                 ? result.body.result.message
-                : 'Reponse recue.';
+                : (result.body && result.body.message ? result.body.message : 'Reponse recue.');
               var count = result.body && typeof result.body.recipients_count === 'number'
                 ? result.body.recipients_count
                 : 0;
               var finalMessage = baseMessage + ' Destinataires: ' + count + '.';
-              setOutput(finalMessage, sent ? 'success' : 'danger');
+              var isSuccess = typeof sent === 'boolean' ? sent : (result.status >= 200 && result.status < 300);
+              setOutput(finalMessage, isSuccess ? 'success' : 'danger');
             })
             .catch(function (error) {
               setOutput('Erreur: ' + String(error), 'danger');
