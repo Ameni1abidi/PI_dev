@@ -40,13 +40,25 @@
             </div>
 
             <div class="mb-3">
-                {{ form_label(registrationForm.plainPassword, 'Mot de passe') }}
-                {{ form_widget(registrationForm.plainPassword, { attr: { class: 'form-control', placeholder: 'Entrez votre mot de passe' } }) }}
-                {{ form_errors(registrationForm.plainPassword) }}
+                {{ form_label(registrationForm.plainPassword.first, 'Mot de passe') }}
+                {{ form_widget(registrationForm.plainPassword.first, { attr: { class: 'form-control js-register-password' } }) }}
+                {{ form_errors(registrationForm.plainPassword.first) }}
             </div>
 
             <div class="mb-3">
-                {{ form_label(registrationForm.role, 'Role') }}
+                {{ form_label(registrationForm.plainPassword.second, 'Confirmer le mot de passe') }}
+                {{ form_widget(registrationForm.plainPassword.second, { attr: { class: 'form-control js-register-password' } }) }}
+                {{ form_errors(registrationForm.plainPassword.second) }}
+                {{ form_errors(registrationForm.plainPassword) }}
+            </div>
+
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="toggle-register-passwords">
+                <label class="form-check-label" for="toggle-register-passwords">Afficher les mots de passe</label>
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(registrationForm.role, 'Rôle') }}
                 {{ form_widget(registrationForm.role, { attr: { class: 'form-control' } }) }}
                 {{ form_errors(registrationForm.role) }}
             </div>
@@ -57,8 +69,38 @@
                 {{ form_errors(registrationForm.agreeTerms) }}
             </div>
 
+            {% if recaptcha_enabled is defined and recaptcha_enabled and recaptcha_site_key is defined and recaptcha_site_key %}
+                <div class="mb-3">
+                    <div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div>
+                </div>
+            {% endif %}
+
             <button type="submit" class="btn btn-lg w-100 btn-register">S'inscrire</button>
         {{ form_end(registrationForm) }}
     </div>
 </div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+  (function () {
+    var toggle = document.getElementById('toggle-register-passwords');
+    if (!toggle) {
+      return;
+    }
+
+    toggle.addEventListener('change', function () {
+      var fields = document.querySelectorAll('.js-register-password');
+      var type = toggle.checked ? 'text' : 'password';
+
+      fields.forEach(function (field) {
+        field.type = type;
+      });
+    });
+  })();
+</script>
+{% if recaptcha_enabled is defined and recaptcha_enabled %}
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+{% endif %}
 {% endblock %}

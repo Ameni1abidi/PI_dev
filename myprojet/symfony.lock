@@ -1,4 +1,7 @@
 {
+    "cmen/google-charts-bundle": {
+        "version": "7.1.0"
+    },
     "doctrine/deprecations": {
         "version": "1.1",
         "recipe": {
@@ -34,6 +37,24 @@
             "./config/packages/doctrine_migrations.yaml",
             "./migrations/.gitignore"
         ]
+    },
+    "karser/karser-recaptcha3-bundle": {
+        "version": "0.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "0.1",
+            "ref": "c51ce07c10331d506762efe25b6f5843c1a5ea17"
+        }
+    },
+    "knpuniversity/oauth2-client-bundle": {
+        "version": "2.20",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "1.20",
+            "ref": "1ff300d8c030f55c99219cc55050b97a695af3f6"
+        }
     },
     "phpunit/phpunit": {
         "version": "12.5",
@@ -319,8 +340,29 @@
             "./config/packages/messenger.yaml"
         ]
     },
+    "symfonycasts/reset-password-bundle": {
+        "version": "1.24",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "1.0",
+            "ref": "97c1627c0384534997ae1047b93be517ca16de43"
+        },
+        "files": [
+            "./config/packages/reset_password.yaml"
+        ]
+    },
     "symfonycasts/verify-email-bundle": {
         "version": "v1.18.0"
+    },
+    "tattali/calendar-bundle": {
+        "version": "8.2",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "8.1",
+            "ref": "5cd0d27ab839ae430c3ae78df7534fa492b713f5"
+        }
     },
     "twig/extra-bundle": {
         "version": "v3.23.0"

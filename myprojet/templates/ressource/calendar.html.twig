@@ -1,0 +1,102 @@
+{% extends 'enseignant/dashboard_base.html.twig' %}
+
+{% block title %}Calendrier des ressources{% endblock %}
+
+{% block body %}
+<div style="padding:20px; background:#f8fafc; border-radius:16px;">
+  <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:14px; flex-wrap:wrap;">
+    <div>
+      <h2 style="margin:0; color:#0f172a;">Calendrier des ressources</h2>
+      <div style="margin-top:4px; color:#475569;">
+        {% if chapitre is not null %}
+          Chapitre: {{ chapitre.titre }} | Cours: {{ cours ? cours.titre : '' }}
+        {% else %}
+          Vue globale: toutes les ressources planifiees
+        {% endif %}
+      </div>
+    </div>
+    <div style="display:flex; gap:8px;">
+      <a href="{{ path('app_ressource_dashboard', chapitre_id is defined and chapitre_id > 0 ? {'chapitre_id': chapitre_id} : {}) }}" style="padding:8px 12px; background:#e2e8f0; border-radius:999px; text-decoration:none; color:#0f172a; font-weight:700;">Dashboard</a>
+      <a href="{{ path('app_ressource_index', chapitre_id is defined and chapitre_id > 0 ? {'chapitre_id': chapitre_id} : {}) }}" style="padding:8px 12px; background:#dbeafe; border-radius:999px; text-decoration:none; color:#1e3a8a; font-weight:700;">Retour ressources</a>
+    </div>
+  </div>
+
+  <div style="margin-bottom:12px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+    <label for="category-filter" style="font-weight:700; color:#334155;">Filtrer par categorie:</label>
+    <select id="category-filter" style="padding:8px; border-radius:8px; border:1px solid #cbd5e1;">
+      <option value="">Toutes</option>
+      <option value="video">Video</option>
+      <option value="audio">Audio</option>
+      <option value="image">Image</option>
+      <option value="lien">Lien</option>
+      <option value="pdf">PDF</option>
+    </select>
+  </div>
+
+  <div id="calendar-holder" style="background:#fff; border-radius:14px; padding:10px; border:1px solid #e2e8f0;"></div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const filter = document.getElementById('category-filter');
+      const csrfToken = '{{ csrf_token('move_ressource') }}';
+      const calendar = new FullCalendar.Calendar(document.getElementById('calendar-holder'), {
+        initialView: 'dayGridMonth',
+        locale: 'fr',
+        editable: {{ is_teacher ? 'true' : 'false' }},
+        eventSources: [{
+          url: '{{ path('fc_load_events') }}',
+          method: 'POST',
+          extraParams: function () {
+            return {
+              filters: JSON.stringify({
+                chapitreId: {{ chapitre_id is defined ? chapitre_id : 0 }},
+                categorie: filter ? filter.value : ''
+              })
+            };
+          }
+        }],
+        eventClick: function(info) {
+          const p = info.event.extendedProps || {};
+          alert(
+            info.event.title +
+            '\nCategorie: ' + (p.categorie || '-') +
+            '\nScore: ' + (p.score ?? 0) +
+            '\nLikes: ' + (p.likes ?? 0) +
+            '\nFavoris: ' + (p.favoris ?? 0) +
+            '\nVues: ' + (p.vues ?? 0) +
+            '\nBadge: ' + (p.badge || '-')
+          );
+        },
+        eventDrop: function(info) {
+          fetch('{{ path('app_ressource_calendar_move', {'id': 0}) }}'.replace('/0/move', '/' + info.event.id + '/move'), {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+              _token: csrfToken,
+              start: info.event.start ? info.event.start.toISOString() : null
+            })
+          }).then(function (response) {
+            if (!response.ok) {
+              info.revert();
+            }
+          }).catch(function () {
+            info.revert();
+          });
+        }
+      });
+
+      if (filter) {
+        filter.addEventListener('change', function() {
+          calendar.refetchEvents();
+        });
+      }
+
+      calendar.render();
+    });
+  </script>
+{% endblock %}

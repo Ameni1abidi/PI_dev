@@ -27,8 +27,8 @@ class Categorie
         maxMessage: 'Le nom ne peut pas depasser {{ limit }} caracteres.'
     )]
     #[Assert\Choice(
-        choices: ['video', 'audio', 'lien', 'image'],
-        message: 'La categorie doit etre video, audio, lien ou image.'
+        choices: ['video', 'audio', 'lien', 'image', 'pdf'],
+        message: 'La categorie doit etre video, audio, lien, image ou pdf.'
     )]
     private ?string $nom = null;
 

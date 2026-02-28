@@ -13,6 +13,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
@@ -47,10 +48,18 @@ class RegistrationFormType extends AbstractType
                     ),
                 ],
             ])
-            ->add('plainPassword', PasswordType::class, [
-                'label' => 'Mot de passe',
+            ->add('plainPassword', RepeatedType::class, [
+                'type' => PasswordType::class,
                 'mapped' => false,
-                'attr' => ['autocomplete' => 'new-password'],
+                'invalid_message' => 'Les deux mots de passe doivent etre identiques.',
+                'first_options' => [
+                    'label' => 'Mot de passe',
+                    'attr' => ['autocomplete' => 'new-password'],
+                ],
+                'second_options' => [
+                    'label' => 'Confirmer le mot de passe',
+                    'attr' => ['autocomplete' => 'new-password'],
+                ],
                 'constraints' => [
                     new NotBlank(message: 'Veuillez entrer un mot de passe'),
                     new Length(

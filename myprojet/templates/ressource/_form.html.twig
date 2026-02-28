@@ -5,6 +5,10 @@
     {{ form_widget(form.titre) }}
     {{ form_errors(form.titre) }}
 
+    {{ form_label(form.availableAt) }}
+    {{ form_widget(form.availableAt) }}
+    {{ form_errors(form.availableAt) }}
+
     {{ form_label(form.categorie) }}
     {{ form_widget(form.categorie) }}
     {{ form_errors(form.categorie) }}
@@ -45,6 +49,14 @@
         {{ form_errors(form.imageFile) }}
     </div>
 
+    <div id="ressource-pdf-wrapper" style="display: none;">
+        {{ form_label(form.documentFile) }}
+        {{ form_widget(form.documentFile, {'attr': {'accept': 'application/pdf,.pdf', 'style': 'display:none;'}}) }}
+        <button type="button" id="pdf-picker-button" class="btn btn-outline">Choisir un PDF</button>
+        <div id="pdf-selected-name" style="margin-top: 8px;">Aucun PDF n'a ete selectionne</div>
+        {{ form_errors(form.documentFile) }}
+    </div>
+
     {{ form_label(form.chapitre) }}
     {{ form_widget(form.chapitre) }}
     {{ form_errors(form.chapitre) }}
@@ -59,6 +71,7 @@
         const audioWrapper = document.getElementById('ressource-audio-wrapper');
         const lienWrapper = document.getElementById('ressource-lien-wrapper');
         const imageWrapper = document.getElementById('ressource-image-wrapper');
+        const pdfWrapper = document.getElementById('ressource-pdf-wrapper');
 
         function getSelectedCategorieKind() {
             if (!categorieField) {
@@ -76,6 +89,7 @@
             audioWrapper.style.display = categorieKind === 'audio' ? '' : 'none';
             lienWrapper.style.display = categorieKind === 'lien' ? '' : 'none';
             imageWrapper.style.display = categorieKind === 'image' ? '' : 'none';
+            pdfWrapper.style.display = categorieKind === 'pdf' ? '' : 'none';
         }
 
         function initPicker(inputId, buttonId, labelId, defaultText) {
@@ -123,6 +137,12 @@
             'image-picker-button',
             'image-selected-name',
             "Aucune image n'a ete selectionnee"
+        );
+        initPicker(
+            '{{ form.documentFile.vars.id }}',
+            'pdf-picker-button',
+            'pdf-selected-name',
+            "Aucun PDF n'a ete selectionne"
         );
     })();
 </script>

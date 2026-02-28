@@ -1,11 +1,11 @@
-<h1>Hi! Please confirm your email!</h1>
+<h1>Confirmez votre adresse email</h1>
+
+<p>Bienvenue sur Eduflex.</p>
 
 <p>
-    Please confirm your email address by clicking the following link: <br><br>
-    <a href="{{ signedUrl|raw }}">Confirm my Email</a>.
-    This link will expire in {{ expiresAtMessageKey|trans(expiresAtMessageData, 'VerifyEmailBundle') }}.
-</p>
-
-<p>
-    Cheers!
+    Cliquez sur ce lien pour activer votre compte :
+    <br><br>
+    <a href="{{ signedUrl|raw }}">Confirmer mon compte</a>
+    <br><br>
+    Ce lien expire dans {{ expiresAtMessageKey|trans(expiresAtMessageData, 'VerifyEmailBundle') }}.
 </p>
