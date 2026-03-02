@@ -62,6 +62,9 @@ class ExamenType extends AbstractType
                 'widget' => 'single_text',
                 'required' => false,
                 'html5' => true,
+                'attr' => [
+                    'min' => (new \DateTimeImmutable('today'))->format('Y-m-d'),
+                ],
             ])
             ->add('duree', IntegerType::class, [
                 'label' => 'Duree (minutes)',

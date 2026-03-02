@@ -1,0 +1,24 @@
+includes:
+    - phpstan.evaluation-baseline.neon
+
+parameters:
+    level: 6
+    paths:
+        - src/Controller/ExamenController.php
+        - src/Controller/EvaluationNotificationController.php
+        - src/Service/EvaluationNotificationService.php
+        - src/Service/ExamenQualityAnalyzerService.php
+        - src/Service/ExamenManager.php
+        - src/Service/ResultatManager.php
+        - src/Command/SendEvaluationRemindersCommand.php
+        - src/Entity/Examen.php
+        - src/Entity/Resultat.php
+        - src/Form/ExamenType.php
+        - src/Repository/ExamenRepository.php
+        - src/Repository/ResultatRepository.php
+        - src/Repository/UtilisateurRepository.php
+    bootstrapFiles:
+        - vendor/autoload.php
+    tmpDir: var/cache/phpstan-evaluation
+    treatPhpDocTypesAsCertain: false
+

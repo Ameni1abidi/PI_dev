@@ -5,10 +5,14 @@ namespace App\Controller;
 use App\Entity\Examen;
 use App\Form\ExamenType;
 use App\Repository\ExamenRepository;
+use App\Repository\UtilisateurRepository;
+use App\Service\ExamenQualityAnalyzerService;
+use App\Service\EvaluationNotificationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -23,13 +27,18 @@ final class ExamenController extends AbstractController
     public function index(ExamenRepository $examenRepository): Response
     {
         return $this->render('examen/index.html.twig', [
-            'examens' => $examenRepository->findAll(),
             'examens' => $examenRepository->findAllWithExistingRelations(),
         ]);
     }
 
     #[Route('/new', name: 'app_examen_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
+    public function new(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        SluggerInterface $slugger,
+        UtilisateurRepository $utilisateurRepository,
+        EvaluationNotificationService $notificationService
+    ): Response
     {
         $examen = new Examen();
         $form = $this->createForm(ExamenType::class, $examen);
@@ -68,6 +77,20 @@ final class ExamenController extends AbstractController
             $entityManager->persist($examen);
             $entityManager->flush();
 
+            $phones = $utilisateurRepository->findPhonesByRoles(['ROLE_ETUDIANT', 'ROLE_STUDENT', 'ROLE_PARENT']);
+            $notificationService->sendEvaluationNotification(
+                $phones,
+                sprintf('Nouvelle evaluation: %s', (string) $examen->getTitre()),
+                sprintf(
+                    "Une nouvelle evaluation a ete planifiee.\n\nTitre: %s\nType: %s\nDate: %s\nDuree: %d minutes\nCours: %s",
+                    (string) $examen->getTitre(),
+                    (string) $examen->getType(),
+                    $examen->getDateExamen()?->format('d/m/Y') ?? 'N/A',
+                    (int) ($examen->getDuree() ?? 0),
+                    $examen->getCours()?->getTitre() ?? 'N/A'
+                )
+            );
+
             return $this->redirectToRoute('app_examen_index');
         }
 
@@ -82,6 +105,17 @@ final class ExamenController extends AbstractController
     {
         return $this->render('examen/show.html.twig', [
             'examen' => $examen,
+        ]);
+    }
+
+    #[Route('/{id}/ai-quality', name: 'app_examen_ai_quality', methods: ['POST'])]
+    public function analyzeQuality(Examen $examen, ExamenQualityAnalyzerService $analyzer): JsonResponse
+    {
+        $result = $analyzer->analyze($examen);
+
+        return $this->json([
+            'analysis' => $result,
+            'examen_id' => $examen->getId(),
         ]);
     }
 

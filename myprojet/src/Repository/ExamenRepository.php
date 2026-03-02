@@ -33,4 +33,19 @@ class ExamenRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @return Examen[]
+     */
+    public function findByExactDate(\DateTimeInterface $date): array
+    {
+        return $this->createQueryBuilder('e')
+            ->innerJoin('e.cours', 'c')
+            ->addSelect('c')
+            ->andWhere('e.dateExamen = :targetDate')
+            ->setParameter('targetDate', $date->format('Y-m-d'))
+            ->orderBy('e.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

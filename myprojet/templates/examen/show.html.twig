@@ -43,6 +43,18 @@
     </div>
   </div>
 
+  <div class="card mb-3">
+    <div class="card-header">IA Qualite d evaluation</div>
+    <div class="card-body">
+      <p class="text-muted mb-3">Analyse automatique: clarte, difficulte, couverture et recommandations.</p>
+      <button type="button" class="btn btn-dark" id="btn-ai-quality">Analyser la qualite</button>
+      <div id="ai-quality-output" class="alert alert-secondary mt-3 mb-0" role="alert">
+        Aucune analyse lancee.
+      </div>
+      <div id="ai-quality-details" class="mt-3"></div>
+    </div>
+  </div>
+
   <div class="d-flex align-items-center gap-2">
     <a class="btn btn-link" href="{{ path('app_examen_index') }}">Retour a la liste</a>
     <a class="btn btn-outline-primary" href="{{ path('app_examen_edit', {'id': examen.id}) }}">Editer</a>
@@ -57,15 +69,36 @@
       var routes = {
         created: "{{ path('app_eval_notify_created', {'id': examen.id}) }}",
         reminder: "{{ path('app_eval_notify_reminder', {'id': examen.id}) }}",
-        results: "{{ path('app_eval_notify_results', {'id': examen.id}) }}"
+        results: "{{ path('app_eval_notify_results', {'id': examen.id}) }}",
+        aiQuality: "{{ path('app_examen_ai_quality', {'id': examen.id}) }}"
       };
 
       var output = document.getElementById('notify-output');
       var buttons = document.querySelectorAll('[data-notify]');
+      var aiButton = document.getElementById('btn-ai-quality');
+      var aiOutput = document.getElementById('ai-quality-output');
+      var aiDetails = document.getElementById('ai-quality-details');
 
       function setOutput(message, level) {
         output.className = 'alert mt-3 mb-0 alert-' + level;
         output.textContent = message;
+      }
+
+      function setAiOutput(message, level) {
+        aiOutput.className = 'alert mt-3 mb-0 alert-' + level;
+        aiOutput.textContent = message;
+      }
+
+      function renderAiList(title, items, cssClass) {
+        if (!items || !items.length) {
+          return '';
+        }
+        var html = '<div class="mt-2"><strong>' + title + '</strong><ul class="mb-0 mt-1">';
+        items.forEach(function (item) {
+          html += '<li class="' + cssClass + '">' + item + '</li>';
+        });
+        html += '</ul></div>';
+        return html;
       }
 
       buttons.forEach(function (button) {
@@ -106,6 +139,59 @@
             });
         });
       });
+
+      if (aiButton) {
+        aiButton.addEventListener('click', function () {
+          aiButton.disabled = true;
+          aiDetails.innerHTML = '';
+          setAiOutput('Analyse IA en cours...', 'secondary');
+
+          fetch(routes.aiQuality, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({})
+          })
+            .then(function (response) {
+              return response.json().then(function (body) {
+                return { status: response.status, body: body };
+              });
+            })
+            .then(function (result) {
+              var analysis = result.body && result.body.analysis ? result.body.analysis : null;
+              if (!analysis) {
+                setAiOutput('Reponse IA invalide.', 'danger');
+                return;
+              }
+
+              var score = typeof analysis.global_score === 'number' ? analysis.global_score : 0;
+              var verdict = analysis.verdict ? analysis.verdict : 'Analyse terminee';
+              var source = analysis.source ? analysis.source : 'fallback';
+              var level = score >= 75 ? 'success' : (score >= 60 ? 'warning' : 'danger');
+              setAiOutput('Score global: ' + score + '/100 | ' + verdict + ' | Source: ' + source, level);
+
+              var dimensions = analysis.dimensions || {};
+              var clarity = dimensions.clarity || {};
+              var difficulty = dimensions.difficulty || {};
+              var coverage = dimensions.coverage || {};
+
+              var detailsHtml = '<div class="small">';
+              detailsHtml += '<div><strong>Clarte:</strong> ' + (clarity.score || 0) + '/100 - ' + (clarity.comment || '') + '</div>';
+              detailsHtml += '<div><strong>Difficulte:</strong> ' + (difficulty.score || 0) + '/100 - ' + (difficulty.comment || '') + '</div>';
+              detailsHtml += '<div><strong>Couverture:</strong> ' + (coverage.score || 0) + '/100 - ' + (coverage.comment || '') + '</div>';
+              detailsHtml += renderAiList('Risques', analysis.risks || [], 'text-danger');
+              detailsHtml += renderAiList('Recommandations', analysis.recommendations || [], 'text-success');
+              detailsHtml += '</div>';
+
+              aiDetails.innerHTML = detailsHtml;
+            })
+            .catch(function (error) {
+              setAiOutput('Erreur analyse IA: ' + String(error), 'danger');
+            })
+            .finally(function () {
+              aiButton.disabled = false;
+            });
+        });
+      }
     })();
   </script>
 {% endblock %}

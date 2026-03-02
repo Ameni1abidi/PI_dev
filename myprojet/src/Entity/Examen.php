@@ -32,6 +32,10 @@ class Examen
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Assert\NotNull(message: 'La date de l examen est obligatoire.')]
+    #[Assert\GreaterThanOrEqual(
+        'today',
+        message: 'La date de l examen doit etre aujourd hui ou une date future.'
+    )]
     private ?\DateTimeInterface $dateExamen = null;
 
     #[ORM\Column]

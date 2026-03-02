@@ -93,7 +93,6 @@ final class EvaluationNotificationController extends AbstractController
         $phones = array_values(array_unique(array_merge($etudiantPhones, $parentPhones)));
         if ($phones === []) {
             $phones = $utilisateurRepository->findPhonesByRoles(['ROLE_ETUDIANT', 'ROLE_STUDENT', 'ROLE_PARENT']);
-            $phones = $utilisateurRepository->findPhonesByRoles(['ROLE_ETUDIANT', 'ROLE_STUDENT']);
         }
 
         $result = $this->notificationService->sendEvaluationNotification(
@@ -123,7 +122,7 @@ final class EvaluationNotificationController extends AbstractController
             ], 401);
         }
 
-        $roles = method_exists($user, 'getRoles') ? (array) $user->getRoles() : [];
+        $roles = (array) $user->getRoles();
         if (
             !in_array('ROLE_PROF', $roles, true)
             && !in_array('ROLE_ENSEIGNANT', $roles, true)
