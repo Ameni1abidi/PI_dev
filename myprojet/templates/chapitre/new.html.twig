@@ -43,12 +43,14 @@
             {{ form_errors(form.typeContenu) }}
         </div>
 
-        {# Contenu texte #}
+        {# Contenu texte (present seulement si ajoute dans ChapitreType) #}
+        {% if form.contenuTexte is defined %}
         <div style="margin-bottom:15px;">
             {{ form_label(form.contenuTexte, null, {'label_attr': {'style': 'font-weight:600; color:#555; font-size:0.9rem; margin-bottom:4px; display:block;'}}) }}
             {{ form_widget(form.contenuTexte, {'attr': {'class': 'form-control', 'rows':4, 'style':'width:100%; padding:8px 10px; border-radius:5px; border:1px solid #ccc; font-size:0.95rem;'}}) }}
             {{ form_errors(form.contenuTexte) }}
         </div>
+        {% endif %}
 
         {# Contenu fichier #}
         <div style="margin-bottom:15px;">

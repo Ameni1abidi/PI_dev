@@ -12,12 +12,6 @@ use App\Service\TranslationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use App\Entity\Forum;
-use App\Entity\Commentaire;
-use App\Form\ForumType;
-use App\Repository\ForumRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -27,15 +21,12 @@ final class ForumController extends AbstractController
 {
     #[Route('/forum', name: 'app_forum_index', methods: ['GET', 'POST'])]
     #[Route('/{context}/forum', name: 'app_forum_index_context', requirements: ['context' => 'admin|parent|student|enseignant'], methods: ['GET', 'POST'])]
-    #[Route('/forum', name: 'app_forum_index', methods: ['GET','POST'])]
-    #[Route('/{context}/forum', name: 'app_forum_index_context', requirements: ['context' => 'admin|parent|student|enseignant'], methods: ['GET','POST'])]
     public function index(
         ForumRepository $forumRepository,
         Request $request,
         EntityManagerInterface $entityManager,
         ValidatorInterface $validator,
         ProfanityFilterService $profanityFilterService,
-        OllamaService $ollamaService,
         ?string $context = null
     ): Response {
         if ($request->isMethod('POST')) {
@@ -48,43 +39,22 @@ final class ForumController extends AbstractController
 
                 if ($forum) {
                     if ($badWords !== []) {
-                        $this->addFlash(
-                            'error',
-                            'Commentaire refuse: mots inappropries detectes (' . implode(', ', $badWords) . ').'
-                        );
-
-                        $routes = $this->getForumRoutes($context);
-                        return $this->redirectToRoute($routes['index'], $this->getForumRouteParams($context));
-                    }
-
-        ?string $context = null
-    ): Response {
-
-        // === AJOUT COMMENTAIRE ===
-        if ($request->isMethod('POST')) {
-
-            $contenu = trim((string) $request->request->get('contenu', ''));
-            $forumId = $request->request->get('forum_id');
-
-            if ($forumId) {
-
-                $forum = $forumRepository->find($forumId);
-
-                if ($forum) {
-                    $commentaire = new Commentaire();
-                    $commentaire->setContenu($contenu);
-                    $commentaire->setForum($forum);
-
-                    $violations = $validator->validate($commentaire);
-                    if (count($violations) > 0) {
-                        foreach ($violations as $violation) {
-                            $this->addFlash('error', $violation->getMessage());
-                        }
+                        $this->addFlash('error', 'Commentaire refuse: mots inappropries detectes (' . implode(', ', $badWords) . ').');
                     } else {
-                        $entityManager->persist($commentaire);
-                        $entityManager->flush();
-                        $this->addFlash('success', 'Commentaire ajoute avec succes.');
-                        $this->addFlash('success', 'Commentaire ajouté avec succès.');
+                        $commentaire = new Commentaire();
+                        $commentaire->setContenu($contenu);
+                        $commentaire->setForum($forum);
+
+                        $violations = $validator->validate($commentaire);
+                        if (count($violations) > 0) {
+                            foreach ($violations as $violation) {
+                                $this->addFlash('error', $violation->getMessage());
+                            }
+                        } else {
+                            $entityManager->persist($commentaire);
+                            $entityManager->flush();
+                            $this->addFlash('success', 'Commentaire ajoute avec succes.');
+                        }
                     }
                 } else {
                     $this->addFlash('error', 'Forum introuvable.');
@@ -96,7 +66,6 @@ final class ForumController extends AbstractController
 
             if ($request->request->has('contenu')) {
                 $this->addFlash('error', 'Le commentaire ne peut pas etre vide.');
-                $this->addFlash('error', 'Le commentaire ne peut pas être vide.');
             }
         }
 
@@ -119,11 +88,7 @@ final class ForumController extends AbstractController
         ValidatorInterface $validator,
         OllamaService $ollamaService,
         ?string $context = null
-    ): Response
-    #[Route('/forum/new', name: 'app_forum_new', methods: ['GET','POST'])]
-    #[Route('/{context}/forum/new', name: 'app_forum_new_context', requirements: ['context' => 'admin|parent|student|enseignant'], methods: ['GET','POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, ?string $context = null): Response
-    {
+    ): Response {
         $forum = new Forum();
         $form = $this->createForm(ForumType::class, $forum);
         $form->handleRequest($request);
@@ -169,8 +134,6 @@ final class ForumController extends AbstractController
 
     #[Route('/forum/{id}/edit', name: 'app_forum_edit', methods: ['GET', 'POST'])]
     #[Route('/{context}/forum/{id}/edit', name: 'app_forum_edit_context', requirements: ['context' => 'admin|parent|student|enseignant'], methods: ['GET', 'POST'])]
-    #[Route('/forum/{id}/edit', name: 'app_forum_edit', methods: ['GET','POST'])]
-    #[Route('/{context}/forum/{id}/edit', name: 'app_forum_edit_context', requirements: ['context' => 'admin|parent|student|enseignant'], methods: ['GET','POST'])]
     public function edit(Request $request, Forum $forum, EntityManagerInterface $entityManager, ?string $context = null): Response
     {
         $form = $this->createForm(ForumType::class, $forum);
@@ -323,58 +286,6 @@ final class ForumController extends AbstractController
             'translatedText' => $translatedText,
         ]);
     }
-    #[Route('/forum/commentaire/{id}/edit', name: 'app_commentaire_edit', methods: ['GET','POST'])]
-    #[Route('/{context}/forum/commentaire/{id}/edit', name: 'app_commentaire_edit_context', requirements: ['context' => 'admin|parent|student|enseignant'], methods: ['GET','POST'])]
-public function editCommentaire(
-    Request $request,
-    Commentaire $commentaire,
-    EntityManagerInterface $entityManager,
-    ValidatorInterface $validator,
-    ?string $context = null
-): Response {
-
-    if ($request->isMethod('POST')) {
-
-        $contenu = trim((string) $request->request->get('contenu', ''));
-
-        $commentaire->setContenu($contenu);
-
-        $violations = $validator->validate($commentaire);
-        if (count($violations) > 0) {
-            $errorMessages = [];
-            foreach ($violations as $violation) {
-                $errorMessages[] = $violation->getMessage();
-            }
-
-            $routes = $this->getForumRoutes($context);
-            $baseTemplate = $this->getForumBaseTemplate($context);
-
-            return $this->render($baseTemplate ? 'commentaire/edit_shell.html.twig' : 'commentaire/edit.html.twig', [
-                'commentaire' => $commentaire,
-                'errors' => $errorMessages,
-                'forum_routes' => $routes,
-                'forum_route_params' => $this->getForumRouteParams($context),
-                'base_template' => $baseTemplate,
-            ]);
-        }
-
-        $entityManager->flush();
-        $this->addFlash('success', 'Commentaire modifié avec succès.');
-
-        $routes = $this->getForumRoutes($context);
-        return $this->redirectToRoute($routes['index'], $this->getForumRouteParams($context));
-    }
-
-    $routes = $this->getForumRoutes($context);
-    $baseTemplate = $this->getForumBaseTemplate($context);
-
-    return $this->render($baseTemplate ? 'commentaire/edit_shell.html.twig' : 'commentaire/edit.html.twig', [
-        'commentaire' => $commentaire,
-        'forum_routes' => $routes,
-        'forum_route_params' => $this->getForumRouteParams($context),
-        'base_template' => $baseTemplate,
-    ]);
-}
 
     private function getForumRoutes(?string $context): array
     {
@@ -427,5 +338,4 @@ public function editCommentaire(
         $content = (string) $commentaire->getContenu();
         return str_starts_with($content, '[Bot IA] ');
     }
-
 }

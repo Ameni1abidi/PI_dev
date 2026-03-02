@@ -1,59 +1,251 @@
-{% extends 'student/dashCours.html.twig' %}
+﻿{% extends 'student/dashCours.html.twig' %}
 
 {% block title %}Mes Cours{% endblock %}
 
 {% block body %}
-<div style="padding:25px; font-family:'Manrope', sans-serif; background:linear-gradient(135deg,#fdfbfb,#ebedee); min-height:100vh;">
-  <h2 style="margin-bottom:25px; font-weight:800; font-size:1.8rem; color:#333;">Mes Cours</h2>
+<style>
+  .student-courses {
+    --bg-a: #f4f8ff;
+    --bg-b: #f7f4ff;
+    --card: #ffffff;
+    --text: #1f2937;
+    --muted: #667085;
+    --line: #e7eaf3;
+    --primary: #2563eb;
+    --primary-2: #1d4ed8;
+    --success: #0f9d6d;
+    --warning: #b7791f;
+    padding: 26px;
+    min-height: 100vh;
+    background: radial-gradient(circle at 0% 0%, var(--bg-a), transparent 50%),
+                radial-gradient(circle at 100% 100%, var(--bg-b), transparent 48%),
+                #f7f9fc;
+    color: var(--text);
+    font-family: 'Manrope', sans-serif;
+  }
 
-  <div style="margin-bottom:30px;">
-    <form method="get" style="display:flex; gap:10px;">
-      <input type="text" name="search"
-             placeholder="Rechercher un cours..."
-             value="{{ app.request.query.get('search') }}"
-             style="flex:1; padding:12px 15px; border-radius:30px; border:none; outline:none; box-shadow:0 4px 10px rgba(0,0,0,0.05); font-size:0.9rem;">
-      <button type="submit"
-              style="padding:12px 20px; border-radius:30px; border:none; font-weight:600; background:linear-gradient(135deg,#667eea,#764ba2); color:white; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
-        Rechercher
-      </button>
-    </form>
-  </div>
+  .student-courses .hero {
+    background: linear-gradient(130deg, #0f172a, #1e3a8a);
+    color: #fff;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 18px;
+    box-shadow: 0 16px 30px rgba(15, 23, 42, 0.22);
+  }
 
-  {% if cours is not empty %}
-    <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:25px;">
-      {% for cour in cours %}
-        <div style="background:white; border-radius:20px; padding:20px; box-shadow:0 8px 20px rgba(0,0,0,0.06); display:flex; flex-direction:column; justify-content:space-between; transition:0.3s;">
-          <div>
-            <div style="font-weight:800; font-size:1.2rem; margin-bottom:8px; color:#444;">{{ cour.titre }}</div>
-            {% if cour.description %}
-              <div style="font-size:0.85rem; color:#777; margin-bottom:10px;">{{ cour.description|slice(0,100) }}...</div>
-            {% endif %}
-            <div style="font-size:0.75rem; color:#aaa; margin-bottom:12px;">{{ cour.dateCreation ? cour.dateCreation|date('d/m/Y') : 'N/A' }}</div>
+  .student-courses .hero-title {
+    margin: 0;
+    font-size: 1.65rem;
+    font-weight: 800;
+  }
 
-            <a href="{{ path('eleve_cours_show', {'id': cour.id}) }}"
-               style="display:inline-block; margin-bottom:14px; text-decoration:none; padding:9px 14px; border-radius:10px; background:linear-gradient(135deg,#2563eb,#1d4ed8); color:#fff; font-weight:700; font-size:0.86rem;">
-              Voir les chapitres
-            </a>
+  .student-courses .hero-sub {
+    margin-top: 6px;
+    opacity: .88;
+    font-size: .92rem;
+  }
 
-            {% if cour.chapitres is not empty %}
-              <div style="margin-top:10px; display:flex; flex-direction:column; gap:10px;">
-                {% for chap in cour.chapitres %}
-                  {% set ressourcesCount = chap.ressources|length %}
-                  <div style="background:#f6f8ff; border-radius:15px; padding:12px; box-shadow:0 2px 6px rgba(0,0,0,0.05); font-size:0.85rem; display:flex; flex-direction:column; gap:4px;">
-                    <div style="font-weight:700; color:#555;">{{ chap.ordre }}. {{ chap.titre }}</div>
-                    <div style="color:#666;">Duree : {{ chap.dureeEstimee }} min</div>
-                    <div style="color:#666;">Type : {{ chap.typeContenu }}</div>
+  .student-courses .toolbar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
 
-                    {% if ressourcesCount > 0 %}
-                      <a href="{{ path('eleve_chapitre_ressources', {'id': chap.id}) }}"
-                         style="margin-top:8px; display:inline-block; text-decoration:none; background:#fde7f3; color:#9d174d; border:1px solid #fbcfe8; padding:8px 10px; border-radius:10px; font-weight:700; font-size:0.8rem;">
-                        Ressources du chapitre ({{ ressourcesCount }})
-                      </a>
-<div style="padding:30px; font-family:'Manrope', sans-serif; background:linear-gradient(135deg,#fdfbfb,#e9ecef); min-height:100vh;">
+  .student-courses .search {
+    flex: 1;
+    padding: 11px 14px;
+    border-radius: 12px;
+    border: 1px solid #d8e0ef;
+    background: #fff;
+    font-size: .92rem;
+  }
 
-  <h2 style="margin-bottom:35px; font-weight:900; font-size:2rem; color:#333;">
-      Mes Cours
-  </h2>
+  .student-courses .search-btn {
+    border: none;
+    border-radius: 12px;
+    padding: 11px 16px;
+    font-weight: 700;
+    color: #fff;
+    background: linear-gradient(135deg, var(--primary), var(--primary-2));
+    cursor: pointer;
+  }
+
+  .student-courses .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+    gap: 18px;
+  }
+
+  .student-courses .course-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 16px;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06);
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+
+  .student-courses .course-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 24px rgba(15, 23, 42, 0.10);
+  }
+
+  .student-courses .course-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: start;
+  }
+
+  .student-courses .course-title {
+    margin: 0;
+    font-size: 1.08rem;
+    font-weight: 800;
+    color: #0f172a;
+  }
+
+  .student-courses .date {
+    font-size: .75rem;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .student-courses .desc {
+    margin: 8px 0 12px;
+    color: #475569;
+    font-size: .88rem;
+    line-height: 1.5;
+  }
+
+  .student-courses .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .student-courses .chip {
+    font-size: .72rem;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: #eef2ff;
+    color: #334155;
+  }
+
+  .student-courses .progress-wrap {
+    margin: 10px 0;
+  }
+
+  .student-courses .progress-head {
+    display: flex;
+    justify-content: space-between;
+    font-size: .78rem;
+    color: #475569;
+    margin-bottom: 5px;
+  }
+
+  .student-courses .progress {
+    height: 8px;
+    border-radius: 999px;
+    overflow: hidden;
+    background: #e9edf6;
+  }
+
+  .student-courses .progress > span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #0ea5e9, #22c55e);
+  }
+
+  .student-courses .cert {
+    margin: 10px 0 12px;
+    padding: 10px;
+    border-radius: 12px;
+    border: 1px dashed #cfd7e7;
+    background: #f8faff;
+  }
+
+  .student-courses .cert-note {
+    margin-top: 6px;
+    font-size: .78rem;
+    color: var(--warning);
+  }
+
+  .student-courses .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .student-courses .btn {
+    text-decoration: none;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: .8rem;
+    font-weight: 700;
+  }
+
+  .student-courses .btn-main { background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #fff; }
+  .student-courses .btn-soft { background: #eef2ff; color: #1d4ed8; }
+  .student-courses .btn-pink { background: #ffe8f1; color: #9d174d; }
+  .student-courses .btn-muted { background: #e5e7eb; color: #4b5563; }
+
+  .student-courses .chap-list {
+    margin-top: 10px;
+    display: grid;
+    gap: 10px;
+  }
+
+  .student-courses .chap {
+    border: 1px solid #e5eaf4;
+    border-radius: 14px;
+    padding: 11px;
+    background: #fbfdff;
+  }
+
+  .student-courses .chap-title {
+    margin: 0 0 5px;
+    font-size: .9rem;
+    font-weight: 700;
+    color: #1f2937;
+  }
+
+  .student-courses .chap-meta {
+    font-size: .78rem;
+    color: #556070;
+    margin-bottom: 4px;
+  }
+
+  .student-courses .empty {
+    text-align: center;
+    padding: 24px;
+    border-radius: 14px;
+    background: #fff;
+    border: 1px dashed #d7deeb;
+    color: #6b7280;
+  }
+
+  @media (max-width: 720px) {
+    .student-courses { padding: 14px; }
+    .student-courses .toolbar { flex-direction: column; }
+    .student-courses .search-btn { width: 100%; }
+    .student-courses .grid { grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="student-courses">
+  <section class="hero">
+    <h2 class="hero-title">Mes Cours</h2>
+    <div class="hero-sub">Suivez vos chapitres, votre progression et l'acces au certificat dans un seul espace.</div>
+  </section>
+
+  <form method="get" class="toolbar">
+    <input class="search" type="text" name="search" placeholder="Rechercher un cours..." value="{{ app.request.query.get('search') }}">
+    <button class="search-btn" type="submit">Rechercher</button>
+  </form>
 
   {% for label, messages in app.flashes %}
     {% for message in messages %}
@@ -66,192 +258,117 @@
   {% endfor %}
 
   {% if cours is not empty %}
-    <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:30px;">
-
+    <div class="grid">
       {% for cour in cours %}
-        <div style="background:white; border-radius:25px; padding:25px;
-                    box-shadow:0 12px 25px rgba(0,0,0,0.08);
-                    display:flex; flex-direction:column; justify-content:space-between;
-                    transition: transform 0.3s, box-shadow 0.3s;">
+        {% set prog = courseProgress[cour.id]|default({'completed': 0, 'total': 0, 'percent': 0}) %}
+        {% set cert = certificateAccess[cour.id]|default({'eligible': false, 'remainingMinutes': 0, 'spentMinutes': 0, 'requiredMinutes': 0, 'remainingChapitres': 0}) %}
+        {% set badges = badgesByCours[cour.id]|default([]) %}
 
-          <div>
-            <div style="font-weight:800; font-size:1.3rem; margin-bottom:12px; color:#222;">
-              {{ cour.titre }}
-            </div>
-            {% set badges = badgesByCours[cour.id]|default([]) %}
-            {% if badges is not empty %}
-              <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px;">
-                {% for badge in badges %}
-                  <span style="
-                      display:inline-block; padding:3px 8px; border-radius:12px; font-size:0.74rem; font-weight:700; color:white;
-                      {% if badge.code == 'nouveau' %}background:#1dd1a1;
-                      {% elseif badge.code == 'a_la_une' %}background:#ff6b6b;
-                      {% elseif badge.code == 'tres_populaire' %}background:#f39c12;
-                      {% elseif badge.code == 'en_tendance' %}background:#5f27cd;
-                      {% else %}background:#6c757d;
-                      {% endif %}
-                    ">
-                    {% if badge.code == 'tres_populaire' %}🔥{% elseif badge.code == 'nouveau' %}🆕{% elseif badge.code == 'a_la_une' %}⭐{% elseif badge.code == 'en_tendance' %}📈{% endif %}
-                    {{ badge.label }}
-                  </span>
-                {% endfor %}
-              </div>
-            {% endif %}
+        <article class="course-card">
+          <div class="course-head">
+            <h3 class="course-title">{{ cour.titre }}</h3>
+            <div class="date">{{ cour.dateCreation ? cour.dateCreation|date('d/m/Y') : 'N/A' }}</div>
+          </div>
 
-            {% if cour.description %}
-              <div style="font-size:0.9rem; color:#666; margin-bottom:15px; line-height:1.5;">
-                {{ cour.description|slice(0,140) }}...
-              </div>
-            {% endif %}
-
-            <div style="font-size:0.8rem; color:#aaa; margin-bottom:15px;">
-              {{ cour.dateCreation ? cour.dateCreation|date('d/m/Y') : 'N/A' }}
-            </div>
-            <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:-8px; margin-bottom:12px;">
-              <span style="font-size:0.78rem; color:#3c5e2a; background:#eef9ef; padding:6px 10px; border-radius:999px; font-weight:700;">
-                📚 Nombre de chapitres: {{ cour.chapitres|length }}
-              </span>
-            </div>
-
-            {% set prog = courseProgress[cour.id]|default({'completed': 0, 'total': 0, 'percent': 0}) %}
-            <div style="margin-bottom:12px;">
-              <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:#556; margin-bottom:6px;">
-                <span>Progression</span>
-                <span>{{ prog.completed }}/{{ prog.total }} ({{ prog.percent }}%)</span>
-              </div>
-              <div style="height:8px; background:#e9edf8; border-radius:999px; overflow:hidden;">
-                <div style="height:100%; width:{{ prog.percent }}%; background:linear-gradient(90deg,#2d89ef,#1dd1a1); border-radius:999px;"></div>
-              </div>
-            </div>
-
-            {% set cert = certificateAccess[cour.id]|default({'eligible': false, 'remainingMinutes': 0, 'spentMinutes': 0, 'requiredMinutes': 0, 'remainingChapitres': 0}) %}
-            <div style="margin-bottom:15px;">
-              {% if cert.eligible %}
-                <a href="{{ path('student_cours_certificate_model', {'id': cour.id}) }}"
-                   style="display:inline-block; padding:8px 16px; background:#2d89ef; color:white; border-radius:30px; font-weight:700; text-decoration:none;">
-                  Voir Certificat
-                </a>
-              {% else %}
-                <span style="display:inline-block; padding:8px 16px; background:#d9dde7; color:#667; border-radius:30px; font-weight:700;">
-                  Certificat bloque
-                </span>
-                <div style="margin-top:6px; font-size:0.78rem; color:#7a5b00;">
-                  {% if cert.remainingChapitres > 0 %}
-                    Terminez d'abord {{ cert.remainingChapitres }} chapitre(s).
-                  {% else %}
-                    Reste {{ cert.remainingMinutes }} min ({{ cert.spentMinutes }}/{{ cert.requiredMinutes }} min)
+          {% if badges is not empty %}
+            <div class="chips">
+              {% for badge in badges %}
+                <span class="chip" style="
+                  {% if badge.code == 'nouveau' %}background:#dcfce7;color:#166534;
+                  {% elseif badge.code == 'a_la_une' %}background:#fee2e2;color:#991b1b;
+                  {% elseif badge.code == 'tres_populaire' %}background:#fff7d6;color:#92400e;
+                  {% elseif badge.code == 'en_tendance' %}background:#ede9fe;color:#5b21b6;
+                  {% else %}background:#e5e7eb;color:#374151;
                   {% endif %}
-                </div>
-              {% endif %}
+                ">
+                  {{ badge.label }}
+                </span>
+              {% endfor %}
             </div>
+          {% endif %}
 
-            {% if cour.chapitres is not empty %}
-              <div style="display:flex; flex-direction:column; gap:12px;">
-                {% for chap in cour.chapitres|sort((a, b) => a.ordre <=> b.ordre) %}
-                  {% set meta = chapterUi[chap.id]|default({'unlocked': true, 'completed': false, 'blockedMessage': null, 'spentMinutes': 0, 'timeBadge': 'En cours'}) %}
-                  <div style="background:#f7f9ff; border-radius:18px; padding:14px;
-                              box-shadow:0 4px 10px rgba(0,0,0,0.05);
-                              font-size:0.87rem; display:flex; flex-direction:column; gap:6px;">
+          {% if cour.description %}
+            <p class="desc">{{ cour.description|slice(0, 165) }}{% if cour.description|length > 165 %}...{% endif %}</p>
+          {% endif %}
 
-                    <div style="font-weight:700; color:#444;">
-                      {{ chap.ordre }}. {{ chap.titre }}
-                    </div>
+          <div class="chips">
+            <span class="chip">Chapitres: {{ cour.chapitres|length }}</span>
+          </div>
 
-                    <div style="color:#555;">
-                      Duree : {{ chap.dureeEstimee }} min
-                    </div>
+          <div class="progress-wrap">
+            <div class="progress-head">
+              <span>Progression</span>
+              <span>{{ prog.completed }}/{{ prog.total }} ({{ prog.percent }}%)</span>
+            </div>
+            <div class="progress">
+              <span style="width:{{ prog.percent }}%"></span>
+            </div>
+          </div>
 
-                    <div style="color:#555;">
-                      Temps passe : {{ meta.spentMinutes }} min
-                    </div>
+          <div class="cert">
+            {% if cert.eligible %}
+              <a href="{{ path('eleve_cours_show', {'id': cour.id}) }}" class="btn btn-main">Certificat disponible</a>
+            {% else %}
+              <span class="btn btn-muted">Certificat bloque</span>
+              <div class="cert-note">
+                {% if cert.remainingChapitres > 0 %}
+                  Terminez d'abord {{ cert.remainingChapitres }} chapitre(s).
+                {% else %}
+                  Reste {{ cert.remainingMinutes }} min ({{ cert.spentMinutes }}/{{ cert.requiredMinutes }} min)
+                {% endif %}
+              </div>
+            {% endif %}
+          </div>
 
-                    <div style="font-weight:700; color:
-                      {% if meta.timeBadge == 'Rapide' %}#14825f{% elseif meta.timeBadge == 'Normal' %}#2d89ef{% elseif meta.timeBadge == 'A revoir' %}#d97706{% else %}#666{% endif %};">
-                      Badge temps : {{ meta.timeBadge }}
-                      {% if meta.completed %}
-                        | Termine
-                      {% endif %}
-                    </div>
+          <div class="actions">
+            <a href="{{ path('eleve_cours_show', {'id': cour.id}) }}" class="btn btn-main">Voir les chapitres</a>
+          </div>
 
-                    <div style="color:#555;">
-                      Type :
-                      {% if chap.typeContenu == 'fichier' %} PDF {% else %} {{ chap.typeContenu }} {% endif %}
-                    </div>
+          {% if cour.chapitres is not empty %}
+            <div class="chap-list">
+              {% for chap in cour.chapitres|sort((a, b) => a.ordre <=> b.ordre) %}
+                {% set meta = chapterUi[chap.id]|default({'unlocked': true, 'completed': false, 'blockedMessage': null, 'spentMinutes': 0, 'timeBadge': 'En cours'}) %}
+                {% set ressourcesCount = chap.ressources|length %}
 
-                    {% if chap.typeContenu == 'fichier' and chap.contenuFichier %}
-                      <div>
-                        <a href="{{ asset('uploads/' ~ chap.contenuFichier) }}" target="_blank" style="color:#667eea; font-weight:600; text-decoration:none;">Telecharger PDF</a>
-                      </div>
-                    {% elseif chap.typeContenu == 'video' and chap.videoUrl %}
-                      <div>
-                        <a href="{{ chap.videoUrl }}" target="_blank" style="color:#667eea; font-weight:600; text-decoration:none;">Voir Video</a>
-                      </div>
-                    {% elseif chap.typeContenu == 'texte' and chap.contenuTexte %}
-                      <div>
-                        {{ chap.contenuTexte|slice(0,120) }}...
-                      </div>
+                <div class="chap">
+                  <h4 class="chap-title">{{ chap.ordre }}. {{ chap.titre }}</h4>
+                  <div class="chap-meta">Duree: {{ chap.dureeEstimee }} min | Temps passe: {{ meta.spentMinutes }} min</div>
+                  <div class="chap-meta">Type: {% if chap.typeContenu == 'fichier' %}PDF{% else %}{{ chap.typeContenu }}{% endif %}</div>
+                  <div class="chap-meta">Statut: {{ meta.completed ? 'Termine' : 'En cours' }} | Badge temps: {{ meta.timeBadge }}</div>
+
+                  {% if chap.typeContenu == 'fichier' and chap.contenuFichier %}
+                    <a href="{{ asset('uploads/' ~ chap.contenuFichier) }}" target="_blank" class="btn btn-soft">Telecharger PDF</a>
+                  {% elseif chap.typeContenu == 'video' and chap.videoUrl %}
+                    <a href="{{ chap.videoUrl }}" target="_blank" class="btn btn-soft">Voir Video</a>
+                  {% elseif chap.typeContenu == 'texte' and chap.contenuTexte %}
+                    <div class="chap-meta">{{ chap.contenuTexte|slice(0, 120) }}{% if chap.contenuTexte|length > 120 %}...{% endif %}</div>
+                  {% endif %}
+
+                  <div class="actions" style="margin-top:8px; margin-bottom:0;">
+                    {% if ressourcesCount > 0 %}
+                      <a href="{{ path('eleve_chapitre_ressources', {'id': chap.id}) }}" class="btn btn-pink">Ressources ({{ ressourcesCount }})</a>
                     {% endif %}
 
                     {% if meta.unlocked %}
-                      <a href="{{ path('student_chapitre_show', {'id': chap.id}) }}"
-                         style="margin-top:10px; display:inline-block; padding:8px 16px; background:#ff416c;
-                                color:white; border-radius:30px; font-weight:600; text-decoration:none;
-                                transition:0.3s;">
-                         Voir Resume
-                      </a>
+                      <a href="{{ path('eleve_chapitre_ressources', {'id': chap.id}) }}" class="btn btn-main">Voir resume</a>
                     {% else %}
-                      <span style="margin-top:10px; display:inline-block; padding:8px 16px; background:#d9dde7;
-                                   color:#667; border-radius:30px; font-weight:600;">
-                        Chapitre verrouille
-                      </span>
-                      <span style="color:#7a5b00; font-size:0.8rem;">{{ meta.blockedMessage }}</span>
+                      <span class="btn btn-muted">Chapitre verrouille</span>
+                      {% if meta.blockedMessage %}
+                        <span class="chap-meta" style="margin-bottom:0; color:#92400e;">{{ meta.blockedMessage }}</span>
+                      {% endif %}
                     {% endif %}
                   </div>
-                {% endfor %}
-              </div>
-            {% else %}
-              <div style="margin-top:10px; font-size:0.8rem; color:#aaa;">Aucun chapitre pour ce cours.</div>
-            {% endif %}
-          </div>
-        </div>
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="empty" style="margin-top:10px;">Aucun chapitre pour ce cours.</div>
+          {% endif %}
+        </article>
       {% endfor %}
     </div>
   {% else %}
-    <div style="text-align:center; padding:20px; background:white; border-radius:15px; box-shadow:0 4px 12px rgba(0,0,0,0.05); color:#777;">
-      Aucun cours disponible pour le moment.
-    </div>
+    <div class="empty">Aucun cours disponible pour le moment.</div>
   {% endif %}
 </div>
-              <div style="margin-top:15px; font-size:0.82rem; color:#aaa;">
-                Aucun chapitre pour ce cours.
-              </div>
-            {% endif %}
-          </div>
-
-        </div>
-      {% endfor %}
-
-    </div>
-  {% else %}
-    <div style="text-align:center; padding:25px; background:white; border-radius:20px;
-                box-shadow:0 6px 18px rgba(0,0,0,0.05); color:#777;">
-      Aucun cours disponible pour le moment.
-    </div>
-  {% endif %}
-
-</div>
-
-<script>
-  document.querySelectorAll('div[style*="box-shadow"]').forEach(card => {
-    card.addEventListener('mouseenter', () => {
-      card.style.transform = 'translateY(-5px)';
-      card.style.boxShadow = '0 20px 35px rgba(0,0,0,0.12)';
-    });
-    card.addEventListener('mouseleave', () => {
-      card.style.transform = 'translateY(0)';
-      card.style.boxShadow = '0 12px 25px rgba(0,0,0,0.08)';
-    });
-  });
-</script>
-
 {% endblock %}

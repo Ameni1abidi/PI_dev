@@ -2,6 +2,9 @@
 
 namespace App\Tests\Controller;
 
+use App\Entity\Categorie;
+use App\Entity\Chapitre;
+use App\Entity\Cours;
 use App\Entity\Ressource;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
@@ -30,28 +33,28 @@ final class RessourceControllerTest extends WebTestCase
 
     public function testIndex(): void
     {
-        $this->client->followRedirects();
-        $crawler = $this->client->request('GET', $this->path);
+        $this->client->request('GET', $this->path);
 
         self::assertResponseStatusCodeSame(200);
         self::assertPageTitleContains('Ressource index');
-
-        // Use the $crawler to perform additional assertions e.g.
-        // self::assertSame('Some text on the page', $crawler->filter('.p')->first()->text());
     }
 
-    public function testNew(): void
+    public function testNewPersistsRessourceWithLienCategorie(): void
     {
-        $this->markTestIncomplete();
+        $categorie = $this->createCategorie('lien');
+        $chapitre = $this->createChapitre();
+
         $this->client->request('GET', sprintf('%snew', $this->path));
 
         self::assertResponseStatusCodeSame(200);
 
-        $this->client->submitForm('Save', [
-            'ressource[titre]' => 'Testing',
-            'ressource[type]' => 'Testing',
-            'ressource[contenu]' => 'Testing',
-            'ressource[categorie]' => 'Testing',
+        $this->client->submitForm('Enregistrer', [
+            'ressource[titre]' => 'Ressource test',
+            'ressource[videoUrl]' => '',
+            'ressource[audioUrl]' => '',
+            'ressource[lienUrl]' => 'https://example.com/ressource',
+            'ressource[categorie]' => (string) $categorie->getId(),
+            'ressource[chapitre]' => (string) $chapitre->getId(),
         ]);
 
         self::assertResponseRedirects($this->path);
@@ -61,71 +64,102 @@ final class RessourceControllerTest extends WebTestCase
 
     public function testShow(): void
     {
-        $this->markTestIncomplete();
-        $fixture = new Ressource();
-        $fixture->setTitre('My Title');
-        $fixture->setType('My Title');
-        $fixture->setContenu('My Title');
-        $fixture->setCategorie('My Title');
-
-        $this->manager->persist($fixture);
-        $this->manager->flush();
+        $fixture = $this->createRessource('Ressource visible');
 
         $this->client->request('GET', sprintf('%s%s', $this->path, $fixture->getId()));
 
         self::assertResponseStatusCodeSame(200);
         self::assertPageTitleContains('Ressource');
-
-        // Use assertions to check that the properties are properly displayed.
+        self::assertSelectorTextContains('table tbody tr:nth-child(2) td', 'Ressource visible');
     }
 
     public function testEdit(): void
     {
-        $this->markTestIncomplete();
-        $fixture = new Ressource();
-        $fixture->setTitre('Value');
-        $fixture->setType('Value');
-        $fixture->setContenu('Value');
-        $fixture->setCategorie('Value');
-
-        $this->manager->persist($fixture);
-        $this->manager->flush();
+        $fixture = $this->createRessource('Titre initial');
+        $categorie = $fixture->getCategorie();
+        $chapitre = $fixture->getChapitre();
+        self::assertInstanceOf(Categorie::class, $categorie);
+        self::assertInstanceOf(Chapitre::class, $chapitre);
 
         $this->client->request('GET', sprintf('%s%s/edit', $this->path, $fixture->getId()));
 
         $this->client->submitForm('Update', [
-            'ressource[titre]' => 'Something New',
-            'ressource[type]' => 'Something New',
-            'ressource[contenu]' => 'Something New',
-            'ressource[categorie]' => 'Something New',
+            'ressource[titre]' => 'Titre modifie',
+            'ressource[videoUrl]' => '',
+            'ressource[audioUrl]' => '',
+            'ressource[lienUrl]' => 'https://example.com/modifie',
+            'ressource[categorie]' => (string) $categorie->getId(),
+            'ressource[chapitre]' => (string) $chapitre->getId(),
         ]);
 
         self::assertResponseRedirects('/ressource/');
 
-        $fixture = $this->ressourceRepository->findAll();
+        $updated = $this->ressourceRepository->find($fixture->getId());
+        self::assertInstanceOf(Ressource::class, $updated);
 
-        self::assertSame('Something New', $fixture[0]->getTitre());
-        self::assertSame('Something New', $fixture[0]->getType());
-        self::assertSame('Something New', $fixture[0]->getContenu());
-        self::assertSame('Something New', $fixture[0]->getCategorie());
+        self::assertSame('Titre modifie', $updated->getTitre());
+        self::assertSame('lien', $updated->getType());
+        self::assertSame('https://example.com/modifie', $updated->getContenu());
     }
 
-    public function testRemove(): void
+    public function testRemoveDeletesRessource(): void
     {
-        $this->markTestIncomplete();
-        $fixture = new Ressource();
-        $fixture->setTitre('Value');
-        $fixture->setType('Value');
-        $fixture->setContenu('Value');
-        $fixture->setCategorie('Value');
-
-        $this->manager->persist($fixture);
-        $this->manager->flush();
+        $fixture = $this->createRessource('A supprimer');
 
         $this->client->request('GET', sprintf('%s%s', $this->path, $fixture->getId()));
-        $this->client->submitForm('Delete');
+        $this->client->submitForm('Supprimer');
 
         self::assertResponseRedirects('/ressource/');
         self::assertSame(0, $this->ressourceRepository->count([]));
+    }
+
+    private function createRessource(string $titre): Ressource
+    {
+        $categorie = $this->createCategorie('lien');
+        $chapitre = $this->createChapitre();
+
+        $ressource = (new Ressource())
+            ->setTitre($titre)
+            ->setType('lien')
+            ->setContenu('https://example.com/existant')
+            ->setCategorie($categorie)
+            ->setChapitre($chapitre);
+
+        $this->manager->persist($ressource);
+        $this->manager->flush();
+
+        return $ressource;
+    }
+
+    private function createCategorie(string $nom): Categorie
+    {
+        $categorie = (new Categorie())->setNom($nom);
+        $this->manager->persist($categorie);
+        $this->manager->flush();
+
+        return $categorie;
+    }
+
+    private function createChapitre(): Chapitre
+    {
+        $cours = (new Cours())
+            ->setTitre('Cours test')
+            ->setDescription('Description du cours test')
+            ->setNiveau('Debutant')
+            ->setDateCreation(new \DateTime());
+
+        $chapitre = (new Chapitre())
+            ->setTitre('Chapitre test')
+            ->setOrdre(1)
+            ->setTypeContenu('texte')
+            ->setContenuTexte('Contenu de chapitre')
+            ->setDureeEstimee(30)
+            ->setCours($cours);
+
+        $this->manager->persist($cours);
+        $this->manager->persist($chapitre);
+        $this->manager->flush();
+
+        return $chapitre;
     }
 }

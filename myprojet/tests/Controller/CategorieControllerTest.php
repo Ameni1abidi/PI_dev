@@ -30,25 +30,20 @@ final class CategorieControllerTest extends WebTestCase
 
     public function testIndex(): void
     {
-        $this->client->followRedirects();
-        $crawler = $this->client->request('GET', $this->path);
+        $this->client->request('GET', $this->path);
 
         self::assertResponseStatusCodeSame(200);
         self::assertPageTitleContains('Categorie index');
-
-        // Use the $crawler to perform additional assertions e.g.
-        // self::assertSame('Some text on the page', $crawler->filter('.p')->first()->text());
     }
 
-    public function testNew(): void
+    public function testNewPersistsCategorie(): void
     {
-        $this->markTestIncomplete();
         $this->client->request('GET', sprintf('%snew', $this->path));
 
         self::assertResponseStatusCodeSame(200);
 
-        $this->client->submitForm('Save', [
-            'categorie[nom]' => 'Testing',
+        $this->client->submitForm('Enregistrer', [
+            'categorie[nom]' => 'video',
         ]);
 
         self::assertResponseRedirects($this->path);
@@ -58,9 +53,8 @@ final class CategorieControllerTest extends WebTestCase
 
     public function testShow(): void
     {
-        $this->markTestIncomplete();
         $fixture = new Categorie();
-        $fixture->setNom('My Title');
+        $fixture->setNom('audio');
 
         $this->manager->persist($fixture);
         $this->manager->flush();
@@ -69,15 +63,13 @@ final class CategorieControllerTest extends WebTestCase
 
         self::assertResponseStatusCodeSame(200);
         self::assertPageTitleContains('Categorie');
-
-        // Use assertions to check that the properties are properly displayed.
+        self::assertSelectorTextContains('table tbody tr:nth-child(2) td', 'audio');
     }
 
     public function testEdit(): void
     {
-        $this->markTestIncomplete();
         $fixture = new Categorie();
-        $fixture->setNom('Value');
+        $fixture->setNom('lien');
 
         $this->manager->persist($fixture);
         $this->manager->flush();
@@ -85,27 +77,27 @@ final class CategorieControllerTest extends WebTestCase
         $this->client->request('GET', sprintf('%s%s/edit', $this->path, $fixture->getId()));
 
         $this->client->submitForm('Update', [
-            'categorie[nom]' => 'Something New',
+            'categorie[nom]' => 'pdf',
         ]);
 
         self::assertResponseRedirects('/categorie/');
 
-        $fixture = $this->categorieRepository->findAll();
+        $updated = $this->categorieRepository->find($fixture->getId());
 
-        self::assertSame('Something New', $fixture[0]->getNom());
+        self::assertInstanceOf(Categorie::class, $updated);
+        self::assertSame('pdf', $updated->getNom());
     }
 
-    public function testRemove(): void
+    public function testRemoveDeletesCategorie(): void
     {
-        $this->markTestIncomplete();
         $fixture = new Categorie();
-        $fixture->setNom('Value');
+        $fixture->setNom('image');
 
         $this->manager->persist($fixture);
         $this->manager->flush();
 
         $this->client->request('GET', sprintf('%s%s', $this->path, $fixture->getId()));
-        $this->client->submitForm('Delete');
+        $this->client->submitForm('Supprimer');
 
         self::assertResponseRedirects('/categorie/');
         self::assertSame(0, $this->categorieRepository->count([]));

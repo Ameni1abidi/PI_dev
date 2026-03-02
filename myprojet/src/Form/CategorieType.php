@@ -25,9 +25,6 @@ class CategorieType extends AbstractType
             'required' => true,
             'choice_translation_domain' => false,
         ]);
-        $builder
-            ->add('nom')
-        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

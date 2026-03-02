@@ -131,9 +131,6 @@ final class EvaluationNotificationController extends AbstractController
         ) {
             return $this->json([
                 'message' => 'Acces reserve aux enseignants ou administrateurs.',
-        if (!in_array('ROLE_PROF', $roles, true) && !in_array('ROLE_ENSEIGNANT', $roles, true)) {
-            return $this->json([
-                'message' => 'Acces reserve aux enseignants.',
             ], 403);
         }
 

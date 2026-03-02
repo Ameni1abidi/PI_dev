@@ -23,7 +23,7 @@ final class RessourceInsightController extends AbstractController
     #[Route('/calendar', name: 'app_ressource_calendar', methods: ['GET'])]
     public function calendarView(Request $request, ChapitreRepository $chapitreRepository): Response
     {
-        if (!$this->isGranted('ROLE_PROF') && !$this->isGranted('ROLE_ADMIN')) {
+        if (!$this->hasTeacherAccess()) {
             throw $this->createAccessDeniedException('Acces reserve aux enseignants.');
         }
 
@@ -34,14 +34,14 @@ final class RessourceInsightController extends AbstractController
             'chapitre' => $chapitre,
             'cours' => $chapitre?->getCours(),
             'chapitre_id' => $chapitreId,
-            'is_teacher' => $this->isGranted('ROLE_PROF') || $this->isGranted('ROLE_ADMIN'),
+            'is_teacher' => $this->hasTeacherAccess(),
         ]);
     }
 
     #[Route('/calendar/{id}/move', name: 'app_ressource_calendar_move', methods: ['POST'])]
     public function moveCalendarEvent(Request $request, Ressource $ressource, EntityManagerInterface $entityManager): JsonResponse
     {
-        if (!$this->isGranted('ROLE_PROF') && !$this->isGranted('ROLE_ADMIN')) {
+        if (!$this->hasTeacherAccess()) {
             throw $this->createAccessDeniedException('Acces reserve aux enseignants.');
         }
 
@@ -77,7 +77,7 @@ final class RessourceInsightController extends AbstractController
         RessourceRepository $ressourceRepository,
         RessourceInteractionRepository $interactionRepository
     ): Response {
-        if (!$this->isGranted('ROLE_PROF') && !$this->isGranted('ROLE_ADMIN')) {
+        if (!$this->hasTeacherAccess()) {
             throw $this->createAccessDeniedException('Acces reserve aux enseignants.');
         }
 
@@ -122,7 +122,7 @@ final class RessourceInsightController extends AbstractController
         RessourceRepository $ressourceRepository,
         RessourceInteractionRepository $interactionRepository
     ): JsonResponse {
-        if (!$this->isGranted('ROLE_PROF') && !$this->isGranted('ROLE_ADMIN')) {
+        if (!$this->hasTeacherAccess()) {
             throw $this->createAccessDeniedException('Acces reserve aux enseignants.');
         }
 
@@ -351,5 +351,12 @@ final class RessourceInsightController extends AbstractController
             'category' => $category,
             'timeline' => $timeline,
         ];
+    }
+
+    private function hasTeacherAccess(): bool
+    {
+        return $this->isGranted('ROLE_PROF')
+            || $this->isGranted('ROLE_ENSEIGNANT')
+            || $this->isGranted('ROLE_ADMIN');
     }
 }

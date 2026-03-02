@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Smalot\PdfParser\Parser;
 use Stichoza\GoogleTranslate\GoogleTranslate;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -47,7 +48,8 @@ final class ChapitreController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $fichier = $form->get('contenuFichier')->getData();
             if ($fichier) {
-                $nomFichier = uniqid() . '.' . $fichier->guessExtension();
+                $extension = $this->resolveUploadedExtension($fichier);
+                $nomFichier = uniqid() . '.' . $extension;
                 $fichier->move($this->getParameter('chapitres_directory'), $nomFichier);
                 $chapitre->setContenuFichier($nomFichier);
             }
@@ -87,7 +89,8 @@ final class ChapitreController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $fichier = $form->get('contenuFichier')->getData();
             if ($fichier) {
-                $nomFichier = uniqid() . '.' . $fichier->guessExtension();
+                $extension = $this->resolveUploadedExtension($fichier);
+                $nomFichier = uniqid() . '.' . $extension;
                 $fichier->move($this->getParameter('chapitres_directory'), $nomFichier);
                 $chapitre->setContenuFichier($nomFichier);
             }
@@ -145,5 +148,17 @@ final class ChapitreController extends AbstractController
             'texteTraduit' => $texteTraduit,
             'hideWeather' => true,
         ]);
+    }
+
+    private function resolveUploadedExtension(UploadedFile $uploadedFile): string
+    {
+        $extension = strtolower((string) $uploadedFile->getClientOriginalExtension());
+        if ($extension !== '') {
+            return $extension;
+        }
+
+        $extension = strtolower((string) pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_EXTENSION));
+
+        return $extension !== '' ? $extension : 'bin';
     }
 }

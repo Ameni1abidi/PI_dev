@@ -12,8 +12,6 @@ use App\Repository\RessourceLikeRepository;
 use App\Repository\RessourceQuizRepository;
 use App\Repository\RessourceRepository;
 use App\Service\RessourceQuizGeneratorService;
-use App\Form\CoursType;
-use App\Repository\CoursRepository;
 use App\Repository\StudentChapitreProgressRepository;
 use App\Repository\StudentRepository;
 use App\Repository\UtilisateurRepository;
@@ -37,42 +35,6 @@ final class CoursController extends AbstractController
 {
     private ?bool $hasRessourceQuizTable = null;
 
-    #[Route('/cours', name: 'app_cours_index')]
-    public function index(Request $request, CoursRepository $coursRepo): Response
-    {
-    
-        $keyword = $request->query->get('search'); 
-
-        if ($keyword) {
-            $cours = $coursRepo->findByTitre($keyword);
-        } else {
-            $cours = $coursRepo->findAll();
-        }
-
-        return $this->render('cours/index.html.twig', [
-            'cours' => $cours,
-        ]);
-    }
-
-    #[Route('/new', name: 'app_cours_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $cour = new Cours();
-        $form = $this->createForm(CoursType::class, $cour);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($cour);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_cours_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('cours/new.html.twig', [
-            'cour' => $cour,
-            'form' => $form,
-        ]);
-    }
 
     public function __construct(private readonly WeatherService $weatherService)
     {
@@ -301,11 +263,6 @@ public function new(
         ]);
     }
 
-    #[Route('/{id}', name: 'app_cours_delete', methods: ['POST'])]
-            ...$this->buildTeacherLayoutData(),
-        ]);
-    }
-
     #[Route('/{id}/delete', name: 'app_cours_delete', methods: ['POST'])]
     #[Route('/{id}', name: 'app_cours_delete_legacy', methods: ['POST'])]
 public function delete(Request $request, Cours $cour, EntityManagerInterface $entityManager): Response
@@ -356,8 +313,32 @@ public function delete(Request $request, Cours $cour, EntityManagerInterface $en
     ): Response
     {
         $chapitreId = (int) $chapitre->getId();
+        $showFavorisOnly = $request->query->getBoolean('favoris', false);
         $ressources = $ressourceRepository->findByChapitreId($chapitreId);
         $topRessources = $ressourceRepository->findTopByChapitreId($chapitreId, 3);
+
+        $likedIds = [];
+        $favoriIds = [];
+        $user = $this->getUser();
+        if ($user instanceof Utilisateur) {
+            $likedIds = $ressourceLikeRepository->findLikedRessourceIdsByUtilisateurAndChapitre($user, $chapitreId);
+            $favoriIds = $ressourceFavoriRepository->findFavoriRessourceIdsByUtilisateurAndChapitre($user, $chapitreId);
+        }
+
+        if ($showFavorisOnly) {
+            $favoriMap = array_flip(array_map('intval', $favoriIds));
+            $ressources = array_values(array_filter(
+                $ressources,
+                static fn ($ressource): bool => isset($favoriMap[(int) ($ressource->getId() ?? 0)])
+            ));
+
+            usort(
+                $ressources,
+                static fn ($a, $b): int => ((int) ($b->getScore() ?? 0)) <=> ((int) ($a->getScore() ?? 0))
+            );
+            $topRessources = array_slice($ressources, 0, 3);
+        }
+
         $ressourceIds = array_values(array_filter(array_map(
             static fn ($ressource) => $ressource->getId(),
             $ressources
@@ -389,14 +370,6 @@ public function delete(Request $request, Cours $cour, EntityManagerInterface $en
             }
         }
 
-        $likedIds = [];
-        $favoriIds = [];
-        $user = $this->getUser();
-        if ($user instanceof Utilisateur) {
-            $likedIds = $ressourceLikeRepository->findLikedRessourceIdsByUtilisateurAndChapitre($user, $chapitreId);
-            $favoriIds = $ressourceFavoriRepository->findFavoriRessourceIdsByUtilisateurAndChapitre($user, $chapitreId);
-        }
-
         return $this->render('student/chapitre_ressources.html.twig', [
             'chapitre' => $chapitre,
             'cours' => $chapitre->getCours(),
@@ -404,6 +377,7 @@ public function delete(Request $request, Cours $cour, EntityManagerInterface $en
             'top_ressources' => $topRessources,
             'liked_ids' => $likedIds,
             'favori_ids' => $favoriIds,
+            'show_favoris_only' => $showFavorisOnly,
             'quiz_by_ressource' => $quizByRessource,
             'quiz_results' => (array) $request->getSession()->get('quiz_results', []),
         ]);
@@ -548,6 +522,9 @@ public function delete(Request $request, Cours $cour, EntityManagerInterface $en
             'total' => $total,
             'note' => $note,
             'corrections' => $corrections,
+        ];
+    }
+
     private function buildTeacherLayoutData(): array
     {
         return [
@@ -556,3 +533,4 @@ public function delete(Request $request, Cours $cour, EntityManagerInterface $en
         ];
     }
 }
+

@@ -13,7 +13,7 @@ final class CoursControllerTest extends WebTestCase
     private KernelBrowser $client;
     private EntityManagerInterface $manager;
     private EntityRepository $courRepository;
-    private string $path = '/cours/';
+    private string $path = '/cours/cours';
 
     protected function setUp(): void
     {
@@ -34,7 +34,7 @@ final class CoursControllerTest extends WebTestCase
         $crawler = $this->client->request('GET', $this->path);
 
         self::assertResponseStatusCodeSame(200);
-        self::assertPageTitleContains('Cour index');
+        self::assertPageTitleContains('Mes Cours');
 
         // Use the $crawler to perform additional assertions e.g.
         // self::assertSame('Some text on the page', $crawler->filter('.p')->first()->text());

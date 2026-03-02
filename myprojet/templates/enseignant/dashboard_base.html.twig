@@ -1,28 +1,29 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="utf-8">
     <title>{% block title %}EduFlex - Espace Enseignant{% endblock %}</title>
+
     {% block stylesheets %}
       <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
       <link rel="stylesheet" href="{{ asset('enseignant/css/enseignant.css') }}">
     {% endblock %}
-    <title>EduFlex - Espace Enseignant</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('enseignant/css/enseignant.css') }}">
     <style>
+        .teacher-content {
+            max-width: 1320px;
+            margin: 0 auto;
+        }
+
         .teacher-topbar-modern {
-            display: flex;
-            align-items: stretch;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: 1fr 320px;
             gap: 18px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
+            align-items: start;
+            margin-bottom: 22px;
         }
 
         .teacher-topbar-hero {
-            flex: 1 1 320px;
             min-height: 120px;
             border-radius: 24px;
             padding: 18px 20px;
@@ -55,7 +56,6 @@
         }
 
         .teacher-weather-card {
-            flex: 0 1 320px;
             border-radius: 24px;
             padding: 16px;
             background: linear-gradient(145deg, #101b2d 0%, #1d3557 55%, #2d4f85 100%);
@@ -125,10 +125,20 @@
             border: 1px solid rgba(255, 255, 255, 0.22);
         }
 
+        @media (max-width: 1100px) {
+            .teacher-topbar-modern {
+                grid-template-columns: 1fr;
+            }
+        }
+
         @media (max-width: 640px) {
-            .teacher-weather-card,
             .teacher-topbar-hero {
-                flex-basis: 100%;
+                padding: 14px;
+                min-height: auto;
+            }
+
+            .teacher-topbar-hero img {
+                height: 72px;
             }
         }
     </style>
@@ -137,7 +147,6 @@
 <body>
 <div class="teacher-shell">
 
-    <!-- SIDEBAR -->
     <aside class="teacher-sidebar">
         <div class="teacher-brand">
             <div class="teacher-brand-mark">EF</div>
@@ -156,110 +165,82 @@
         </div>
 
         <nav class="teacher-nav">
-            <a href="{{ path('app_enseignant_dashboard') }}">
+            <a href="{{ path('app_enseignant_dashboard') }}" class="{{ app.request.attributes.get('_route') == 'app_enseignant_dashboard' ? 'is-active' : '' }}">
                 <span>DB</span> Tableau de bord
             </a>
-            {% if app.request.attributes.get('_route') == 'app_enseignant_dashboard' %}
-              <a href="#forums">
-                <span>FO</span>
-                Forum
-              </a>
-            {% else %}
-              <a href="{{ path('app_forum_index_context', {'context': 'enseignant'}) }}">
-                <span>FO</span>
-                Forum
-              </a>
-            {% endif %}
-            <a href="{{ path('app_enseignant_classes') }}">
-             <a href="{{ path('app_forum_index_context', {'context': 'enseignant'}) }}">
-            <span>FO</span>
-            Forum
-          </a>
-            <a href="#">
+            <a href="{{ path('app_forum_index_context', {'context': 'enseignant'}) }}" class="{{ app.request.attributes.get('_route') == 'app_forum_index_context' ? 'is-active' : '' }}">
+                <span>FO</span> Forum
+            </a>
+            <a href="{{ path('app_enseignant_classes') }}" class="{{ app.request.attributes.get('_route') == 'app_enseignant_classes' ? 'is-active' : '' }}">
                 <span>CL</span> Mes classes
             </a>
-            <a href="{{ path('app_cours_index') }}">
+            <a href="{{ path('app_cours_index') }}" class="{{ app.request.attributes.get('_route') starts with 'app_cours_' ? 'is-active' : '' }}">
                 <span>C</span> Cours
             </a>
-           
-            <a href="{{ path('app_ressource_index') }}">
+            <a href="{{ path('app_ressource_index') }}" class="{{ app.request.attributes.get('_route') starts with 'app_ressource_' ? 'is-active' : '' }}">
                 <span>RS</span> Ressource
             </a>
-            <a href="{{ path('app_examen_index') }}">
+            <a href="{{ path('app_examen_index') }}" class="{{ app.request.attributes.get('_route') starts with 'app_examen_' ? 'is-active' : '' }}">
                 <span>EX</span> Examens
             </a>
-            <a href="{{ path('app_enseignant_evaluations') }}">
-            <a href="#">
+            <a href="{{ path('app_enseignant_evaluations') }}" class="{{ app.request.attributes.get('_route') starts with 'app_enseignant_evaluations' ? 'is-active' : '' }}">
                 <span>EV</span> Evaluations
             </a>
-            <a href="{{ path('app_resultat_index') }}">
-                <span>RS</span> Resultats
+            <a href="{{ path('app_resultat_index') }}" class="{{ app.request.attributes.get('_route') starts with 'app_resultat_' ? 'is-active' : '' }}">
+                <span>RT</span> Resultats
             </a>
-            <a href="{{ path('app_forum_index_context', {'context': 'enseignant'}) }}">
-            <a href="#">
+            <a href="{{ path('app_forum_index_context', {'context': 'enseignant'}) }}" class="{{ app.request.attributes.get('_route') == 'app_forum_index_context' ? 'is-active' : '' }}">
                 <span>MS</span> Messages
             </a>
         </nav>
     </aside>
 
-    <!-- MAIN CONTENT -->
     <main class="teacher-main">
-
-        <header class="teacher-topbar">
-            <div style="display:flex; flex-direction:column;">
-                <img src="{{ asset('images/cours.jpg') }}"
-                     alt="Cours"
-                     style="height:80px; border-radius:5px; margin-bottom:5px;">
-                <div class="teacher-sub">
-                    Bienvenue dans votre espace
-                </div>
-            </div>
-        <header class="teacher-topbar-modern">
-            {% set meteoDesc = weather.description|default('Indisponible') %}
-            {% set meteoIcon = '☁' %}
-            {% if meteoDesc == 'Ciel degage' %}
-                {% set meteoIcon = '☀' %}
-            {% elseif meteoDesc in ['Pluie', 'Averses'] %}
-                {% set meteoIcon = '☂' %}
-            {% elseif meteoDesc in ['Orage'] %}
-                {% set meteoIcon = '⚡' %}
-            {% elseif meteoDesc in ['Neige'] %}
-                {% set meteoIcon = '❄' %}
-            {% endif %}
-
-            <div class="teacher-topbar-hero">
-                <img src="{{ asset('images/cours.jpg') }}" alt="Cours">
-                <div>
-                    <h1 class="teacher-topbar-title">Bienvenue dans votre espace enseignant</h1>
-                    <div class="teacher-topbar-sub">Suivez vos cours, vos chapitres et les stats en temps reel.</div>
-                </div>
-            </div>
-
-            {% if not (hideWeather|default(false)) %}
-                <div class="teacher-weather-card">
-                    <div class="teacher-weather-row">
-                        <div>
-                            <div class="teacher-weather-date">{{ todayDate|default("now"|date("d/m/Y")) }}</div>
-                            <div class="teacher-weather-city">{{ weather.city|default('Tunis') }}</div>
-                        </div>
-                        <div class="teacher-weather-icon">{{ meteoIcon }}</div>
-                    </div>
-                    <div class="teacher-weather-temp">
-                        {% if weather.temperature is defined and weather.temperature is not null %}
-                            {{ weather.temperature|round }} C
-                        {% else %}
-                            -- C
-                        {% endif %}
-                    </div>
-                    <div class="teacher-weather-desc">{{ meteoDesc }}</div>
-                </div>
-            {% endif %}
-        </header>
-
         <div class="teacher-content">
+            {% set meteoDesc = weather.description|default('Indisponible') %}
+            {% set meteoIcon = 'CLOUD' %}
+            {% if meteoDesc == 'Ciel degage' %}
+                {% set meteoIcon = 'SUN' %}
+            {% elseif meteoDesc in ['Pluie', 'Averses'] %}
+                {% set meteoIcon = 'RAIN' %}
+            {% elseif meteoDesc in ['Orage'] %}
+                {% set meteoIcon = 'STORM' %}
+            {% elseif meteoDesc in ['Neige'] %}
+                {% set meteoIcon = 'SNOW' %}
+            {% endif %}
+
+            <header class="teacher-topbar-modern">
+                <div class="teacher-topbar-hero">
+                    <img src="{{ asset('images/cours.jpg') }}" alt="Cours">
+                    <div>
+                        <h1 class="teacher-topbar-title">Bienvenue dans votre espace enseignant</h1>
+                        <div class="teacher-topbar-sub">Suivez vos cours, vos chapitres et les statistiques en temps reel.</div>
+                    </div>
+                </div>
+
+                {% if not (hideWeather|default(false)) %}
+                    <div class="teacher-weather-card">
+                        <div class="teacher-weather-row">
+                            <div>
+                                <div class="teacher-weather-date">{{ todayDate|default("now"|date("d/m/Y")) }}</div>
+                                <div class="teacher-weather-city">{{ weather.city|default('Tunis') }}</div>
+                            </div>
+                            <div class="teacher-weather-icon">{{ meteoIcon }}</div>
+                        </div>
+                        <div class="teacher-weather-temp">
+                            {% if weather.temperature is defined and weather.temperature is not null %}
+                                {{ weather.temperature|round }} C
+                            {% else %}
+                                -- C
+                            {% endif %}
+                        </div>
+                        <div class="teacher-weather-desc">{{ meteoDesc }}</div>
+                    </div>
+                {% endif %}
+            </header>
+
             {% block body %}{% endblock %}
         </div>
-
     </main>
 
 </div>

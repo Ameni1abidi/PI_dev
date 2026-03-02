@@ -2,62 +2,296 @@
 
 {% block title %}Dashboard Ressources{% endblock %}
 
+{% block stylesheets %}
+  {{ parent() }}
+  <style>
+    .rs-dashboard {
+      --rs-bg-1: #f8fbff;
+      --rs-bg-2: #eef6ff;
+      --rs-border: #d9e4f2;
+      --rs-text: #112338;
+      --rs-muted: #4d647f;
+      --rs-primary: #1d4ed8;
+      --rs-primary-soft: #dbeafe;
+      --rs-success: #0f766e;
+      --rs-success-soft: #ccfbf1;
+      --rs-warning: #b45309;
+      --rs-warning-soft: #ffedd5;
+      --rs-info: #1e3a8a;
+      --rs-info-soft: #dbeafe;
+      font-family: 'Manrope', sans-serif;
+      color: var(--rs-text);
+    }
+
+    .rs-shell {
+      padding: 22px;
+      border-radius: 20px;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.16), transparent 35%),
+        radial-gradient(circle at 100% 100%, rgba(15, 118, 110, 0.14), transparent 35%),
+        linear-gradient(160deg, var(--rs-bg-1) 0%, var(--rs-bg-2) 100%);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+    }
+
+    .rs-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .rs-title {
+      margin: 0;
+      font-size: 1.45rem;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+    }
+
+    .rs-sub {
+      margin-top: 6px;
+      color: var(--rs-muted);
+      font-size: 0.94rem;
+    }
+
+    .rs-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    .rs-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 9px 14px;
+      border-radius: 999px;
+      text-decoration: none;
+      border: 1px solid transparent;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.2s ease;
+    }
+
+    .rs-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(30, 58, 138, 0.16);
+    }
+
+    .rs-btn-refresh {
+      background: var(--rs-success-soft);
+      color: #065f46;
+      border-color: rgba(15, 118, 110, 0.26);
+    }
+
+    .rs-btn-calendar {
+      background: #e2e8f0;
+      color: #0f172a;
+      border-color: rgba(100, 116, 139, 0.24);
+    }
+
+    .rs-btn-back {
+      background: var(--rs-primary-soft);
+      color: var(--rs-primary);
+      border-color: rgba(37, 99, 235, 0.24);
+    }
+
+    .rs-kpis {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .rs-kpi {
+      background: #ffffff;
+      border: 1px solid var(--rs-border);
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+    }
+
+    .rs-kpi-label {
+      margin: 0;
+      font-size: 0.83rem;
+      color: var(--rs-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.45px;
+      font-weight: 700;
+    }
+
+    .rs-kpi-value {
+      margin-top: 8px;
+      font-size: 1.52rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .rs-kpi-vues .rs-kpi-value { color: var(--rs-info); }
+    .rs-kpi-likes .rs-kpi-value { color: #9a3412; }
+    .rs-kpi-favoris .rs-kpi-value { color: #be123c; }
+    .rs-kpi-score .rs-kpi-value { color: var(--rs-success); }
+
+    .rs-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .rs-card {
+      background: #ffffff;
+      border: 1px solid var(--rs-border);
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+    }
+
+    .rs-card-title {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 800;
+      color: #1f2d3d;
+    }
+
+    .rs-list {
+      margin: 10px 0 0 20px;
+      padding: 0;
+    }
+
+    .rs-list li {
+      margin-bottom: 6px;
+      color: #25384f;
+    }
+
+    .rs-stamp {
+      margin-top: 10px;
+      font-size: 0.82rem;
+      color: #64748b;
+    }
+
+    .rs-charts {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 12px;
+    }
+
+    .rs-chart {
+      background: #ffffff;
+      border: 1px solid var(--rs-border);
+      border-radius: 14px;
+      min-height: 380px;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+    }
+
+    .rs-note {
+      margin: 0;
+      color: var(--rs-muted);
+      font-size: 0.89rem;
+      line-height: 1.55;
+    }
+
+    @media (max-width: 960px) {
+      .rs-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .rs-shell {
+        padding: 14px;
+      }
+
+      .rs-title {
+        font-size: 1.2rem;
+      }
+
+      .rs-btn {
+        width: 100%;
+      }
+
+      .rs-actions {
+        width: 100%;
+      }
+
+      .rs-charts {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+{% endblock %}
+
 {% block body %}
-<div style="padding:20px; background:#f8fafc; border-radius:16px;">
-  <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:16px; flex-wrap:wrap;">
-    <div>
-      <h2 style="margin:0; color:#0f172a;">Dashboard des ressources</h2>
-      <div style="margin-top:4px; color:#475569;">
-        {% if chapitre is not null %}
-          Chapitre: {{ chapitre.titre }} | Cours: {{ cours ? cours.titre : '' }}
-        {% else %}
-          Vue globale: toutes les ressources
-        {% endif %}
+  <div class="rs-dashboard">
+    <section class="rs-shell">
+      <div class="rs-head">
+        <div>
+          <h2 class="rs-title">Dashboard des ressources</h2>
+          <div class="rs-sub">
+            {% if chapitre is not null %}
+              Chapitre: {{ chapitre.titre }} | Cours: {{ cours ? cours.titre : '' }}
+            {% else %}
+              Vue globale: toutes les ressources
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="rs-actions">
+          <button id="refresh-dashboard" class="rs-btn rs-btn-refresh">Actualiser (Ajax)</button>
+          <a class="rs-btn rs-btn-calendar" href="{{ path('app_ressource_calendar', chapitre_id is defined and chapitre_id > 0 ? {'chapitre_id': chapitre_id} : {}) }}">Calendrier</a>
+          <a class="rs-btn rs-btn-back" href="{{ path('app_ressource_index', chapitre_id is defined and chapitre_id > 0 ? {'chapitre_id': chapitre_id} : {}) }}">Retour ressources</a>
+        </div>
       </div>
-    </div>
-    <div style="display:flex; gap:8px;">
-      <button id="refresh-dashboard" style="padding:8px 12px; border:none; background:#dcfce7; color:#166534; border-radius:999px; font-weight:700; cursor:pointer;">Actualiser (Ajax)</button>
-      <a href="{{ path('app_ressource_calendar', chapitre_id is defined and chapitre_id > 0 ? {'chapitre_id': chapitre_id} : {}) }}" style="padding:8px 12px; background:#e2e8f0; border-radius:999px; text-decoration:none; color:#0f172a; font-weight:700;">Calendrier</a>
-      <a href="{{ path('app_ressource_index', chapitre_id is defined and chapitre_id > 0 ? {'chapitre_id': chapitre_id} : {}) }}" style="padding:8px 12px; background:#dbeafe; border-radius:999px; text-decoration:none; color:#1e3a8a; font-weight:700;">Retour ressources</a>
-    </div>
-  </div>
 
-  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px; margin-bottom:16px;">
-    <div style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:12px;">
-      <div style="color:#64748b; font-size:0.85rem;">Total vues</div>
-      <div id="kpi-vues" style="font-size:1.4rem; font-weight:800;">{{ summary.totalVues }}</div>
-    </div>
-    <div style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:12px;">
-      <div style="color:#64748b; font-size:0.85rem;">Total likes</div>
-      <div id="kpi-likes" style="font-size:1.4rem; font-weight:800;">{{ summary.totalLikes }}</div>
-    </div>
-    <div style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:12px;">
-      <div style="color:#64748b; font-size:0.85rem;">Total favoris</div>
-      <div id="kpi-favoris" style="font-size:1.4rem; font-weight:800;">{{ summary.totalFavoris }}</div>
-    </div>
-    <div style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:12px;">
-      <div style="color:#64748b; font-size:0.85rem;">Score moyen</div>
-      <div id="kpi-score" style="font-size:1.4rem; font-weight:800;">{{ summary.scoreMoyen }}</div>
-    </div>
-  </div>
+      <div class="rs-kpis">
+        <article class="rs-kpi rs-kpi-vues">
+          <p class="rs-kpi-label">Total vues</p>
+          <div id="kpi-vues" class="rs-kpi-value">{{ summary.totalVues }}</div>
+        </article>
 
-  <div style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:12px; margin-bottom:16px;">
-    <strong>Top ressources</strong>
-    <ol id="top-ressources" style="margin:8px 0 0 18px;">
-      {% for row in top_ressources %}
-        <li>{{ row.titre }} - score {{ row.score }} ({{ row.categorie }})</li>
-      {% endfor %}
-    </ol>
-    <div id="last-refresh" style="margin-top:8px; color:#64748b; font-size:0.82rem;">Derniere mise a jour: chargement initial</div>
-  </div>
+        <article class="rs-kpi rs-kpi-likes">
+          <p class="rs-kpi-label">Total likes</p>
+          <div id="kpi-likes" class="rs-kpi-value">{{ summary.totalLikes }}</div>
+        </article>
 
-  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(360px,1fr)); gap:12px;">
-    <div id="chart-engagement" style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; min-height:380px;"></div>
-    <div id="chart-ranking" style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; min-height:380px;"></div>
-    <div id="chart-category" style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; min-height:380px;"></div>
-    <div id="chart-timeline" style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; min-height:380px;"></div>
+        <article class="rs-kpi rs-kpi-favoris">
+          <p class="rs-kpi-label">Total favoris</p>
+          <div id="kpi-favoris" class="rs-kpi-value">{{ summary.totalFavoris }}</div>
+        </article>
+
+        <article class="rs-kpi rs-kpi-score">
+          <p class="rs-kpi-label">Score moyen</p>
+          <div id="kpi-score" class="rs-kpi-value">{{ summary.scoreMoyen }}</div>
+        </article>
+      </div>
+
+      <div class="rs-grid">
+        <section class="rs-card">
+          <h3 class="rs-card-title">Top ressources</h3>
+          <ol id="top-ressources" class="rs-list">
+            {% for row in top_ressources %}
+              <li>{{ row.titre }} - score {{ row.score }} ({{ row.categorie }})</li>
+            {% else %}
+              <li>Aucune ressource disponible</li>
+            {% endfor %}
+          </ol>
+          <div id="last-refresh" class="rs-stamp">Derniere mise a jour: chargement initial</div>
+        </section>
+
+      </div>
+
+      <div class="rs-charts">
+        <div id="chart-engagement" class="rs-chart"></div>
+        <div id="chart-ranking" class="rs-chart"></div>
+        <div id="chart-category" class="rs-chart"></div>
+        <div id="chart-timeline" class="rs-chart"></div>
+      </div>
+    </section>
   </div>
-</div>
 {% endblock %}
 
 {% block javascripts %}
@@ -76,19 +310,50 @@
 
           new google.visualization.ColumnChart(document.getElementById('chart-engagement')).draw(
             engagementData,
-            { title: 'Engagement par ressource', height: 360, legend: { position: 'top' } }
+            {
+              title: 'Engagement par ressource',
+              height: 360,
+              legend: { position: 'top' },
+              backgroundColor: 'transparent',
+              chartArea: { left: 56, top: 50, width: '78%', height: '70%' },
+              colors: ['#1d4ed8', '#ea580c', '#e11d48']
+            }
           );
+
           new google.visualization.ColumnChart(document.getElementById('chart-ranking')).draw(
             rankingData,
-            { title: 'Top ressources par score', height: 360, legend: { position: 'none' } }
+            {
+              title: 'Top ressources par score',
+              height: 360,
+              legend: { position: 'none' },
+              backgroundColor: 'transparent',
+              chartArea: { left: 56, top: 50, width: '78%', height: '70%' },
+              colors: ['#0f766e']
+            }
           );
+
           new google.visualization.PieChart(document.getElementById('chart-category')).draw(
             categoryData,
-            { title: 'Repartition des ressources par categorie', height: 360 }
+            {
+              title: 'Repartition des ressources par categorie',
+              height: 360,
+              backgroundColor: 'transparent',
+              chartArea: { left: 16, top: 50, width: '90%', height: '74%' },
+              pieHole: 0.45,
+              colors: ['#2563eb', '#f59e0b', '#14b8a6', '#e11d48', '#64748b']
+            }
           );
+
           new google.visualization.LineChart(document.getElementById('chart-timeline')).draw(
             timelineData,
-            { title: 'Evolution des interactions (30 jours)', height: 360, legend: { position: 'top' } }
+            {
+              title: 'Evolution des interactions (30 jours)',
+              height: 360,
+              legend: { position: 'top' },
+              backgroundColor: 'transparent',
+              chartArea: { left: 56, top: 50, width: '78%', height: '70%' },
+              colors: ['#1d4ed8', '#ea580c', '#e11d48']
+            }
           );
         } catch (e) {
           console.error('Erreur Google Charts:', e);
@@ -101,11 +366,12 @@
         }
       }
 
-      google.charts.load('current', {packages: ['corechart']});
+      google.charts.load('current', { packages: ['corechart'] });
       google.charts.setOnLoadCallback(drawAllCharts);
       window.addEventListener('resize', drawAllCharts);
     })();
   </script>
+
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       const btn = document.getElementById('refresh-dashboard');
@@ -125,13 +391,22 @@
 
             const top = document.getElementById('top-ressources');
             top.innerHTML = '';
-            (data.topRessources || []).forEach(function (row) {
+            if ((data.topRessources || []).length === 0) {
               const li = document.createElement('li');
-              li.textContent = row.titre + ' - score ' + row.score + ' (' + row.categorie + ')';
+              li.textContent = 'Aucune ressource disponible';
               top.appendChild(li);
-            });
+            } else {
+              (data.topRessources || []).forEach(function (row) {
+                const li = document.createElement('li');
+                li.textContent = row.titre + ' - score ' + row.score + ' (' + row.categorie + ')';
+                top.appendChild(li);
+              });
+            }
 
             document.getElementById('last-refresh').textContent = 'Derniere mise a jour: ' + data.generatedAt;
+          })
+          .catch(function () {
+            document.getElementById('last-refresh').textContent = 'Erreur lors de l actualisation';
           });
       });
     });

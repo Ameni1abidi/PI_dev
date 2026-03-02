@@ -25,12 +25,6 @@ class Examen
     #[ORM\Column(type: Types::TEXT)]
     private ?string $contenu = null;
 
-    #[Assert\Length(
-        max: 255,
-        maxMessage: 'Le titre ne doit pas dépasser {{ limit }} caractères.'
-    )]
-    private ?string $titre = null;
-
     #[ORM\Column(length: 20)]
     #[Assert\NotBlank(message: 'Le type est obligatoire.')]
     #[Assert\Choice(choices: ['quiz', 'devoir', 'examen'], message: 'Type invalide.')]
@@ -54,29 +48,15 @@ class Examen
     #[ORM\JoinColumn(name: 'enseignant_id', referencedColumnName: 'id', nullable: false)]
     #[Assert\NotNull(message: 'L enseignant est obligatoire.')]
     private ?Utilisateur $enseignant = null;
-    #[Assert\NotNull(message: 'La date de l’examen est obligatoire.')]
-    private ?\DateTimeInterface $dateExamen = null;
-
-    #[ORM\Column]
-    #[Assert\NotNull(message: 'La durée est obligatoire.')]
-    #[Assert\Positive(message: 'La durée doit être positive.')]
-    private ?int $duree = null;
-
-    #[ORM\Column]
-    #[Assert\NotNull(message: 'Le cours est obligatoire.')]
-    #[Assert\Positive(message: 'Le cours doit être un identifiant positif.')]
-    private ?int $coursId = null;
-
-    #[ORM\Column]
-    #[Assert\NotNull(message: 'L’enseignant est obligatoire.')]
-    #[Assert\Positive(message: 'L’enseignant doit être un identifiant positif.')]
-    private ?int $enseignantId = null;
 
     /**
      * @var Collection<int, Resultat>
      */
     #[ORM\OneToMany(targetEntity: Resultat::class, mappedBy: 'examen', orphanRemoval: true)]
     private Collection $resultats;
+
+    private ?int $legacyCoursId = null;
+    private ?int $legacyEnseignantId = null;
 
     public function __construct()
     {
@@ -96,6 +76,7 @@ class Examen
     public function setTitre(string $titre): static
     {
         $this->titre = $titre;
+
         return $this;
     }
 
@@ -131,9 +112,6 @@ class Examen
     public function setDateExamen(?\DateTimeInterface $dateExamen): static
     {
         $this->dateExamen = $dateExamen;
-    public function setDateExamen(\DateTimeInterface $dateExamen): static
-    {
-        $this->dateExamen = $dateExamen;
 
         return $this;
     }
@@ -146,6 +124,7 @@ class Examen
     public function setDuree(int $duree): static
     {
         $this->duree = $duree;
+
         return $this;
     }
 
@@ -157,6 +136,7 @@ class Examen
     public function setCours(?Cours $cours): static
     {
         $this->cours = $cours;
+
         return $this;
     }
 
@@ -174,24 +154,24 @@ class Examen
 
     public function getCoursId(): ?int
     {
-        return $this->coursId;
+        return $this->cours?->getId() ?? $this->legacyCoursId;
     }
 
     public function setCoursId(int $coursId): static
     {
-        $this->coursId = $coursId;
+        $this->legacyCoursId = $coursId;
 
         return $this;
     }
 
     public function getEnseignantId(): ?int
     {
-        return $this->enseignantId;
+        return $this->enseignant?->getId() ?? $this->legacyEnseignantId;
     }
 
     public function setEnseignantId(int $enseignantId): static
     {
-        $this->enseignantId = $enseignantId;
+        $this->legacyEnseignantId = $enseignantId;
 
         return $this;
     }

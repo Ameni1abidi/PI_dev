@@ -27,6 +27,9 @@ class Ressource
     )]
     private ?string $titre = null;
 
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $type = null;
+
     #[ORM\Column(type: Types::TEXT)]
     private ?string $contenu = null;
 
@@ -95,24 +98,6 @@ class Ressource
         $this->quizzes = new ArrayCollection();
     }
 
-    #[Assert\NotBlank(message: "Le titre est obligatoire.")]
-    #[Assert\Length(max: 150, maxMessage: "Le titre ne peut pas dépasser {{ limit }} caractères.")]
-    private ?string $titre = null;
-
-    #[ORM\Column(length: 50)]
-    #[Assert\NotBlank(message: "Le type est obligatoire.")]
-    #[Assert\Length(max: 50)]
-    private ?string $type = null;
-
-    #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank(message: "Le contenu est obligatoire.")]
-    private ?string $contenu = null;
-
-    #[ORM\ManyToOne(inversedBy: 'ressources')]
-    #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotNull(message: "La catégorie est obligatoire.")]
-    private ?Categorie $categorie = null;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -135,9 +120,10 @@ class Ressource
         return $this->type;
     }
 
-    public function setType(string $type): static
+    public function setType(?string $type): static
     {
         $this->type = $type;
+
         return $this;
     }
 

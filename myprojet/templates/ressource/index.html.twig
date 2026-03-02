@@ -21,7 +21,7 @@
 
         .admin-table th:last-child,
         .admin-table td:last-child {
-            width: 180px;
+            width: 220px;
         }
 
         .admin-table thead th {
@@ -34,22 +34,11 @@
 
         .ressource-contenu-inline {
             display: inline-block;
-            max-width: 280px;
+            max-width: 320px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
             vertical-align: middle;
-        }
-
-        @media (max-width: 980px) {
-            .admin-table th:last-child,
-            .admin-table td:last-child {
-                width: 140px;
-            }
-
-            .ressource-contenu-inline {
-                max-width: 180px;
-            }
         }
 
         .ressource-contenu-link {
@@ -59,6 +48,24 @@
 
         .ressource-contenu-link:hover {
             text-decoration: underline;
+        }
+
+        .ressource-actions {
+            display: inline-flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 980px) {
+            .admin-table th:last-child,
+            .admin-table td:last-child {
+                width: 170px;
+            }
+
+            .ressource-contenu-inline {
+                max-width: 200px;
+            }
         }
     </style>
 {% endblock %}
@@ -77,7 +84,7 @@
             {% endif %}
             <a class="btn btn-outline" href="{{ path('app_ressource_calendar', chapitre_id is defined and chapitre_id > 0 ? {'chapitre_id': chapitre_id} : {}) }}">Calendrier</a>
             <a class="btn btn-outline" href="{{ path('app_ressource_dashboard', chapitre_id is defined and chapitre_id > 0 ? {'chapitre_id': chapitre_id} : {}) }}">Dashboard</a>
-            <a class="btn btn-primary" href="{{ path('app_ressource_new') }}">Creer</a>
+            <a class="btn btn-primary" href="{{ path('app_ressource_new') }}">Créer</a>
         </div>
     </div>
 
@@ -93,89 +100,80 @@
     {% endif %}
 
     <div class="admin-table-scroll">
-        <h1 class="admin-title">Ressources</h1>
-        <div class="admin-actions">
-            <a class="btn btn-primary" href="{{ path('app_ressource_new') }}">Créer</a>
-        </div>
-    </div>
-
-    <table class="admin-table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Titre</th>
-                <th>Categorie</th>
-                <th>Chapitre</th>
-                <th>Disponible le</th>
-                <th>Statut</th>
-                <th>Vues</th>
-                <th>Likes</th>
-                <th>Favoris</th>
-                <th>Score</th>
-                <th>Badge</th>
-                <th>Type</th>
-                <th>Contenu</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for ressource in ressources %}
-            <tr>
-                <td>{{ ressource.id }}</td>
-                <td>{{ ressource.titre }}</td>
-                <td>{{ ressource.categorie ? ressource.categorie.nom : '' }}</td>
-                <td>{{ ressource.chapitre ? ressource.chapitre.titre : '' }}</td>
-                <td>{{ ressource.availableAt ? ressource.availableAt|date('Y-m-d H:i') : '-' }}</td>
-                <td>
-                    {% if ressource.availableAt is null or ressource.availableAt <= date() %}
-                        <span style="background:#dcfce7;color:#166534;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:700;">Disponible</span>
-                    {% else %}
-                        <span style="background:#fef3c7;color:#92400e;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:700;">Disponible bientot</span>
-                    {% endif %}
-                </td>
-                <td>{{ ressource.nbVues }}</td>
-                <td>{{ ressource.nbLikes }}</td>
-                <td>{{ ressource.nbFavoris }}</td>
-                <td>{{ ressource.score }}</td>
-                <td>{{ ressource.badge }}</td>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Titre</th>
+                    <th>Categorie</th>
+                    <th>Chapitre</th>
+                    <th>Disponible le</th>
+                    <th>Statut</th>
+                    <th>Vues</th>
+                    <th>Likes</th>
+                    <th>Favoris</th>
+                    <th>Score</th>
+                    <th>Badge</th>
+                    <th>Contenu</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for ressource in ressources %}
                 {% set contenu = ressource.contenu|default('') %}
                 {% set isUrl = contenu starts with 'http://' or contenu starts with 'https://' %}
-                <td>
-                    {% if isUrl %}
-                        <a
-                            class="ressource-contenu-inline ressource-contenu-link"
-                            href="{{ contenu }}"
-                            target="_blank"
-                            rel="noopener"
-                            title="{{ contenu }}"
-                        >
-                            {{ contenu }}
-                        </a>
-                    {% else %}
-                        <span class="ressource-contenu-inline" title="{{ contenu }}">{{ contenu }}</span>
-                    {% endif %}
-                </td>
-                <td>
-                    <a class="btn btn-outline small" href="{{ path('app_ressource_show', {'id': ressource.id}) }}">Voir</a>
-                    <a class="btn btn-primary small" href="{{ path('app_ressource_edit', {'id': ressource.id}) }}">Modifier</a>
-                    <form method="post" action="{{ path('app_ressource_delete', {'id': ressource.id}) }}" style="display:inline;" onsubmit="return confirm('Supprimer cette ressource ?');">
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ ressource.id) }}">
-                        <button class="btn btn-danger small" type="submit">Supprimer</button>
-                    </form>
-                <td>{{ ressource.type }}</td>
-                <td>{{ ressource.contenu }}</td>
-                <td>
-                    <a class="btn btn-outline small" href="{{ path('app_ressource_show', {'id': ressource.id}) }}">Voir</a>
-                    <a class="btn btn-primary small" href="{{ path('app_ressource_edit', {'id': ressource.id}) }}">Modifier</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="13">Aucune ressource trouvee.</td>
-                <td colspan="5">Aucune ressource trouvée.</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+                <tr>
+                    <td>{{ ressource.id }}</td>
+                    <td>{{ ressource.titre }}</td>
+                    <td>{{ ressource.categorie ? ressource.categorie.nom : '' }}</td>
+                    <td>{{ ressource.chapitre ? ressource.chapitre.titre : '' }}</td>
+                    <td>{{ ressource.availableAt ? ressource.availableAt|date('Y-m-d H:i') : '-' }}</td>
+                    <td>
+                        {% if ressource.availableAt is null or ressource.availableAt <= date() %}
+                            <span style="background:#dcfce7;color:#166534;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:700;">Disponible</span>
+                        {% else %}
+                            <span style="background:#fef3c7;color:#92400e;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:700;">Disponible bientot</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ ressource.nbVues }}</td>
+                    <td>{{ ressource.nbLikes }}</td>
+                    <td>{{ ressource.nbFavoris }}</td>
+                    <td>{{ ressource.score }}</td>
+                    <td>{{ ressource.badge }}</td>
+                    <td>
+                        {% if isUrl %}
+                            <a
+                                class="ressource-contenu-inline ressource-contenu-link"
+                                href="{{ contenu }}"
+                                target="_blank"
+                                rel="noopener"
+                                title="{{ contenu }}"
+                            >
+                                {{ contenu }}
+                            </a>
+                        {% else %}
+                            <span class="ressource-contenu-inline" title="{{ contenu }}">{{ contenu }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="ressource-actions">
+                            <a class="btn btn-outline small" href="{{ path('app_ressource_show', {'id': ressource.id}) }}">Voir</a>
+                            <a class="btn btn-primary small" href="{{ path('app_ressource_edit', {'id': ressource.id}) }}">Modifier</a>
+                            <form method="post" action="{{ path('app_ressource_delete', {'id': ressource.id}) }}" style="display:inline;" onsubmit="return confirm('Supprimer cette ressource ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ ressource.id) }}">
+                                <button class="btn btn-danger small" type="submit">Supprimer</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="13">Aucune ressource trouvee.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
 {% endblock %}
+
+

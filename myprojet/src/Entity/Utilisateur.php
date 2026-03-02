@@ -8,13 +8,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\ArrayCollection;
-use App\Entity\Resultat;
-use App\Entity\Cours;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
@@ -223,6 +216,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         if (!$this->ressourceLikes->contains($ressourceLike)) {
             $this->ressourceLikes->add($ressourceLike);
             $ressourceLike->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, Cours>
      */
@@ -298,6 +296,12 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->ressourceInteractions->removeElement($ressourceInteraction)) {
             if ($ressourceInteraction->getUtilisateur() === $this) {
                 $ressourceInteraction->setUtilisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
     public function removeCours(Cours $cours): self
     {
         if ($this->cours->removeElement($cours)) {
@@ -338,6 +342,10 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setParent(?self $parent): self
     {
         $this->parent = $parent;
+
+        return $this;
+    }
+
     public function getStatus(): string
     {
         return $this->status;
@@ -372,6 +380,10 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
                 $enfant->setParent(null);
             }
         }
+
+        return $this;
+    }
+
     public function isApproved(): bool
     {
         return $this->status === self::STATUS_APPROVED;

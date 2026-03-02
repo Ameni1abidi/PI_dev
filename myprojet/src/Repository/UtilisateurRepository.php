@@ -131,13 +131,3 @@ class UtilisateurRepository extends ServiceEntityRepository
         return $result;
     }
 }
-    //    public function findOneBySomeField($value): ?Utilisateur
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
-}

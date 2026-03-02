@@ -20,20 +20,19 @@ class Chapitre
     #[Assert\NotBlank(message: 'Le titre du chapitre est obligatoire.')]
     #[Assert\Length(
         max: 30,
-        maxMessage: 'Le titre ne doit pas dÃ©passer {{ limit }} caractÃ¨res.'
+        maxMessage: 'Le titre ne doit pas dépasser {{ limit }} caractères.'
     )]
     private ?string $titre = null;
 
    #[ORM\Column]
-    #[Assert\NotNull(message: 'Lâ€™ordre du chapitre est obligatoire.')]
-    #[Assert\Positive(message: 'Lâ€™ordre doit Ãªtre un nombre positif.')]
+    #[Assert\NotNull(message: 'L’ordre du chapitre est obligatoire.')]
+    #[Assert\Positive(message: 'L’ordre doit être un nombre positif.')]
     private ?int $ordre = null;
 
      #[ORM\Column(length: 50)]
     #[Assert\NotBlank(message: 'Le type de contenu est obligatoire.')]
     #[Assert\Choice(
         choices: ['texte', 'fichier', 'video', 'devoir', 'exercice_corrige'],
-        choices: ['texte', 'fichier',],
         message: 'Type de contenu invalide.'
     )]
     private ?string $typeContenu = null;
@@ -54,16 +53,16 @@ class Chapitre
     #[Assert\When(
         expression: 'this.getTypeContenu() == "video"',
         constraints: [
-            new Assert\NotBlank(message: 'Le lien vidÃ©o est obligatoire.'),
-            new Assert\Url(message: 'Le lien vidÃ©o doit Ãªtre une URL valide.')
+            new Assert\NotBlank(message: 'Le lien vidéo est obligatoire.'),
+            new Assert\Url(message: 'Le lien vidéo doit être une URL valide.')
         ]
     )]
     private ?string $videoUrl = null;
    
 
     #[ORM\Column]
-    #[Assert\NotNull(message: 'La durÃ©e estimÃ©e est obligatoire.')]
-    #[Assert\Positive(message: 'La durÃ©e doit Ãªtre positive.')]
+    #[Assert\NotNull(message: 'La durée estimée est obligatoire.')]
+    #[Assert\Positive(message: 'La durée doit être positive.')]
     private ?int $dureeEstimee = null;
 
    #[ORM\ManyToOne(inversedBy: 'chapitres')]
