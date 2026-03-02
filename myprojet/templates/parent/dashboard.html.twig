@@ -1,6 +1,10 @@
 {% extends 'scholar_base.html.twig' %}
 
 {% block title %}Dashboard Parent - EduFlex{% endblock %}
+{% block stylesheets %}
+  {{ parent() }}
+  <link rel="stylesheet" href="{{ asset('css/parent-dashboard.css') }}">
+{% endblock %}
 
 {% block body %}
   <div id="js-preloader" class="js-preloader">
@@ -37,7 +41,7 @@
               <div class="header-text">
                 <span class="category">Espace Parent</span>
                 <h2>Suivez la progression de vos enfants</h2>
-                <p>Visualisez notes, evaluations et informations utiles depuis un seul dashboard.</p>
+                <p>Visualisez les notes de vos enfants, leurs evaluations et les informations utiles depuis un seul dashboard.</p>
                 <div class="buttons">
                   <div class="main-button"><a href="{{ path('app_forum_index_context', {'context': 'parent'}) }}">Acceder forum</a></div>
                 </div>
@@ -91,6 +95,85 @@
               <h4>Messages</h4>
               <p>Restez informes des echanges importants avec l'ecole.</p>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="parent-panel mb-4">
+              <h4 class="mb-3">Mes enfants</h4>
+              {% if enfants is empty %}
+                <p class="parent-empty">Aucun enfant n'est encore lie a votre compte.</p>
+              {% else %}
+                <div class="parent-kids">
+                  {% for enfant in enfants %}
+                    <span class="parent-pill">
+                      {{ enfant.nom }} (ID #{{ enfant.id }})
+                    </span>
+                  {% endfor %}
+                </div>
+              {% endif %}
+          </div>
+        </div>
+
+        <div class="col-lg-12">
+          <div class="parent-panel">
+              <h4 class="mb-3">Resultats de mes enfants</h4>
+              {% set hasAnyResult = false %}
+              {% for pack in resultatsParEnfant %}
+                {% if pack.resultats is not empty %}
+                  {% set hasAnyResult = true %}
+                {% endif %}
+              {% endfor %}
+
+              {% if not hasAnyResult %}
+                <p class="parent-empty">Aucun resultat disponible pour vos enfants.</p>
+              {% else %}
+                {% for pack in resultatsParEnfant %}
+                  <div class="parent-child-header">
+                    <h5 class="parent-child-title">
+                      {{ pack.enfant.nom }} (ID #{{ pack.enfant.id }})
+                    </h5>
+                    <span class="parent-pill">
+                      Moyenne: {{ pack.moyenne is null ? '-' : pack.moyenne|number_format(2, '.', ' ') ~ '/20' }}
+                    </span>
+                  </div>
+
+                  {% if pack.resultats is empty %}
+                    <p class="parent-empty is-spaced">Aucun resultat pour cet enfant.</p>
+                  {% else %}
+                    <div class="parent-table-wrap is-spaced">
+                      <table class="parent-table">
+                        <thead>
+                          <tr>
+                            <th>Examen</th>
+                            <th>Cours</th>
+                            <th>Date examen</th>
+                            <th>Note</th>
+                            <th>Appreciation</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for resultat in pack.resultats %}
+                            <tr>
+                              <td>{{ resultat.examen ? resultat.examen.titre : '-' }}</td>
+                              <td>{{ (resultat.examen and resultat.examen.cours) ? resultat.examen.cours.titre : '-' }}</td>
+                              <td>{{ (resultat.examen and resultat.examen.dateExamen) ? resultat.examen.dateExamen|date('d/m/Y') : '-' }}</td>
+                              <td><span class="parent-note">{{ resultat.note }}/20</span></td>
+                              <td>{{ resultat.appreciation ?: '-' }}</td>
+                            </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  {% endif %}
+                {% endfor %}
+              {% endif %}
           </div>
         </div>
       </div>

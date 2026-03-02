@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -29,11 +30,22 @@
           <a class="nav-link" href="#"><span class="nav-icon">📈</span>Statistiques</a>
           <a class="nav-link" href="#"><span class="nav-icon">⚙️</span>Paramètres</a>
           <a class="nav-link" href="{{ path('app_logout') }}"><span class="nav-icon">↩</span>Logout</a>
+          <a class="nav-link is-active" href="{{ path('app_admin') }}"><span class="nav-icon">D</span>Dashboard Admin</a>
+          <a class="nav-link" href="{{ path('app_admin_copilot') }}"><span class="nav-icon">AI</span>Copilote IA</a>
+          <a class="nav-link" href="{{ path('app_forum_index_context', {'context': 'admin'}) }}"><span class="nav-icon">F</span>Forum</a>
+          <a class="nav-link" href="{{ path('app_utilisateur_index') }}"><span class="nav-icon">U</span>Utilisateurs</a>
+          <a class="nav-link" href="{{ path('app_admin_classes') }}"><span class="nav-icon">C</span>Classes</a>
+          <a class="nav-link" href="{{ path('app_categorie_index') }}"><span class="nav-icon">M</span>Matieres</a>
+          <a class="nav-link" href="{{ path('app_admin_access') }}"><span class="nav-icon">A</span>Droits d'acces</a>
+          <a class="nav-link" href="{{ path('app_admin_stats') }}"><span class="nav-icon">S</span>Statistiques</a>
+          <a class="nav-link" href="{{ path('app_admin_settings') }}"><span class="nav-icon">P</span>Parametres</a>
+          <a class="nav-link" href="{{ path('app_logout') }}"><span class="nav-icon">L</span>Logout</a>
         </nav>
 
         <div class="sidebar-card">
           <div class="sidebar-card-title">Actions rapides</div>
           <button class="btn btn-primary" type="button">Créer un cours</button>
+          <a class="btn btn-primary" href="{{ path('app_cours_new') }}">Creer un cours</a>
           <a class="btn btn-outline" href="{{ path('app_utilisateur_new') }}">Ajouter un utilisateur</a>
         </div>
       </aside>
@@ -46,6 +58,7 @@
           </div>
           <div class="topbar-actions">
             <button class="chip" type="button">Nouveau rapport</button>
+            <a class="chip" href="{{ path('app_admin_stats') }}">Nouveau rapport</a>
             <a class="chip" href="{{ path('app_logout') }}">Logout</a>
             <div class="avatar">{{ admin_initials }}</div>
           </div>
@@ -54,12 +67,14 @@
         <section class="stats-grid">
           <div class="stat-card">
             <div class="stat-icon">🎓</div>
+            <div class="stat-icon">U</div>
             <div class="stat-label">Total Usagers</div>
             <div class="stat-value">{{ stats.total_users|number_format(0, ',', ' ') }}</div>
             <div class="stat-meta up">{{ stats.verified_users|number_format(0, ',', ' ') }} comptes verifies</div>
           </div>
           <div class="stat-card">
             <div class="stat-icon">🏫</div>
+            <div class="stat-icon">C</div>
             <div class="stat-label">Classes</div>
             <div class="stat-value">{{ stats.total_classes|number_format(0, ',', ' ') }}</div>
             <div class="stat-meta up">+{{ stats.new_classes_month|number_format(0, ',', ' ') }} ce mois</div>
@@ -67,11 +82,14 @@
           <div class="stat-card">
             <div class="stat-icon">🌍</div>
             <div class="stat-label">Activités</div>
+            <div class="stat-icon">A</div>
+            <div class="stat-label">Activites</div>
             <div class="stat-value">{{ stats.total_activities|number_format(0, ',', ' ') }}</div>
             <div class="stat-meta up">+{{ stats.activities_week|number_format(0, ',', ' ') }} cette semaine</div>
           </div>
           <div class="stat-card">
             <div class="stat-icon">🧾</div>
+            <div class="stat-icon">M</div>
             <div class="stat-label">Messages</div>
             <div class="stat-value">{{ stats.total_messages|number_format(0, ',', ' ') }}</div>
             <div class="stat-meta {{ stats.messages_change_percent >= 0 ? 'up' : 'down' }}">
@@ -94,6 +112,7 @@
             <div class="chart-legend">
               <span class="legend-item"><span class="dot dot-green"></span>Engagement</span>
               <span class="legend-item"><span class="dot dot-purple"></span>Présence</span>
+              <span class="legend-item"><span class="dot dot-purple"></span>Presence</span>
               <span class="legend-item"><span class="dot dot-sage"></span>Messages</span>
             </div>
           </div>
@@ -106,6 +125,11 @@
             <div class="list">
               <div class="list-item">
                 <div class="list-title">Étudiants</div>
+              <span class="panel-sub">Repartition</span>
+            </div>
+            <div class="list">
+              <div class="list-item">
+                <div class="list-title">Etudiants</div>
                 <div class="list-metric">{{ users_by_role.etudiants|number_format(0, ',', ' ') }}</div>
               </div>
               <div class="list-item">
@@ -171,6 +195,8 @@
             <div class="panel-header">
               <h2>Activité récente</h2>
               <span class="panel-sub">Dernières 24 heures</span>
+              <h2>Activite recente</h2>
+              <span class="panel-sub">Dernieres 24 heures</span>
             </div>
             <div class="list">
               {% for activity in recent_activities %}
@@ -186,6 +212,8 @@
                   <div>
                     <div class="list-title">Aucune activité récente</div>
                     <div class="list-meta">Les nouvelles activités apparaîtront ici.</div>
+                    <div class="list-title">Aucune activite recente</div>
+                    <div class="list-meta">Les nouvelles activites apparaitront ici.</div>
                   </div>
                   <span class="pill warning">N/A</span>
                 </div>
@@ -196,6 +224,7 @@
           <div class="panel">
             <div class="panel-header">
               <h2>État des serveurs</h2>
+              <h2>Etat des serveurs</h2>
               <span class="panel-sub">Monitoring</span>
             </div>
             <div class="list">
@@ -206,6 +235,12 @@
               <div class="list-item">
                 <div class="list-title">API Principale</div>
                 <span class="pill success">Opérationnel</span>
+                <div class="list-title">Base de donnees 1</div>
+                <span class="pill success">Operationnel</span>
+              </div>
+              <div class="list-item">
+                <div class="list-title">API Principale</div>
+                <span class="pill success">Operationnel</span>
               </div>
               <div class="list-item">
                 <div class="list-title">Stockage</div>
@@ -235,6 +270,7 @@
                 <div>
                   <div class="mini-title">Aucune classe</div>
                   <div class="mini-meta">Créez un cours pour alimenter ce bloc</div>
+                  <div class="mini-meta">Creez un cours pour alimenter ce bloc</div>
                 </div>
               </div>
             {% endfor %}

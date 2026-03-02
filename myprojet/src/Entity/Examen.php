@@ -55,6 +55,9 @@ class Examen
     #[ORM\OneToMany(targetEntity: Resultat::class, mappedBy: 'examen', orphanRemoval: true)]
     private Collection $resultats;
 
+    private ?int $legacyCoursId = null;
+    private ?int $legacyEnseignantId = null;
+
     public function __construct()
     {
         $this->resultats = new ArrayCollection();
@@ -73,6 +76,7 @@ class Examen
     public function setTitre(string $titre): static
     {
         $this->titre = $titre;
+
         return $this;
     }
 
@@ -84,6 +88,7 @@ class Examen
     public function setContenu(string $contenu): static
     {
         $this->contenu = $contenu;
+
         return $this;
     }
 
@@ -95,6 +100,7 @@ class Examen
     public function setType(string $type): static
     {
         $this->type = $type;
+
         return $this;
     }
 
@@ -106,6 +112,7 @@ class Examen
     public function setDateExamen(?\DateTimeInterface $dateExamen): static
     {
         $this->dateExamen = $dateExamen;
+
         return $this;
     }
 
@@ -117,6 +124,7 @@ class Examen
     public function setDuree(int $duree): static
     {
         $this->duree = $duree;
+
         return $this;
     }
 
@@ -128,6 +136,7 @@ class Examen
     public function setCours(?Cours $cours): static
     {
         $this->cours = $cours;
+
         return $this;
     }
 
@@ -139,6 +148,31 @@ class Examen
     public function setEnseignant(?Utilisateur $enseignant): static
     {
         $this->enseignant = $enseignant;
+
+        return $this;
+    }
+
+    public function getCoursId(): ?int
+    {
+        return $this->cours?->getId() ?? $this->legacyCoursId;
+    }
+
+    public function setCoursId(int $coursId): static
+    {
+        $this->legacyCoursId = $coursId;
+
+        return $this;
+    }
+
+    public function getEnseignantId(): ?int
+    {
+        return $this->enseignant?->getId() ?? $this->legacyEnseignantId;
+    }
+
+    public function setEnseignantId(int $enseignantId): static
+    {
+        $this->legacyEnseignantId = $enseignantId;
+
         return $this;
     }
 
@@ -156,6 +190,7 @@ class Examen
             $this->resultats->add($resultat);
             $resultat->setExamen($this);
         }
+
         return $this;
     }
 
@@ -166,6 +201,7 @@ class Examen
                 $resultat->setExamen(null);
             }
         }
+
         return $this;
     }
 }

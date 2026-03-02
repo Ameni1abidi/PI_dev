@@ -1,0 +1,32 @@
+parameters:
+    # Niveau recommandé pour Symfony (0-9)
+    # level 5 est un bon compromis pour les projets Symfony
+    level: 5
+
+    # Dossiers à analyser - ici focalisé sur la gestion des ressources
+    paths:
+        - src/Controller/RessourceController.php
+        - src/Entity/Ressource.php
+        - src/Entity/RessourceLike.php
+        - src/Entity/RessourceFavori.php
+        - src/Entity/RessourceInteraction.php
+        - src/Repository/RessourceRepository.php
+        - src/Repository/RessourceLikeRepository.php
+        - src/Repository/RessourceFavoriRepository.php
+        - src/Form/RessourceType.php
+        - src/Service/ScoreCalculatorService.php
+        - src/Service/RessourceManager.php
+
+    # Fichiers à exclure (generés automatiquement)
+    excludePaths:
+        - vendor/*
+        - var/*
+        - migrations/*
+
+    # Ignorer certaines erreurs connues
+    ignoreErrors:
+        - '#Property .*::\$id \(int\|null\) is never assigned int#'
+        - '#Call to function method_exists.*with Symfony.*Request.*getPayload.*#'
+
+    # Ne pas signaler les erreurs ignorées non utilisées
+    reportUnmatchedIgnoredErrors: false

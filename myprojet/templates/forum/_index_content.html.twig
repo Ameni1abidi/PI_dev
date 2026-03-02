@@ -7,6 +7,10 @@
         </div>
         <a href="{{ path(forum_routes.new, forum_route_params) }}" class="btn btn-primary">
             Creer un sujet
+            <div class="forum-meta">Discussions de la communauté</div>
+        </div>
+        <a href="{{ path(forum_routes.new, forum_route_params) }}" class="btn btn-primary">
+            Créer un sujet
         </a>
     </div>
 
@@ -39,6 +43,7 @@
                 <div class="forum-meta">
                     Type : {{ forum.type }} |
                     Cree le {{ forum.dateCreation|date('d/m/Y H:i') }}
+                    Créé le {{ forum.dateCreation|date('d/m/Y H:i') }}
                 </div>
 
                 <div class="forum-content">
@@ -114,6 +119,30 @@
 
                                     </form>
                                 {% endif %}
+                            <div class="comment-box">
+
+                                <div class="comment-date">
+                                    {{ commentaire.dateEnvoi|date('d/m/Y H:i') }}
+                                </div>
+
+                                <div>
+                                    {{ commentaire.contenu }}
+                                </div>
+
+                                <a href="{{ path(forum_routes.comment_edit, forum_route_params|merge({'id': commentaire.id})) }}"
+                                   class="comment-edit">
+                                   Modifier
+                                </a>
+
+                                <form method="post"
+                                      action="{{ path(forum_routes.comment_delete, forum_route_params|merge({'id': commentaire.id})) }}"
+                                      onsubmit="return confirm('Supprimer ce commentaire ?');">
+
+                                    <button type="submit" class="comment-delete">
+                                        Supprimer
+                                    </button>
+
+                                </form>
 
                             </div>
                         {% endfor %}
@@ -122,6 +151,7 @@
                     <form method="post" class="comment-form">
                         <input type="hidden" name="forum_id" value="{{ forum.id }}">
                         <textarea name="contenu" rows="3" placeholder="Ecrire un commentaire..." required></textarea>
+                        <textarea name="contenu" rows="3" placeholder="Écrire un commentaire..." required></textarea>
                         <button type="submit">Commenter</button>
                     </form>
 

@@ -1,0 +1,218 @@
+1 
+ 
+Exercices de Révision 
+Exercice 1 (Examen SP 2024 Switched-Networks): 
+L’entreprise Global Tech Solutions (GTS) est composée de trois blocs distincts. Son réseau informatique 
+est représenté par la topologie sur la figure suivante. Trois réseaux virtuels (Vlan10, Vlan20 et Vlan30) 
+sont déjà créés par l’administrateur du réseau. 
+ 
+ 
+Partie 1 (6.5pts) 
+1. Avant de commencer à transférer des données du laptop1 vers le PC3, l’administrateur a lancé une 
+requête ping, du laptop1 vers le PC3, pour tester la connectivité. La tentative n'a pas réussi.  
+a. En examinant les captures suivantes, identifier le problème de l’échec de la connexion entre le 
+laptop1 et le PC3. (0.5pt) 
+ 
+ 
+ 
+ 
+ 
+ 
+Mode trunk  aux niveaux des interfaces f0/2 et f0/3  
+Proposer une solution pour établir la connectivité entre le laptop1 et le PC3. (0.5pt) 
+Le problème sera résolu en modifiant le mode des interfaces f0/2 et f0/3 en mode access
+
+2 
+ 
+2. Pour des raisons de sécurité, l'entreprise GTS doit restreindre les échanges entre les périphériques 
+appartenant au VLAN 30 au sein d'un même bloc.  Toute communication inter-bloc  pour le VLAN 30 
+sera limitée. Proposer une solution ? (1pt) 
+Autoriser uniquement les VLAN 10 et 20 sur toutes les liaisons trunk entre les commutateurs 
+3. Pour une communication entre PC1 et PC2, quel est l'Identifiant du VLAN (VID) ajouté à l’étiquette 
+de la trame envoyée entre les commutateurs S1 et S4 ? (1 pt) 
+VID = 1 
+4. Considérons les configurations suivantes réalisées sur le routeur et le commutateur  S1 de la topologie  
+ 
+ 
+ 
+ 
+ 
+  
+      
+a. Identifier les équipements qui peuvent communiquer grâce à cette configuration ?  (0,5pt) 
+Justifier (0,5pt) 
+VLAN 10 :laptop 3, laptop 1, laptop4,PC3 
+VLAN 20 : PC6 ,PC4 ,PC5 
+b. Présenter de manière détaillée une solution optimale permettant la communication entre les 
+différents terminaux de différents VLANs de la topologie (1.5pts) 
+Méthode Router on stick (0,5pt) 
+Configuration de l'interface logique (sous-interface) sur le routeur : Configurez une interface logique 
+sur le routeur pour chaque VLAN. Ces interfaces logiques serviront de passerelles par défaut pour les 
+terminaux dans chaque VLAN. (0,5pt) 
+Configuration d’une liaison Trunk entre le routeur et le commutateur (0,5pt)
+
+3 
+ 
+Exercice 2: (Examen IPNET Routing SP Mai2025) 
+On considère la topologie suivante :   
+ 
+Partie 1 :  
+1. Quelle est la différence entre une route de tronçon suivant et une route directement connectée (0.75 
+pt) 
+Route de troncon suivant: seule l’adresse IP du troncon suivant est spécifiée 
+Route statique connecteé directement: l’interface de sortie du routeur est spécifiée 
+2. Quelle est la limite d’une route directement connectée (0.5 pt) 
+Dans un réseau à accès multiple, l’interface de sortie peut mener vers plusieurs tronçons suivants 
+différents. 
+3. Complétez la configuration d’une route récapitulative sur le routeur R2 qui englobe les réseaux 
+locaux de R1 (1pt)  
+R2 (config) # ip route  10.10.8.0      255.255.248.0   172.16.40.2 
+ 
+4.  Quelle est la valeur de la distance administrative pour une route statique et à quelle condition cette 
+valeur doit-elle satisfaire pour une route flottante ? (0.75pt) 
+  La distance administrative (AD) d’une route statique est 1 par défaut. 
+Pour qu’une route soit considérée comme flottante, sa distance administrative doit être supérieure à 
+celle de la route principale (généralement supérieure à 1) 
+Partie 2 :  
+L’administrateur réseau d’une entreprise est chargé de mettre en place une connectivité Internet sécurisée 
+pour les différents réseaux internes.  
+1. Décrivez les étapes nécessaires pour configurer un NAT statique pour que le PC se connecte à 
+internet (1pt) 
+Etablir la traduction entre une adresse privée et une adresse publique
+
+4 
+ 
+2. Que peut-on observer comme différence dans les résultats de la commande show ip nat translations 
+entre une session active et une session inactive après la configuration du NAT statique ? (0.5pt) 
+ session inactive :  l’adresses locale interne et l’adresse globale interne sont affichées. Par contre ; 
+pour une session active les 4 adresses sont affichées 
+3. Actuellement, seul PC1 a accès au réseau public. 
+ Nous allons maintenant configurer un NAT dynamique pour le réseau 10.10.0.0/16 (à l'exception 
+de PC1), en utilisant un pool d'adresses publiques dimensionné pour permettre jusqu’à trois 
+communications simultanées. Cette configuration remplace la translation statique initialement 
+utilisée, afin d’optimiser l’utilisation des adresses publiques. 
+Complétez la première étape de la configuration du NAT, en partant de l’adresse 200.64.89.17 
+(1 pt) 
+R2 (config) # ip nat pool POOL-1  200.64.89.17     200.64.89.19   255.255.255.0 
+ 
+4. Un nouveau réseau est ajouté avec une adresse 10.10.13.0/24. Pour accéder au serveur, deux 
+machines appartenant à ce réseau utilisent le même numéro du port TCP 1444. Vous devez 
+configurer le routeur pour que le réseau 10.10.13.0/24 puisse accéder à l'extérieur en utilisant 
+l’interface publique du routeur. 
+Compléter le remplissage de la table PAT suivante : (2pts) 
+ 
+Adresse local interne 	Adresse globale interne 
+10.10.13.1 : 1444 
+200.64.89.62 :1444 
+10.10.13.2 : 1445 
+200.64.89.62 :1445 
+ 
+        Exercice 3 (Examen IPNET Routing SR Juin2025) : 
+On considère la topologie suivante : 
+ 
+N.B : Toutes les interfaces IP des routeurs sont déjà correctement configurées. Le routage sur tous les routeurs est 
+correctement configuré également. 
+Protocole OSPF
+
+5 
+ 
+ 
+1. Remplissez le tableau comparatif suivant selon les critères des 2 protocoles RIP&OSPF (2pts) 
+ 
+Critère 	RIP 	OSPF 
+Algorithme Vecteur de distance État de lien (Dijkstra) 
+Métrique Nombre de sauts (max 15) Coût basé sur la bande 
+passante 
+Convergence Lente 	rapide 
+Evolutivité Faible 	élevée 
+ 
+2. Rappelez les 3 conditions pour établir une relation de voisinage. (0,75pt) 
+Même message Hello 
+Même intervalle Dead 
+Même zone  
+3. En se basant sur la topologie ci-dessus, déterminez l'ID du routeur R2. (0.5pt) 
+ID_R2 : 10.1.1.1/27 
+ 
+4. Rappelez la formule pour déterminer le coût OSPF d’une liaison.  (0.5pt) 
+Coût=Bande passante de  référence / Bande passante l’interface. 
+ Exercice 4 : (Examen IPNET Routing SR Juin2025) 
+Partie 1 : 
+Une entreprise vous contacte pour configurer le routage statique de son réseau.  
+La topologie comprend trois routeurs interconnectés (R1, R2 et R3). L’objectif est de permettre la communication 
+entre tous les sous-réseaux sans utiliser de protocole de routage dynamique. 
+Les figures ci-dessous présentent des extraits des tables de routage des routeurs R1, R2 et R3. 
+R1 :  
+ 
+R2 :  
+ 
+R3 :
+
+6 
+ 
+ 
+ 
+1. En se basant sur les informations contenues dans les tables de routage, identifiez les interfaces grisées dans la 
+topologie réseau : 
+ 
+(1) : S0/0/1  (0,25pt) 
+(2)  : S0/1/1 (0,25pt) 
+(3)  : S0/1/0 (0,25pt) 
+(4)  : S0/0/0 (0,25pt) 
+2. Avec la configuration actuelle, un ping entre PC4 et PC1 peut-il réussir ? Justifiez votre réponse. (1pt) 
+Oui, le ping entre PC4 et PC1 peut réussir. 
+La table de routage de R2 contient une route vers le réseau 10.8.8.8/30 auquel appartient PC4. De son 
+côté, R1 dispose d'une route par défaut (0.0.0.0/0) qui utilise l’interface s0/1/1 pour atteindre R2. Cela 
+permet aux paquets d’être correctement acheminés dans les deux sens, assurant ainsi le succès du ping. 
+3. Expliquez la notion de la convergence d’un réseau. (1pt) 
+Lorsque tous les routeurs d’un réseau ont convergé, on dit que le réseau a convergé. Autrement dit, un 
+réseau est convergé lorsque toutes les tables de routage sont synchronisées et que chaque routeur sait par 
+où passer pour atteindre n’importe quelle destination du réseau. 
+4. En se basant sur les extraits des tables de routage des routeurs R1, R2 et R3, quel(s) routeur(s) a/ont 
+convergé ? Justifiez votre réponse. (1pt) 
+R3 a quatre réseaux distants : 10.8.8.0/30, 10.6.6.0/30, 192.16.50.0/24 et 192.16.51.0/24. Or, seulement 
+deux routes statiques ont été configurées dans sa table de routage  la convergence n’est pas atteinte. 
+R1 est censé atteindre les réseaux 172.16.48.0/24, 192.16.50.0/24 et 192.16.51.0/24, mais il ne dispose 
+que d’une route par défaut  R1 n’a pas encore convergé, car il lui manque des routes spécifiques. 
+R2 connaît les réseaux 10.7.7.0/30, 10.8.8.0/30 et 172.16.48.0/24, qui ont tous été ajoutés statiquement 
+dans sa table de routage  R2 a donc convergé. 
+ 
+5. Sur le routeur R3, une route statique flottante vers le réseau 172.16.51.0/24 a été configurée en passant par R2. 
+Pourtant, cette route n’apparaît pas dans la table de routage. Expliquez pourquoi. (1pt) 
+La route statique flottante vers le réseau 172.16.51.0/24 ne s’affiche pas dans la table de routage de R3 car elle 
+a une distance administrative plus élevée qu'une autre route déjà existante vers le même réseau. 
+(1) (2) 
+(3) (4)
+
+7 
+ 
+Tant que la route principale est valide, la route flottante est ignorée et n’est pas insérée dans la table de 
+routage. 
+ 
+Partie 2 : 
+Après avoir analysé les tables de routage et identifié les chemins possibles entre les sous-réseaux, vous devez 
+désormais configurer l’accès des machines internes à Internet. Pour cela, l’entreprise met en œuvre différentes formes 
+de NAT (Network Address Translation) afin de traduire les adresses privées en adresses publiques. 
+ 
+1. Quelle est la différence entre NAT statique et NAT dynamique ? (1pt) 
+NAT statique : établit une correspondance fixe entre une adresse IP privée et une adresse IP publique 
+(mappage « un à un »). À chaque fois qu’un appareil utilise cette IP privée, il sera toujours traduit par la 
+même IP publique. 
+NAT dynamique : effectue une traduction variable. Les adresses IP privées sont associées 
+dynamiquement à une adresse publique disponible dans un pool. Il n’y a pas de correspondance fixe. 
+2. Comment le PAT facilite-t-il la gestion des adresses IP dans un réseau ? (0,75pt) 
+Le PAT permet à plusieurs appareils de partager une seule adresse IP publique en utilisant des ports 
+différents, ce qui simplifie la gestion des adresses IP. 
+3. Définissez le terme adresse locale interne dans le contexte NAT. (0,5pt) 
+Il s'agit de l'adresse de la source vue du réseau interne. 
+4. Définissez le terme adresse globale interne dans le contexte NAT. (0,5pt) 
+Il s'agit de la traduction correspondante d’adresse locale interne en une adresse globale. C'est à dire 
+l'adresse de la source vue du réseau externe 
+5. En vous basant sur la topologie, identifiez l’interface inside et l’interface outside du routeur NAT. Expliquez 
+votre choix. (1pt) 
+Interface inside : g0/0, car elle est connectée au réseau local 10.1.1.0. Interface 
+outside : s0/0/1, car elle est reliée à Internet via le réseau 200.1.1.0. 
+6. Configurez un PAT basé sur l’interface de sortie pour traduire les adresses du réseau interne 10.1.1.0/24 vers 
+l’extérieur. (1,25 pt) 
+ 
+NAT (config) # access-list PAT1 permit 10.1.1.0  0.0.0.255 
+NAT(config)# ip nat inside source list PAT1  Interface s0/0/1    overload

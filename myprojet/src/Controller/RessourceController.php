@@ -2,10 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Ressource;
 use App\Entity\RessourceFavori;
 use App\Entity\RessourceInteraction;
 use App\Entity\RessourceLike;
-use App\Entity\Ressource;
 use App\Entity\Utilisateur;
 use App\Form\RessourceType;
 use App\Repository\ChapitreRepository;
@@ -29,15 +29,14 @@ final class RessourceController extends AbstractController
 {
     private ?bool $hasInteractionTable = null;
 
-    #[Route(name: 'app_ressource_index', methods: ['GET'])]
+    #[Route('', name: 'app_ressource_index', methods: ['GET'])]
     public function index(
         Request $request,
         RessourceRepository $ressourceRepository,
         ChapitreRepository $chapitreRepository,
         EntityManagerInterface $entityManager,
         ScoreCalculatorService $scoreCalculatorService
-    ): Response
-    {
+    ): Response {
         $categorieNom = trim((string) $request->query->get('categorie_nom', ''));
         $chapitreId = $request->query->getInt('chapitre_id', 0);
         $chapitreTitre = '';
@@ -72,8 +71,7 @@ final class RessourceController extends AbstractController
         EntityManagerInterface $entityManager,
         CloudinaryStorageService $cloudinaryStorageService,
         RessourceQuizGeneratorService $quizGeneratorService
-    ): Response
-    {
+    ): Response {
         $ressource = new Ressource();
         $ressource->setAvailableAt(new \DateTimeImmutable());
         $form = $this->createForm(RessourceType::class, $ressource);
@@ -100,7 +98,7 @@ final class RessourceController extends AbstractController
 
         return $this->render('ressource/new.html.twig', [
             'ressource' => $ressource,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -112,8 +110,7 @@ final class RessourceController extends AbstractController
         RessourceRepository $ressourceRepository,
         RessourceLikeRepository $ressourceLikeRepository,
         RessourceFavoriRepository $ressourceFavoriRepository
-    ): Response
-    {
+    ): Response {
         $ressource->incrementNbVues();
         $this->recordInteraction($entityManager, $ressource, RessourceInteraction::TYPE_VIEW);
         $scoreCalculatorService->recalculate($ressource);
@@ -210,17 +207,14 @@ final class RessourceController extends AbstractController
         EntityManagerInterface $entityManager,
         CloudinaryStorageService $cloudinaryStorageService,
         RessourceQuizGeneratorService $quizGeneratorService
-    ): Response
-    {
+    ): Response {
         $previousPublicId = $ressource->getCloudinaryPublicId();
         $previousResourceType = $ressource->getCloudinaryResourceType();
 
         $form = $this->createForm(RessourceType::class, $ressource);
-
         if ($request->isMethod('GET')) {
             $this->hydrateOptionalFields($form, $ressource);
         }
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
@@ -241,11 +235,13 @@ final class RessourceController extends AbstractController
 
                 return $this->redirectToRoute('app_ressource_index', [], Response::HTTP_SEE_OTHER);
             }
+
+            $this->addFlash('error', 'Le formulaire contient des erreurs. Merci de verifier les champs.');
         }
 
         return $this->render('ressource/edit.html.twig', [
             'ressource' => $ressource,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -255,8 +251,7 @@ final class RessourceController extends AbstractController
         Ressource $ressource,
         EntityManagerInterface $entityManager,
         CloudinaryStorageService $cloudinaryStorageService
-    ): Response
-    {
+    ): Response {
         $token = (string) $request->request->get('_token', '');
         if ($token === '' && method_exists($request, 'getPayload')) {
             $token = $request->getPayload()->getString('_token');
@@ -344,6 +339,7 @@ final class RessourceController extends AbstractController
                 ];
             }
             $form->get('imageFile')->addError(new FormError('Veuillez choisir une image.'));
+
             return null;
         }
 
@@ -377,6 +373,7 @@ final class RessourceController extends AbstractController
                 ];
             }
             $form->addError(new FormError('Ajoutez une Video URL ou telechargez une video MP4.'));
+
             return null;
         }
 
@@ -410,6 +407,7 @@ final class RessourceController extends AbstractController
                 ];
             }
             $form->addError(new FormError('Ajoutez un Audio URL ou telechargez un fichier MP3/WAV.'));
+
             return null;
         }
 
@@ -434,6 +432,7 @@ final class RessourceController extends AbstractController
                 ];
             }
             $form->get('documentFile')->addError(new FormError('Veuillez choisir un document PDF.'));
+
             return null;
         }
 
@@ -456,6 +455,7 @@ final class RessourceController extends AbstractController
                 ];
             }
             $form->get('lienUrl')->addError(new FormError('Veuillez coller un lien externe.'));
+
             return null;
         }
 
@@ -491,8 +491,7 @@ final class RessourceController extends AbstractController
         FormInterface $form,
         string $fieldName,
         CloudinaryStorageService $cloudinaryStorageService
-    ): ?array
-    {
+    ): ?array {
         try {
             $uploaded = $cloudinaryStorageService->upload($uploadedFile, $folder);
         } catch (\Throwable $e) {

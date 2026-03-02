@@ -42,32 +42,50 @@ final class ForumController extends AbstractController
                     if ($badWords !== []) {
                         $this->addFlash(
                             'error',
-                            'Commentaire refuse: mots inappropries detectes (' . implode(', ', $badWords) . ').'
+                            'Commentaire refuse: mots inappropries detectes ('.implode(', ', $badWords).').'
                         );
-
-                        $routes = $this->getForumRoutes($context);
-                        return $this->redirectToRoute($routes['index'], $this->getForumRouteParams($context));
-                    }
-
-                    $commentaire = new Commentaire();
-                    $commentaire->setContenu($contenu);
-                    $commentaire->setForum($forum);
-
-                    $violations = $validator->validate($commentaire);
-                    if (count($violations) > 0) {
-                        foreach ($violations as $violation) {
-                            $this->addFlash('error', $violation->getMessage());
-                        }
                     } else {
-                        $entityManager->persist($commentaire);
-                        $entityManager->flush();
-                        $this->addFlash('success', 'Commentaire ajoute avec succes.');
+                        $commentaire = new Commentaire();
+                        $commentaire->setContenu($contenu);
+                        $commentaire->setForum($forum);
+
+                        $violations = $validator->validate($commentaire);
+                        if (count($violations) > 0) {
+                            foreach ($violations as $violation) {
+                                $this->addFlash('error', $violation->getMessage());
+                            }
+                        } else {
+                            $entityManager->persist($commentaire);
+                            $entityManager->flush();
+                            $this->addFlash('success', 'Commentaire ajoute avec succes.');
+
+                            $prompt = sprintf(
+                                "Un utilisateur a ajoute un commentaire sur un forum.\nTitre du forum: %s\nType: %s\nCommentaire: %s\n\nDonne une reponse courte, utile et bienveillante en francais.",
+                                (string) $forum->getTitre(),
+                                (string) $forum->getType(),
+                                $contenu
+                            );
+
+                            $assistantReply = $ollamaService->ask($prompt);
+                            if ($assistantReply !== null) {
+                                $botCommentaire = new Commentaire();
+                                $botCommentaire->setContenu('[Bot IA] '.$assistantReply);
+                                $botCommentaire->setForum($forum);
+
+                                $botViolations = $validator->validate($botCommentaire);
+                                if (count($botViolations) === 0) {
+                                    $entityManager->persist($botCommentaire);
+                                    $entityManager->flush();
+                                }
+                            }
+                        }
                     }
                 } else {
                     $this->addFlash('error', 'Forum introuvable.');
                 }
 
                 $routes = $this->getForumRoutes($context);
+
                 return $this->redirectToRoute($routes['index'], $this->getForumRouteParams($context));
             }
 
@@ -95,8 +113,7 @@ final class ForumController extends AbstractController
         ValidatorInterface $validator,
         OllamaService $ollamaService,
         ?string $context = null
-    ): Response
-    {
+    ): Response {
         $forum = new Forum();
         $form = $this->createForm(ForumType::class, $forum);
         $form->handleRequest($request);
@@ -115,7 +132,7 @@ final class ForumController extends AbstractController
             $assistantReply = $ollamaService->ask($prompt);
             if ($assistantReply !== null) {
                 $botCommentaire = new Commentaire();
-                $botCommentaire->setContenu($assistantReply);
+                $botCommentaire->setContenu('[Bot IA] '.$assistantReply);
                 $botCommentaire->setForum($forum);
 
                 $botViolations = $validator->validate($botCommentaire);
@@ -126,6 +143,7 @@ final class ForumController extends AbstractController
             }
 
             $routes = $this->getForumRoutes($context);
+
             return $this->redirectToRoute($routes['index'], $this->getForumRouteParams($context));
         }
 
@@ -150,6 +168,7 @@ final class ForumController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
             $routes = $this->getForumRoutes($context);
+
             return $this->redirectToRoute($routes['index'], $this->getForumRouteParams($context));
         }
 
@@ -172,6 +191,7 @@ final class ForumController extends AbstractController
         $entityManager->flush();
 
         $routes = $this->getForumRoutes($context);
+
         return $this->redirectToRoute($routes['index'], $this->getForumRouteParams($context));
     }
 
@@ -182,6 +202,7 @@ final class ForumController extends AbstractController
         if ($this->isBotComment($commentaire)) {
             $this->addFlash('error', 'Ce commentaire IA ne peut pas etre supprime.');
             $routes = $this->getForumRoutes($context);
+
             return $this->redirectToRoute($routes['index'], $this->getForumRouteParams($context));
         }
 
@@ -189,6 +210,7 @@ final class ForumController extends AbstractController
         $entityManager->flush();
 
         $routes = $this->getForumRoutes($context);
+
         return $this->redirectToRoute($routes['index'], $this->getForumRouteParams($context));
     }
 
@@ -205,6 +227,7 @@ final class ForumController extends AbstractController
         if ($this->isBotComment($commentaire)) {
             $this->addFlash('error', 'Ce commentaire IA ne peut pas etre modifie.');
             $routes = $this->getForumRoutes($context);
+
             return $this->redirectToRoute($routes['index'], $this->getForumRouteParams($context));
         }
 
@@ -214,7 +237,7 @@ final class ForumController extends AbstractController
 
             if ($badWords !== []) {
                 $errorMessages = [
-                    'Modification refusee: mots inappropries detectes (' . implode(', ', $badWords) . ').',
+                    'Modification refusee: mots inappropries detectes ('.implode(', ', $badWords).').',
                 ];
 
                 $routes = $this->getForumRoutes($context);
@@ -254,6 +277,7 @@ final class ForumController extends AbstractController
             $this->addFlash('success', 'Commentaire modifie avec succes.');
 
             $routes = $this->getForumRoutes($context);
+
             return $this->redirectToRoute($routes['index'], $this->getForumRouteParams($context));
         }
 
@@ -344,7 +368,7 @@ final class ForumController extends AbstractController
     private function isBotComment(Commentaire $commentaire): bool
     {
         $content = (string) $commentaire->getContenu();
+
         return str_starts_with($content, '[Bot IA] ');
     }
-
 }

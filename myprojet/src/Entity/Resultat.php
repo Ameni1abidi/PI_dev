@@ -34,6 +34,8 @@ class Resultat
     #[Assert\NotNull(message: 'L eleve est obligatoire.')]
     private ?Utilisateur $etudiant = null;
 
+    private ?int $legacyEleveId = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -59,6 +61,18 @@ class Resultat
     public function setAppreciation(?string $appreciation): static
     {
         $this->appreciation = $appreciation;
+
+        return $this;
+    }
+
+    public function getEleveId(): ?int
+    {
+        return $this->etudiant?->getId() ?? $this->legacyEleveId;
+    }
+
+    public function setEleveId(int $eleveId): static
+    {
+        $this->legacyEleveId = $eleveId;
 
         return $this;
     }

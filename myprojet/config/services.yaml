@@ -17,6 +17,10 @@ parameters:
         - bitch
         - fuck
         - shit
+    app.twilio_account_sid: '%env(string:TWILIO_ACCOUNT_SID)%'
+    app.twilio_auth_token: '%env(string:TWILIO_AUTH_TOKEN)%'
+    app.twilio_from_number: '%env(string:TWILIO_FROM_NUMBER)%'
+    app.twilio_whatsapp_from: '%env(default::TWILIO_WHATSAPP_FROM)%'
 
 services:
     # default configuration for services in *this* file
@@ -33,12 +37,27 @@ services:
         arguments:
             $blockedWords: '%app.profanity_words%'
 
+<<<<<<< HEAD
     App\Service\CloudinaryStorageService:
         arguments:
             $cloudUrl: '%env(string:CLOUDINARY_URL)%'
             $cloudName: '%env(string:CLOUDINARY_CLOUD_NAME)%'
             $apiKey: '%env(string:CLOUDINARY_API_KEY)%'
             $apiSecret: '%env(string:CLOUDINARY_API_SECRET)%'
+=======
+    App\Service\EvaluationNotificationService:
+        arguments:
+            $twilioAccountSid: '%app.twilio_account_sid%'
+            $twilioAuthToken: '%app.twilio_auth_token%'
+            $twilioFromNumber: '%app.twilio_from_number%'
+            $twilioWhatsAppFrom: '%app.twilio_whatsapp_from%'
+>>>>>>> 89d0588e2f19cdb5da172f7b2c4b2c29d014124f
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    App\Service\CloudinaryStorageService:
+        arguments:
+            $cloudUrl: '%env(default::CLOUDINARY_URL)%'
+            $cloudName: '%env(default::CLOUDINARY_CLOUD_NAME)%'
+            $apiKey: '%env(default::CLOUDINARY_API_KEY)%'
+            $apiSecret: '%env(default::CLOUDINARY_API_SECRET)%'

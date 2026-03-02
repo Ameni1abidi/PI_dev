@@ -35,6 +35,13 @@ class ChangePasswordFormType extends AbstractType
                         ),
                         new PasswordStrength(),
                         new NotCompromisedPassword(),
+                        new PasswordStrength(
+                            minScore: PasswordStrength::STRENGTH_STRONG,
+                            message: 'Mot de passe trop faible. Utilisez au moins 12 caracteres avec majuscule, minuscule, chiffre et symbole.'
+                        ),
+                        new NotCompromisedPassword(
+                            message: 'Ce mot de passe est connu comme compromis. Choisissez-en un autre.'
+                        ),
                     ],
                     'label' => 'Nouveau mot de passe',
                 ],

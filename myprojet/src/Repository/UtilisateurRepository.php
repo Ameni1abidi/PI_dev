@@ -16,15 +16,76 @@ class UtilisateurRepository extends ServiceEntityRepository
         parent::__construct($registry, Utilisateur::class);
     }
 
-    public function countCreatedSince(\DateTimeImmutable $since): int
+    /**
+     * @param string[] $roles
+     * @return string[]
+     */
+    public function findEmailsByRoles(array $roles): array
     {
-        return (int) $this->createQueryBuilder('u')
-            ->select('COUNT(u.id)')
-            ->where('u.createdAt >= :since')
-            ->setParameter('since', $since)
+        if ($roles === []) {
+            return [];
+        }
+
+        $rows = $this->createQueryBuilder('u')
+            ->select('u.email')
+            ->andWhere('u.role IN (:roles)')
+            ->setParameter('roles', $roles)
             ->getQuery()
-            ->getSingleScalarResult();
+            ->getArrayResult();
+
+        return array_values(array_filter(array_unique(array_map(
+            static fn (array $row): string => (string) ($row['email'] ?? ''),
+            $rows
+        ))));
     }
+
+    /**
+     * @return string[]
+     */
+    public function findEmailsByRole(string $role): array
+    {
+        return $this->findEmailsByRoles([$role]);
+    }
+
+    /**
+     * @param string[] $roles
+     * @return string[]
+     */
+    public function findPhonesByRoles(array $roles): array
+    {
+        if ($roles === []) {
+            return [];
+        }
+
+        $rows = $this->createQueryBuilder('u')
+            ->select('u.telephone')
+            ->andWhere('u.role IN (:roles)')
+            ->andWhere('u.telephone IS NOT NULL')
+            ->andWhere("u.telephone <> ''")
+            ->setParameter('roles', $roles)
+            ->getQuery()
+            ->getArrayResult();
+
+        return array_values(array_filter(array_unique(array_map(
+            static fn (array $row): string => trim((string) ($row['telephone'] ?? '')),
+            $rows
+        ))));
+    }
+
+    //    /**
+    //     * @return Utilisateur[] Returns an array of Utilisateur objects
+    //     */
+    //    public function findByExampleField($value): array
+    //    {
+    //        return $this->createQueryBuilder('u')
+    //            ->andWhere('u.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->orderBy('u.id', 'ASC')
+    //            ->setMaxResults(10)
+    //            ->getQuery()
+    //            ->getResult()
+    //        ;
+    //    }
 
     /**
      * @return Utilisateur[]

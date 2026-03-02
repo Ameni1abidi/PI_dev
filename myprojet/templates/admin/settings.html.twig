@@ -1,0 +1,29 @@
+{% extends 'admin_base.html.twig' %}
+
+{% block title %}Parametres{% endblock %}
+
+{% block body %}
+  <section class="panel full">
+    <div class="panel-header">
+      <h2>Parametres</h2>
+      <span class="panel-sub">Administration</span>
+    </div>
+    <div class="list">
+      <div class="list-item">
+        <div>
+          <div class="list-title">Configuration generale</div>
+          <div class="list-meta">Cette page est prete pour vos reglages globaux (email, securite, roles, etc.).</div>
+        </div>
+        <span class="pill success">Actif</span>
+      </div>
+      <div class="list-item">
+        <div>
+          <div class="list-title">Acces rapides</div>
+          <div class="list-meta">Utilisez le menu de gauche pour ouvrir les modules admin.</div>
+        </div>
+        <a class="btn btn-outline small" href="{{ path('app_admin') }}">Retour Dashboard</a>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+

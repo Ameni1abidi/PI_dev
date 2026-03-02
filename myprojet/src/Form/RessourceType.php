@@ -46,9 +46,7 @@ class RessourceType extends AbstractType
                 'mapped' => false,
                 'required' => false,
                 'constraints' => [
-                    new Assert\File(
-                        maxSize: '100M'
-                    ),
+                    new Assert\File(maxSize: '100M'),
                 ],
             ])
             ->add('audioUrl', UrlType::class, [
@@ -66,9 +64,7 @@ class RessourceType extends AbstractType
                 'mapped' => false,
                 'required' => false,
                 'constraints' => [
-                    new Assert\File(
-                        maxSize: '50M'
-                    ),
+                    new Assert\File(maxSize: '50M'),
                 ],
             ])
             ->add('lienUrl', UrlType::class, [
@@ -86,9 +82,7 @@ class RessourceType extends AbstractType
                 'mapped' => false,
                 'required' => false,
                 'constraints' => [
-                    new Assert\File(
-                        maxSize: '5M'
-                    ),
+                    new Assert\File(maxSize: '5M'),
                 ],
             ])
             ->add('documentFile', FileType::class, [
@@ -96,9 +90,7 @@ class RessourceType extends AbstractType
                 'required' => false,
                 'label' => 'Document PDF',
                 'constraints' => [
-                    new Assert\File(
-                        maxSize: '20M'
-                    ),
+                    new Assert\File(maxSize: '20M'),
                 ],
             ])
             ->add('categorie', EntityType::class, [

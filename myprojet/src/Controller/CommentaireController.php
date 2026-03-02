@@ -19,6 +19,7 @@ class CommentaireController extends AbstractController
         Commentaire $commentaire,
         EntityManagerInterface $entityManager,
         ProfanityFilterService $profanityFilterService
+        
     ): Response {
 
         if ($request->isMethod('POST')) {

@@ -2,9 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Utilisateur;
 use App\Entity\Resultat;
 use App\Form\ResultatType;
 use App\Repository\ResultatRepository;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,6 +17,74 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/resultat')]
 final class ResultatController extends AbstractController
 {
+    #[Route('/bulletin/eleve/{id}', name: 'app_resultat_bulletin_pdf', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function bulletinPdf(Utilisateur $eleve, ResultatRepository $resultatRepository): Response
+    {
+        $resultats = $resultatRepository->findBy(['etudiant' => $eleve], ['id' => 'DESC']);
+        usort($resultats, static function (Resultat $a, Resultat $b): int {
+            $aDate = $a->getExamen()?->getDateExamen();
+            $bDate = $b->getExamen()?->getDateExamen();
+            if ($aDate === null && $bDate === null) {
+                return $b->getId() <=> $a->getId();
+            }
+            if ($aDate === null) {
+                return 1;
+            }
+            if ($bDate === null) {
+                return -1;
+            }
+
+            return $aDate <=> $bDate;
+        });
+
+        $notes = array_map(static fn (Resultat $r): float => (float) $r->getNote(), $resultats);
+        $moyenne = $notes === [] ? null : array_sum($notes) / count($notes);
+        $noteMax = $notes === [] ? null : max($notes);
+        $noteMin = $notes === [] ? null : min($notes);
+        $notesValides = array_filter($notes, static fn (float $note): bool => $note >= 10.0);
+        $tauxReussite = $notes === [] ? null : (count($notesValides) * 100 / count($notes));
+
+        $appreciation = 'A ameliorer';
+        if ($moyenne !== null && $moyenne >= 16) {
+            $appreciation = 'Excellent';
+        } elseif ($moyenne !== null && $moyenne >= 14) {
+            $appreciation = 'Tres bien';
+        } elseif ($moyenne !== null && $moyenne >= 12) {
+            $appreciation = 'Bien';
+        } elseif ($moyenne !== null && $moyenne >= 10) {
+            $appreciation = 'Passable';
+        }
+
+        $html = $this->renderView('resultat/bulletin_pdf.html.twig', [
+            'eleve' => $eleve,
+            'resultats' => $resultats,
+            'moyenne' => $moyenne,
+            'note_max' => $noteMax,
+            'note_min' => $noteMin,
+            'taux_reussite' => $tauxReussite,
+            'appreciation' => $appreciation,
+            'generation_date' => new \DateTimeImmutable(),
+        ]);
+
+        $options = new Options();
+        $options->set('defaultFont', 'DejaVu Sans');
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+
+        $filename = sprintf('bulletin-%s-%d.pdf', preg_replace('/\s+/', '-', strtolower((string) $eleve->getNom())), (int) $eleve->getId());
+
+        return new Response(
+            $dompdf->output(),
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => sprintf('inline; filename="%s"', $filename),
+            ]
+        );
+    }
+
     #[Route('/', name: 'app_resultat_index', methods: ['GET'])]
     public function index(Request $request, ResultatRepository $resultatRepository): Response
     {

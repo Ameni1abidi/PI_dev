@@ -41,6 +41,15 @@ class Cours
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $dateCreation = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $titreTraduit = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $descriptionTraduit = null;
+
+     #[ORM\Column(type: 'string', length: 20, nullable: true)]
+    private $badge; // pas de #[ORM\Entity] ici
+
     /**
      * @var Collection<int, Chapitre>
      */
@@ -50,7 +59,6 @@ private Collection $chapitres;
     #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: 'cours')]
     #[ORM\JoinColumn(nullable: true)]
     private ?Utilisateur $enseignant = null;
-
     public function __construct()
     {
         $this->chapitres = new ArrayCollection();
@@ -108,6 +116,28 @@ private Collection $chapitres;
     return $this;
 }
 
+public function getTitreTraduit(): ?string
+{
+    return $this->titreTraduit;
+}
+
+public function setTitreTraduit(?string $titreTraduit): self
+{
+    $this->titreTraduit = $titreTraduit;
+    return $this;
+}
+
+public function getDescriptionTraduit(): ?string
+{
+    return $this->descriptionTraduit;
+}
+
+    public function setDescriptionTraduit(?string $descriptionTraduit): self
+{
+    $this->descriptionTraduit = $descriptionTraduit;
+    return $this;
+}
+
     /**
      * @return Collection<int, Chapitre>
      */
@@ -149,5 +179,27 @@ private Collection $chapitres;
         $this->enseignant = $enseignant;
         return $this;
     }
+
+    public function getBadge(): ?string
+    {
+        return $this->badge;
+    }
+
+    // Setter pour badge
+    public function setBadge(?string $badge): self
+    {
+        // Optionnel : tu peux vérifier que la valeur est valide
+        $validBadges = ['nouveau', 'populaire', 'a_la_une'];
+        if ($badge !== null && !in_array($badge, $validBadges)) {
+            throw new \InvalidArgumentException("Badge non valide.");
+        }
+
+        $this->badge = $badge;
+        return $this;
+    }
+
+    
+
+    
 
 }

@@ -1,0 +1,45 @@
+{% extends 'crud_base.html.twig' %}
+
+{% block title %}Devoirs{% endblock %}
+
+{% block body %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 m-0">Devoirs</h1>
+    <a class="btn btn-primary" href="{{ path('app_devoir_ia_new') }}">Creer un devoir IA</a>
+  </div>
+
+  {% if devoirs is empty %}
+    <div class="alert alert-info">Aucun devoir IA pour le moment.</div>
+  {% else %}
+    <div class="table-responsive">
+      <table class="table table-striped align-middle">
+        <thead>
+          <tr>
+            <th>Titre</th>
+            <th>Cours</th>
+            <th>Niveau</th>
+            <th>Echeance</th>
+            <th>Duree</th>
+            <th>Questions</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for devoir in devoirs %}
+            <tr>
+              <td>{{ devoir.titre }}</td>
+              <td>{{ devoir.cours ? devoir.cours.titre : '-' }}</td>
+              <td>{{ devoir.niveauDifficulte|upper }}</td>
+              <td>{{ devoir.dateEcheance ? devoir.dateEcheance|date('d/m/Y') : '-' }}</td>
+              <td>{{ devoir.duree }} min</td>
+              <td>{{ devoir.nbQcm + devoir.nbVraiFaux + devoir.nbReponseCourte }}</td>
+              <td class="text-end">
+                <a class="btn btn-sm btn-outline-primary" href="{{ path('app_devoir_ia_show', {'id': devoir.id}) }}">Voir</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
+{% endblock %}

@@ -14,17 +14,18 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\HasLifecycleCallbacks]
 class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    public const STATUS_PENDING = 'PENDING';
+    public const STATUS_APPROVED = 'APPROVED';
+    public const STATUS_REJECTED = 'REJECTED';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
     #[ORM\Column(length: 200)]
-    #[Assert\NotBlank(message: "Le nom est obligatoire")]
-    #[Assert\Length(
-        min: 3,
-        minMessage: "Le nom doit contenir au moins {{ limit }} caracteres"
-    )]
+    #[Assert\NotBlank(message: 'Le nom est obligatoire')]
+    #[Assert\Length(min: 3, minMessage: 'Le nom doit contenir au moins {{ limit }} caracteres')]
     private ?string $nom = null;
 
     #[ORM\Column(type: 'string', length: 255)]
@@ -32,8 +33,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 200)]
     #[Assert\NotBlank(message: "L'email est obligatoire")]
-    #[Assert\Email(message: "Veuillez saisir une adresse email valide")]
+    #[Assert\Email(message: 'Veuillez saisir une adresse email valide')]
     private ?string $email = null;
+
+    #[ORM\Column(length: 30, nullable: true)]
+    private ?string $telephone = null;
 
     #[ORM\Column(length: 200)]
     private ?string $role = null;
@@ -41,11 +45,24 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean')]
     private bool $isVerified = false;
 
+    #[ORM\Column(length: 20)]
+    private string $status = self::STATUS_PENDING;
+
+    #[ORM\Column(type: 'boolean')]
+    private bool $isBlocked = false;
+
     #[ORM\Column(type: 'datetime_immutable')]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\OneToMany(mappedBy: 'etudiant', targetEntity: Resultat::class)]
     private Collection $resultats;
+
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'enfants')]
+    #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?self $parent = null;
+
+    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class)]
+    private Collection $enfants;
 
     /**
      * @var Collection<int, RessourceLike>
@@ -65,12 +82,20 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: RessourceInteraction::class)]
     private Collection $ressourceInteractions;
 
+    /**
+     * @var Collection<int, Cours>
+     */
+    #[ORM\OneToMany(mappedBy: 'enseignant', targetEntity: Cours::class)]
+    private Collection $cours;
+
     public function __construct()
     {
         $this->resultats = new ArrayCollection();
+        $this->enfants = new ArrayCollection();
         $this->ressourceLikes = new ArrayCollection();
         $this->ressourceFavoris = new ArrayCollection();
         $this->ressourceInteractions = new ArrayCollection();
+        $this->cours = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -102,6 +127,18 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getTelephone(): ?string
+    {
+        return $this->telephone;
+    }
+
+    public function setTelephone(?string $telephone): self
+    {
+        $this->telephone = $telephone;
+
+        return $this;
+    }
+
     public function getPassword(): string
     {
         return (string) $this->password;
@@ -128,9 +165,24 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRoles(): array
     {
-        return [$this->role ?? 'ROLE_USER'];
+        $role = $this->role ?? 'ROLE_USER';
+        $roles = [$role];
+
+        if ($role === 'ROLE_STUDENT') {
+            $roles[] = 'ROLE_ETUDIANT';
+        }
+        if ($role === 'ROLE_ETUDIANT') {
+            $roles[] = 'ROLE_STUDENT';
+        }
+
+        $roles[] = 'ROLE_USER';
+
+        return array_values(array_unique($roles));
     }
 
+    /**
+     * @return Collection<int, Resultat>
+     */
     public function getResultats(): Collection
     {
         return $this->resultats;
@@ -157,6 +209,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @return Collection<int, RessourceLike>
+     */
     public function getRessourceLikes(): Collection
     {
         return $this->ressourceLikes;
@@ -183,6 +238,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @return Collection<int, RessourceFavori>
+     */
     public function getRessourceFavoris(): Collection
     {
         return $this->ressourceFavoris;
@@ -209,6 +267,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @return Collection<int, RessourceInteraction>
+     */
     public function getRessourceInteractions(): Collection
     {
         return $this->ressourceInteractions;
@@ -235,6 +296,35 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @return Collection<int, Cours>
+     */
+    public function getCours(): Collection
+    {
+        return $this->cours;
+    }
+
+    public function addCours(Cours $cours): self
+    {
+        if (!$this->cours->contains($cours)) {
+            $this->cours->add($cours);
+            $cours->setEnseignant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCours(Cours $cours): self
+    {
+        if ($this->cours->removeElement($cours)) {
+            if ($cours->getEnseignant() === $this) {
+                $cours->setEnseignant(null);
+            }
+        }
+
+        return $this;
+    }
+
     public function getUserIdentifier(): string
     {
         return (string) $this->email;
@@ -252,6 +342,86 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsVerified(bool $isVerified): self
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function getParent(): ?self
+    {
+        return $this->parent;
+    }
+
+    public function setParent(?self $parent): self
+    {
+        $this->parent = $parent;
+
+        return $this;
+    }
+
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): self
+    {
+        $this->status = strtoupper(trim($status));
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getEnfants(): Collection
+    {
+        return $this->enfants;
+    }
+
+    public function addEnfant(self $enfant): self
+    {
+        if (!$this->enfants->contains($enfant)) {
+            $this->enfants->add($enfant);
+            $enfant->setParent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEnfant(self $enfant): self
+    {
+        if ($this->enfants->removeElement($enfant)) {
+            if ($enfant->getParent() === $this) {
+                $enfant->setParent(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function isApproved(): bool
+    {
+        return $this->status === self::STATUS_APPROVED;
+    }
+
+    public function isPending(): bool
+    {
+        return $this->status === self::STATUS_PENDING;
+    }
+
+    public function isRejected(): bool
+    {
+        return $this->status === self::STATUS_REJECTED;
+    }
+
+    public function isBlocked(): bool
+    {
+        return $this->isBlocked;
+    }
+
+    public function setIsBlocked(bool $isBlocked): self
+    {
+        $this->isBlocked = $isBlocked;
 
         return $this;
     }

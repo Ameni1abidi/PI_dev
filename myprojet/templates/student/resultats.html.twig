@@ -1,0 +1,57 @@
+{% extends 'student/dashCours.html.twig' %}
+
+{% block title %}Mes resultats{% endblock %}
+
+{% block body %}
+<div style="padding:25px; font-family:'Manrope', sans-serif; background:linear-gradient(135deg,#fdfbfb,#ebedee); min-height:100vh;">
+  <h2 style="margin-bottom:20px; font-weight:800; font-size:1.7rem; color:#2c2c2c;">Mes resultats</h2>
+  {% if app.user %}
+    <div style="margin-bottom:16px;">
+      <a href="{{ path('app_resultat_bulletin_pdf', {'id': app.user.id}) }}" target="_blank" style="display:inline-block; text-decoration:none; padding:8px 14px; border-radius:10px; background:#dc2626; color:#ffffff; font-weight:700; font-size:0.86rem;">
+        Bulletin PDF
+      </a>
+    </div>
+  {% endif %}
+
+  {% if resultats is empty %}
+    <div style="background:#fff; border-radius:16px; padding:20px; color:#6b7280; box-shadow:0 10px 24px rgba(20,24,40,0.06);">
+      Aucun resultat disponible pour le moment.
+    </div>
+  {% else %}
+    <div style="background:#fff; border-radius:16px; padding:10px; box-shadow:0 10px 24px rgba(20,24,40,0.06); overflow:auto;">
+      <table style="width:100%; border-collapse:collapse;">
+        <thead>
+          <tr>
+            <th style="text-align:left; padding:10px; border-bottom:1px solid #e5e7eb;">Examen</th>
+            <th style="text-align:left; padding:10px; border-bottom:1px solid #e5e7eb;">Cours</th>
+            <th style="text-align:left; padding:10px; border-bottom:1px solid #e5e7eb;">Date</th>
+            <th style="text-align:left; padding:10px; border-bottom:1px solid #e5e7eb;">Note</th>
+            <th style="text-align:left; padding:10px; border-bottom:1px solid #e5e7eb;">Appreciation</th>
+            <th style="text-align:left; padding:10px; border-bottom:1px solid #e5e7eb;">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for resultat in resultats %}
+            <tr>
+              <td style="padding:10px; border-bottom:1px solid #f1f5f9;">{{ resultat.examen ? resultat.examen.titre : '-' }}</td>
+              <td style="padding:10px; border-bottom:1px solid #f1f5f9;">{{ (resultat.examen and resultat.examen.cours) ? resultat.examen.cours.titre : '-' }}</td>
+              <td style="padding:10px; border-bottom:1px solid #f1f5f9;">{{ (resultat.examen and resultat.examen.dateExamen) ? resultat.examen.dateExamen|date('d/m/Y') : '-' }}</td>
+              <td style="padding:10px; border-bottom:1px solid #f1f5f9; font-weight:700;">{{ resultat.note }}/20</td>
+              <td style="padding:10px; border-bottom:1px solid #f1f5f9;">{{ resultat.appreciation ?: '-' }}</td>
+              <td style="padding:10px; border-bottom:1px solid #f1f5f9;">
+                {% if resultat.examen %}
+                  <a href="{{ path('app_student_examen_show', {'id': resultat.examen.id}) }}" style="display:inline-block; text-decoration:none; padding:7px 12px; border-radius:10px; background:#e0e7ff; color:#3730a3; font-weight:700; font-size:0.82rem;">
+                    Voir examen
+                  </a>
+                {% else %}
+                  -
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -27,6 +27,9 @@ class Ressource
     )]
     private ?string $titre = null;
 
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $type = null;
+
     #[ORM\Column(type: Types::TEXT)]
     private ?string $contenu = null;
 
@@ -108,6 +111,18 @@ class Ressource
     public function setTitre(string $titre): static
     {
         $this->titre = $titre;
+
+        return $this;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(?string $type): static
+    {
+        $this->type = $type;
 
         return $this;
     }

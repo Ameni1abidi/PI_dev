@@ -73,6 +73,18 @@ class SecurityControllerAuthenticator extends AbstractLoginFormAuthenticator
                     throw new CustomUserMessageAuthenticationException('Veuillez confirmer votre adresse email avant de vous connecter.');
                 }
 
+                if (method_exists($user, 'isBlocked') && $user->isBlocked()) {
+                    throw new CustomUserMessageAuthenticationException('Votre compte est bloque. Contactez l administrateur.');
+                }
+
+                if (method_exists($user, 'isPending') && $user->isPending()) {
+                    throw new CustomUserMessageAuthenticationException('Votre compte est en attente d approbation par un administrateur.');
+                }
+
+                if (method_exists($user, 'isRejected') && $user->isRejected()) {
+                    throw new CustomUserMessageAuthenticationException('Votre compte a ete rejete. Contactez l administrateur.');
+                }
+
                 return $user;
             }),
             new PasswordCredentials($password),
@@ -135,3 +147,4 @@ class SecurityControllerAuthenticator extends AbstractLoginFormAuthenticator
         return $this->urlGenerator->generate(self::LOGIN_ROUTE);
     }
 }
+

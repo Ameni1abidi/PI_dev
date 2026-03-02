@@ -1,0 +1,29 @@
+{% extends 'student/dashCours.html.twig' %}
+
+{% block title %}Mes examens{% endblock %}
+
+{% block body %}
+<div style="padding:25px; font-family:'Manrope', sans-serif; background:linear-gradient(135deg,#fdfbfb,#ebedee); min-height:100vh;">
+  <h2 style="margin-bottom:20px; font-weight:800; font-size:1.7rem; color:#2c2c2c;">Examens planifies</h2>
+
+  {% if examens is empty %}
+    <div style="background:#fff; border-radius:16px; padding:20px; color:#6b7280; box-shadow:0 10px 24px rgba(20,24,40,0.06);">
+      Aucun examen disponible.
+    </div>
+  {% else %}
+    <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:18px;">
+      {% for examen in examens %}
+        <article style="background:#fff; border-radius:18px; padding:18px; box-shadow:0 10px 25px rgba(20,24,40,0.08); border:1px solid #edf0ff;">
+          <h3 style="margin:0 0 8px; font-size:1.1rem; color:#1f2937;">{{ examen.titre }}</h3>
+          <div style="font-size:0.9rem; color:#4b5563; margin-bottom:6px;">Type: {{ examen.type|upper }}</div>
+          <div style="font-size:0.9rem; color:#4b5563; margin-bottom:6px;">Date: {{ examen.dateExamen ? examen.dateExamen|date('d/m/Y') : '-' }}</div>
+          <div style="font-size:0.9rem; color:#4b5563; margin-bottom:12px;">Duree: {{ examen.duree }} min</div>
+          <a href="{{ path('app_student_examen_show', {'id': examen.id}) }}" style="display:inline-block; text-decoration:none; padding:9px 14px; border-radius:10px; background:#dbeafe; color:#1e3a8a; border:1px solid #bfdbfe; font-weight:700; font-size:0.88rem;">
+            Voir details
+          </a>
+        </article>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

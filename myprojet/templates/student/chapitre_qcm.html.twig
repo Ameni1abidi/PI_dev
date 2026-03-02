@@ -1,0 +1,79 @@
+{% extends 'student/dashCours.html.twig' %}
+
+{% block title %}QCM Chapitre{% endblock %}
+
+{% block body %}
+<div style="padding:25px; background:#fdfbfb; min-height:100vh; font-family:'Manrope', sans-serif;">
+  <h2 style="font-size:1.8rem; font-weight:800; color:#333; margin-bottom:14px;">QCM - {{ chapitre.titre }}</h2>
+  <div style="max-width:900px; margin:0 auto 10px; padding:10px 12px; border-radius:10px; background:#eef5ff; border:1px solid #c7dcff; color:#244b7a;">
+    Tentatives: <strong>{{ attemptsUsed }}/{{ maxAttempts }}</strong>
+    - Restantes: <strong>{{ attemptsRemaining }}</strong>
+  </div>
+
+  {% for message in app.flashes('success') %}
+    <div style="max-width:900px; margin:10px auto; background:#e9f9ef; border:1px solid #b9ebca; color:#1f6d3a; padding:10px 12px; border-radius:10px;">
+      {{ message }}
+    </div>
+  {% endfor %}
+  {% for message in app.flashes('error') %}
+    <div style="max-width:900px; margin:10px auto; background:#fff2f2; border:1px solid #ffc7c7; color:#8a1f1f; padding:10px 12px; border-radius:10px;">
+      {{ message }}
+    </div>
+  {% endfor %}
+
+  <div style="padding:20px; max-width:900px; margin:auto; background:#fff; border-radius:15px; box-shadow:0 4px 12px rgba(0,0,0,0.05);">
+    {% if qcmResult %}
+      <div style="margin-bottom:15px; padding:12px; border-radius:10px; background:#eaf6ff; border:1px solid #b7d9f3;">
+        <strong>Dernier resultat:</strong>
+        <p style="margin:6px 0 0;">
+          {{ qcmResult.correctAnswers }}/{{ qcmResult.totalQuestions }} bonnes reponses,
+          score {{ qcmResult.score }}/20,
+          etoiles:
+          {% for i in 1..qcmResult.stars %}★{% endfor %}
+        </p>
+        <p style="margin:6px 0 0;">
+          <strong>Meilleure note:</strong> {{ qcmResult.bestScore|default(qcmResult.score) }}/20
+          ({% for i in 1..(qcmResult.bestStars|default(qcmResult.stars)) %}★{% endfor %})
+        </p>
+      </div>
+    {% endif %}
+
+    {% if qcmList is empty %}
+      <div style="padding:15px; background:#fff3cd; border:1px solid #ffe69c; border-radius:12px;">
+        Impossible de generer un QCM pour ce chapitre pour le moment.
+      </div>
+    {% elseif attemptsRemaining <= 0 %}
+      <div style="padding:15px; background:#fff3cd; border:1px solid #ffe69c; border-radius:12px;">
+        Vous avez utilise toutes vos tentatives pour ce chapitre. La meilleure note est conservee.
+      </div>
+    {% else %}
+      <form method="post" action="{{ path('student_chapitre_qcm_submit', {'id': chapitre.id}) }}" style="display:flex; flex-direction:column; gap:16px;">
+        {% for q in qcmList %}
+          <div style="padding:12px; border:1px solid #e7edf7; border-radius:10px; background:#f8fbff;">
+            <div style="font-weight:700; margin-bottom:8px;">Q{{ loop.index }}. {{ q.question }}</div>
+            {% for key, value in q.options %}
+              <label style="display:flex; gap:8px; margin-bottom:4px; align-items:flex-start;">
+                <input type="radio" name="answers[{{ q.id }}]" value="{{ key }}" required>
+                <span><strong>{{ key }}.</strong> {{ value }}</span>
+              </label>
+            {% endfor %}
+          </div>
+        {% endfor %}
+
+        <button type="submit" style="padding:10px 16px; border:none; border-radius:8px; background:#2d89ef; color:#fff; font-weight:700; width:max-content;">
+          Soumettre le QCM
+        </button>
+      </form>
+    {% endif %}
+
+    <div style="margin-top:18px; display:flex; gap:10px; flex-wrap:wrap;">
+      <a href="{{ path('student_chapitre_show', {'id': chapitre.id}) }}" style="display:inline-block; padding:10px 18px; background:#ff416c; color:white; border-radius:25px; font-weight:600; text-decoration:none;">
+        Voir Resume
+      </a>
+      <a href="{{ path('student_cours_index') }}" style="display:inline-block; padding:10px 18px; background:#e9eef8; color:#233; border-radius:25px; font-weight:600; text-decoration:none;">
+        Retour aux cours
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

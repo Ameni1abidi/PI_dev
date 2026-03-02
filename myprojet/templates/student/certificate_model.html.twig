@@ -1,0 +1,69 @@
+{% extends 'student/dashCours.html.twig' %}
+
+{% block title %}Modele Certificat{% endblock %}
+
+{% block body %}
+<div style="padding:24px;">
+  <div style="max-width:980px; margin:0 auto 20px; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+    <h2 style="margin:0; font-size:1.6rem; font-weight:800; color:#223;">Modele de Certificat</h2>
+    <a href="{{ path('student_cours_index') }}" style="display:inline-block; padding:10px 16px; border-radius:999px; background:#eef3ff; color:#234; font-weight:700; text-decoration:none;">
+      Retour Mes Cours
+    </a>
+  </div>
+
+  {% if not eligible %}
+    <section style="max-width:980px; margin:0 auto 20px; background:#fff4f4; border:1px solid #ffb8b8; border-radius:14px; padding:18px;">
+      <h3 style="margin:0 0 8px; color:#a32121;">Certificat non disponible</h3>
+      <p style="margin:0 0 8px; color:#6b2b2b;">
+        Condition: le temps passe doit etre au moins egal a la duree du cours.
+      </p>
+      <p style="margin:0; color:#6b2b2b;">
+        Temps passe: <strong>{{ spentMinutes }} min</strong> / Duree requise: <strong>{{ requiredMinutes }} min</strong>
+      </p>
+      {% if missingChapitres is not empty %}
+        <div style="margin-top:10px; color:#6b2b2b;">
+          Chapitres a terminer:
+          {% for item in missingChapitres %}
+            <div>- {{ item.titre }} (reste {{ item.remaining }} min)</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </section>
+  {% endif %}
+
+  {% if eligible %}
+  <section style="max-width:980px; margin:0 auto; background:linear-gradient(145deg,#fffdf6,#fff); border:2px solid #d8c79a; border-radius:20px; padding:36px 34px; box-shadow:0 18px 40px rgba(0,0,0,0.08);">
+    <div style="text-align:center; margin-bottom:18px;">
+      <div style="font-size:0.9rem; letter-spacing:2px; text-transform:uppercase; color:#876;">EduFlex Academy</div>
+      <div style="font-size:2rem; font-weight:900; color:#2e2a1f; margin-top:8px;">Certificat d'Achevement</div>
+      <div style="width:130px; height:4px; background:#d8c79a; margin:12px auto 0; border-radius:8px;"></div>
+    </div>
+
+    <p style="text-align:center; margin:18px 0 8px; color:#555; font-size:1.05rem;">
+      Ce certificat est decerne a
+    </p>
+    <p style="text-align:center; font-size:1.8rem; font-weight:800; color:#2e2a1f; margin:0 0 22px;">
+      {{ etudiant ? etudiant.nom : 'Etudiant' }}
+    </p>
+
+    <p style="text-align:center; margin:8px 0; color:#555; font-size:1.05rem;">
+      pour avoir termine le cours
+    </p>
+    <p style="text-align:center; font-size:1.45rem; font-weight:800; color:#3a5a9b; margin:0 0 22px;">
+      {{ cours.titre }}
+    </p>
+
+    <div style="display:flex; justify-content:space-between; gap:18px; flex-wrap:wrap; margin-top:26px;">
+      <div style="min-width:240px;">
+        <div style="font-size:0.8rem; color:#777;">Date d'emission</div>
+        <div style="font-size:1rem; font-weight:700; color:#222;">{{ "now"|date("d/m/Y") }}</div>
+      </div>
+      <div style="min-width:240px; text-align:right;">
+        <div style="font-size:0.8rem; color:#777;">Signature numerique</div>
+        <div style="font-size:1rem; font-weight:700; color:#222;">EDUFLEX-CERT-{{ cours.id }}-{{ etudiant ? etudiant.id : 'X' }}</div>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+</div>
+{% endblock %}

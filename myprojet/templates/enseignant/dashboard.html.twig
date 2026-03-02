@@ -338,7 +338,7 @@
       <div class="row">
         <div class="col-12">
           <nav class="main-nav">
-            <a href="{{ path('app_home') }}" class="logo">
+            <a href="{{ path('app_cours_index') }}" class="logo">
               <h1>Eduflex</h1>
             </a>
             <div class="search-input">
@@ -349,10 +349,10 @@
             </div>
             <ul class="nav">
               <li><a href="{{ path('app_cours_index') }}">Tableau de bord</a></li>
-            
               <li><a href="{{ path('app_enseignant_classes') }}">Mes classes</a></li>
               <li><a href="#courses">Cours</a></li>
               <li><a href="#evaluations">Evaluations</a></li>
+              <li><a href="{{ path('app_devoir_ia_index') }}">Devoirs</a></li>
               <li><a href="#forums">Forums</a></li>
               <li><a href="{{ logout_path() }}">Logout</a></li>
             </ul>
@@ -494,15 +494,18 @@
               <img src="{{ asset('images/service-03.png') }}" alt="evaluations">
             </div>
             <div class="main-content">
-              <h4>Evaluations</h4>
-              <p>Consultez le suivi des evaluations et des resultats.</p>
-              <div class="main-button">
-                <a href="{{ path('app_resultat_index_readonly') }}">Consulter</a>
+                <h4>Evaluations</h4>
+                <p>Consultez le suivi des evaluations et des resultats.</p>
+                <div class="main-button">
+                  <a href="{{ path('app_resultat_index_readonly') }}">Consulter</a>
+                </div>
+                <div class="main-button" style="margin-top:10px;">
+                  <a href="{{ path('app_devoir_ia_new') }}">Creer devoir IA</a>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
     </div>
   </div>
 
